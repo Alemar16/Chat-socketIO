@@ -6,20 +6,28 @@ const socket = io("/"); //para enviar al backend
 function App() {
   const [message, setMessage] = useState(""); //para escribir el mensaje
   const [messages, setMessages] = useState([]); //para mostrar los mensajes(array de mensajes)
+
+  //para enviar el mensaje al backend
   const handleSbmit = (e) => {
-    //para enviar el mensaje al backend
     e.preventDefault();
     //console.log(message)
-    socket.emit("message", message);
+    setMessages([...messages, message]);//para mostrar el mensaje en el mismo chat del que envia
+    socket.emit("message", message);//para mandar el mensaje
   };
 
+
+  //se mantendrá escuchando el evento message del backend para mostrar los mensajes en tiempo real
   useEffect(() => {
-    //se mantendrá escuchando el evento message del backend para mostrar los mensajes en tiempo real
-    socket.on("message", (message) => {
-      console.log(message);
-      setMessages([...messages, message]);
-    });
-  });
+    socket.on("message", reciveMessage)//recivo el mensaje y lo muestro
+      //console.log(message); 
+    return () => {
+      socket.off("message", reciveMessage);//muestro el mensaje solo una vez y lo actualizo
+    }
+  }, []);
+
+  const reciveMessage = message=> setMessages(state => [...state, message])
+    
+  
 
   return (
     <div>
