@@ -9,8 +9,9 @@ const io = new SocketServer(server);
 io.on('connection', socket => {
     console.log('Client connected');
 
-    socket.on('message',(data) =>{
-        console.log(data);
+    socket.on('message',(data) =>{//escuchar el mensaje
+        //console.log(data);
+        socket.broadcast.emit('message', data);//reponde el mensaje
     })
 });
 
