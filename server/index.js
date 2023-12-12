@@ -7,11 +7,14 @@ const server = http.createServer(app);
 const io = new SocketServer(server);
 
 io.on('connection', socket => {
-    console.log('Client connected');
+    console.log(socket.id);
 
-    socket.on('message',(data) =>{//escuchar el mensaje
-        //console.log(data);
-        socket.broadcast.emit('message', data);//reponde el mensaje
+    socket.on('message',(body) =>{//escuchar el mensaje
+        console.log(body);
+        socket.broadcast.emit('message', {
+            body,
+            from: socket.id.slice(6)//para mostrar solo el id del cliente que envia
+        });//reponde el mensaje
     })
 });
 

@@ -11,7 +11,11 @@ function App() {
   const handleSbmit = (e) => {
     e.preventDefault();
     //console.log(message)
-    setMessages([...messages, message]);//para mostrar el mensaje en el mismo chat del que envia
+    const newMessage = {//para mostrar el mensaje en el mismo chat del que envia el id
+      body: message,
+      from: "Me",
+    }
+    setMessages([...messages, newMessage]);//para mostrar el mensaje en el mismo chat del que envia
     socket.emit("message", message);//para mandar el mensaje
   };
 
@@ -25,7 +29,8 @@ function App() {
     }
   }, []);
 
-  const reciveMessage = message=> setMessages(state => [...state, message])
+  const reciveMessage = (message)=> 
+  setMessages(state => [...state, message])
     
   
 
@@ -41,7 +46,8 @@ function App() {
       </form>
       <ul>
         {messages.map((message, index) => (
-          <li key={index}>{message}</li>
+          <li key={index}>
+            {message.from}:{message.body}</li>
         ))}
       </ul>
     </div>
