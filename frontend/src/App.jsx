@@ -1,5 +1,5 @@
 import io from 'socket.io-client'
-import { useState } from 'react'
+import { useState, useEffect} from 'react'
 
 const socket = io('/') //para enviar al backend
 
@@ -11,6 +11,12 @@ function App() {
     //console.log(message)
     socket.emit( 'message', message)
   }
+
+  useEffect(() => {//se mantendrá escuchando el evento message
+    socket.on ('message', message => {
+      console.log(message)
+    })
+  })
 
   return (
     <div>
