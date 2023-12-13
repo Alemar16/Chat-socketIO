@@ -45,7 +45,13 @@ function App() {
         backgroundPosition: "center",
       }}
     >
-      <form onSubmit={handleSbmit} className="bg-zinc-800 p-10 rounded">
+      <form
+        onSubmit={handleSbmit}
+        className="p-10 rounded "
+        style={{
+          background: "rgba(161, 175, 192, 0.55)", // Ajusta el color y la opacidad según tus preferencias
+        }}
+      >
         <div>
           <img src="/icons8-chat-100.png" alt="" />
           <h1 className="text-3xl font-bold mb-5">Chat Socket.io</h1>
@@ -61,20 +67,28 @@ function App() {
           <button className="btn hover:bg-blue-800">Send</button>
         </div>
 
-        <ul className="max-h-60 overflow-y-auto">
-          {messages.map((message, index) => (
-            <li
-              key={index}
-              className={`my-2 p-2 table text-sm rounded-md ${
-                message.from === "Me" ? "bg-sky-900 ml-auto" : "bg-sky-600"
-              }`}
-            >
-              <span className="font-bold text-xs text-slate-900 block">
-                {message.from}
-              </span>{" "}
-              <span className=" text-md font-bold shadow">{message.body}</span>
+        <ul className="max-h-60 p-2 overflow-y-auto">
+          {messages.length > 0 ? (
+            messages.map((message, index) => (
+              <li
+                key={index}
+                className={`my-2 p-2 table text-sm rounded-md ${
+                  message.from === "Me"
+                    ? "bg-purple-900 ml-auto"
+                    : "bg-blue-400"
+                }`}
+              >
+                <span className="text-xs text-slate-900 block">
+                  {message.from}
+                </span>{" "}
+                <span className="text-md font-bold shadow">{message.body}</span>
+              </li>
+            ))
+          ) : (
+            <li className="p-2 text-sm text-gray-500 flex items-center justify-center">
+              No messages yet.
             </li>
-          ))}
+          )}
         </ul>
       </form>
     </div>
