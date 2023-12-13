@@ -17,14 +17,14 @@ function App() {
   }, []);
 
   const reciveMessage = (message) =>
-    setMessages((state) => [message, ...state]);// establece el orden de los mensajes
+    setMessages((state) => [message, ...state]); 
 
   const handleSbmit = (message) => {
     const newMessage = {
       body: message,
       from: "Me",
     };
-    setMessages([...messages, newMessage]);
+    setMessages([newMessage, ...messages]);
     socket.emit("message", message);
   };
 
