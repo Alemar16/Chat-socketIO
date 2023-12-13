@@ -1,5 +1,6 @@
 import io from "socket.io-client";
 import { useState, useEffect } from "react";
+import backgroundImage from "./assets/image-background.jpg";
 
 const socket = io("/"); //para enviar al backend
 
@@ -36,7 +37,14 @@ function App() {
     setMessages((state) => [...state, message]);
 
   return (
-    <div className="h-screen bg-zinc-200 text-white flex items-center justify-center">
+    <div
+      className="h-screen bg-zinc-200 text-white flex items-center justify-center"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <form onSubmit={handleSbmit} className="bg-zinc-800 p-10 rounded">
         <div>
           <img src="/icons8-chat-100.png" alt="" />
