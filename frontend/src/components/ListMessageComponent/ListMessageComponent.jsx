@@ -20,7 +20,7 @@ const ListMessageComponent = ({ messages }) => {
             </li>
           ))
         ) : (
-          <li className="p-2 text-sm text-gray-500 flex items-center justify-center">
+          <li className="p-2 text-sm text-gray-800 flex items-center justify-center">
             No messages yet.
           </li>
         )}
