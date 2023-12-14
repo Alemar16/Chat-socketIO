@@ -37,7 +37,7 @@ function App() {
         backgroundPosition: "center",
       }}
     >
-      <div className="backdrop-saturate-125 bg-white/30 rounded-2xl">
+      <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 ">
         <FormComponent onSubmit={handleSbmit} />
         <ListMessageComponent messages={messages} />
       </div>
