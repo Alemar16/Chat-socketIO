@@ -4,7 +4,7 @@ const ListMessageComponent = ({ messages }) => {
   return (
     <div className="max-w-sm w-full">
       {/* Establece el ancho máximo y ancho completo */}
-      <ul className="max-h-60 p-4 mb-5 overflow-y-auto hover:overflow-y-scroll ">
+      <ul className="max-h-60 p-4 mb-5 overflow-y-auto scrollbar-none  ">
         {messages.length > 0 ? (
           messages.map((message, index) => (
             <li
