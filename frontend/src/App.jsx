@@ -37,11 +37,7 @@ function App() {
         backgroundPosition: "center",
       }}
     >
-      <div
-        style={{
-          background: "rgba(161, 175, 192, 0.55)",
-        }}
-      >
+      <div className="backdrop-saturate-125 bg-white/30 rounded-2xl">
         <FormComponent onSubmit={handleSbmit} />
         <ListMessageComponent messages={messages} />
       </div>
