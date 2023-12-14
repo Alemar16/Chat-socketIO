@@ -14,7 +14,7 @@ const FormComponent = ({ onSubmit }) => {
     <div className="max-w-md w-full">
       {" "}
       {/* Establece el ancho máximo y ancho completo */}
-      <form onSubmit={handleSubmit} className="p-8 pb-2 rounded">
+      <form onSubmit={handleSubmit} className="p-8 pb-4 rounded">
        
         <div>
           <img src="/icons8-chat-100.png" alt="" />
