@@ -22,12 +22,13 @@ const FormComponent = ({ onSubmit }) => {
         </div>
 
         <div className=" flex gap-3">
-          <input
-            placeholder="write your message ..."
-            className="border-2 border-zinc-600 p-2 w-full rounded text-black shadow-lg shadow-indigo-900/80 "
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
+        <input
+  placeholder="write your message ..."
+  className="border-2 border-zinc-600 p-2 w-full rounded text-black bg-opacity-50 focus:bg-white focus:outline-none focus:bg-opacity-100 shadow-lg focus:shadow-indigo-900 transition-all duration-300"
+  value={message}
+  onChange={(e) => setMessage(e.target.value)}
+/>
+
           <button className="btn hover:bg-blue-800 shadow-lg shadow-indigo-900/80 cursor-pointer ">Send</button>
         </div>
       </form>
