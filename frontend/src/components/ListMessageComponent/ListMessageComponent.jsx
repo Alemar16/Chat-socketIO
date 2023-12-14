@@ -4,12 +4,12 @@ const ListMessageComponent = ({ messages }) => {
   return (
     <div className="max-w-md w-full">
       {/* Establece el ancho máximo y ancho completo */}
-      <ul className="max-h-60 p-4 mb-5 overflow-y-auto">
+      <ul className="max-h-60 p-4 mb-5 overflow-y-auto hover:overflow-y-scroll ">
         {messages.length > 0 ? (
           messages.map((message, index) => (
             <li
               key={index}
-              className={`my-2 p-2 table text-sm rounded-md ${
+              className={`my-2 p-2 table text-sm rounded-md shadow-lg shadow-indigo-900/80 ${
                 message.from === "Me" ? "bg-purple-900 ml-auto" : "bg-blue-400"
               }`}
             >
