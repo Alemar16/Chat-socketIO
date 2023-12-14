@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 const ListMessageComponent = ({ messages }) => {
   return (
-    <div className="max-w-md w-full">
+    <div className="max-w-sm w-full">
       {/* Establece el ancho máximo y ancho completo */}
       <ul className="max-h-60 p-4 mb-5 overflow-y-auto hover:overflow-y-scroll ">
         {messages.length > 0 ? (
@@ -13,10 +13,10 @@ const ListMessageComponent = ({ messages }) => {
                 message.from === "Me" ? "bg-purple-900 ml-auto" : "bg-blue-400"
               }`}
             >
-              <span className="text-xs text-slate-900 block">
+              <span className="text-xs text-slate-900 block font-sans">
                 {message.from}
               </span>{" "}
-              <span className="text-md font-bold shadow">{message.body}</span>
+              <span className="text-lg font-poppins text-justify text-zinc-50 font-bold ">{message.body}</span>
             </li>
           ))
         ) : (
