@@ -30,12 +30,7 @@ function App() {
 
   return (
     <div
-      className="h-screen bg-zinc-200 text-white flex flex-col items-center justify-center"
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className="h-screen bg-[url('./assets/image-background.jpg')] bg-cover bg-center text-white flex flex-col items-center justify-center"
     >
       <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 ">
         <FormComponent onSubmit={handleSbmit} />
