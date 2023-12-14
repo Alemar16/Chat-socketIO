@@ -1,6 +1,3 @@
-
-
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -15,10 +12,20 @@ export default {
           borderRadius: ".25rem",
           fontSize: "1rem",
           fontWeight: "600",
-          backgroundColor: "#0070f3", // Puedes ajustar el color base aquí
+          backgroundColor: "#0070f3",
           color: "#ffffff",
           cursor: "pointer",
-          transition: "background-color 0.3s ease", // Agregamos una transición suave al cambio de color
+          transition: "background-color 0.3s ease",
+        },
+        ".scrollbar-none": {
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": {
+            width: "0.4em",
+            display: "none",  // Para Chrome y Safari
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "transparent",
+          },
         },
       };
 
