@@ -1,5 +1,6 @@
 //FormComponent.jsx
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 const FormComponent = ({ onSubmit, username }) => {
   const [message, setMessage] = useState("");
@@ -41,6 +42,10 @@ const FormComponent = ({ onSubmit, username }) => {
       </form>
     </div>
   );
+};
+FormComponent.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
 };
 
 export default FormComponent;
