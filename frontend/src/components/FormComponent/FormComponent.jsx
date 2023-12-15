@@ -14,15 +14,20 @@ const FormComponent = ({ onSubmit, username }) => {
   return (
     <div className="max-w-md w-full">
       {username && (
-        <div className="text-center mb-5">
-          <p>Welcome, {username}!</p>
+        <div className="text-center mb-2 mt-5">
+          <p className="text-2xl font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-500 rounded-md">
+            Welcome, {username} !
+          </p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="p-8 pb-4 rounded">
         <div>
-          <img src="/icons8-chat-100.png" alt="" />
-          <h1 className="text-3xl font-bold mb-5">Chat Socket.io</h1>
+          <img
+            src="/icons8-chat-100.png" alt="Logo-Chat"
+            className="w-20 h-20 mx-auto mb-1"
+          />
+          <h1 className="text-3xl font-bold mb-5 text-center">Chat Socket.io</h1>
         </div>
 
         <div className="flex gap-3">
