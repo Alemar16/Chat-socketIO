@@ -1,4 +1,3 @@
-import { time } from "console";
 import express from "express";
 import http from "http";
 import { Server as SocketServer } from "socket.io";
@@ -7,16 +6,23 @@ const app = express();
 const server = http.createServer(app);
 const io = new SocketServer(server);
 
+const users = {};
+
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  console.log(`${socket.id} connected`);
+
+  socket.on("login", (username) => {
+    users[socket.id] = username;
+    console.log(`User ${users[socket.id]} connected`);
+  });
 
   socket.on("message", (body) => {
-    //escuchar el mensaje
-    console.log(body);
+    // Escuchar el mensaje
+    console.log(`${users[socket.id]} dice: ${body} - ${new Date().toLocaleTimeString()}`);
 
     const currentTime = new Date().toLocaleTimeString();
 
-    // Emite una confirmación al remitente con la hora
+    // Emitir una confirmación al remitente con la hora
     socket.emit("messageConfirmation", {
       body: `Mensaje recibido correctamente a las ${currentTime}.`,
       from: "Server",
@@ -24,9 +30,9 @@ io.on("connection", (socket) => {
 
     socket.broadcast.emit("message", {
       body,
-      from: socket.id.slice(6), //para mostrar solo el id del cliente que envia
+      from: users[socket.id] || "Anonymous", // socket.id.slice(6) Mostrar el nombre de usuario si está disponible; de lo contrario, mostrar el ID. users[socket.id.slice(6), // Mostrar el nombre de usuario si está disponible; de lo contrario, mostrar el ID
       time: currentTime,
-    }); //reponde el mensaje
+    }); // Responder al mensaje
   });
 });
 
