@@ -1,4 +1,4 @@
-// LoginComponent.jsx
+import PropTypes from "prop-types";
 import { useState } from "react";
 
 const LoginComponent = ({ onLogin }) => {
@@ -28,5 +28,8 @@ const LoginComponent = ({ onLogin }) => {
   );
 };
 
-export default LoginComponent;
+LoginComponent.propTypes = {
+  onLogin: PropTypes.func.isRequired,
+};
 
+export default LoginComponent;
