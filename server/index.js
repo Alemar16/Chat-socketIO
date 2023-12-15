@@ -13,12 +13,28 @@ io.on("connection", (socket) => {
 
   socket.on("login", (username) => {
     users[socket.id] = username;
-    console.log(`User ${users[socket.id]} connected`);
+    console.log(`${socket.id} ${users[socket.id]} connected`);
   });
+
+  socket.on("disconnect", () => {
+    handleUserDisconnect(socket);
+  });
+
+  socket.on("logout", () => {
+    handleUserDisconnect(socket);
+  });
+
+  function handleUserDisconnect(socket) {
+    const username = users[socket.id];
+    console.log(`${socket.id} ${username} disconnected`);
+    delete users[socket.id];
+  }
 
   socket.on("message", (body) => {
     // Escuchar el mensaje
-    console.log(`${users[socket.id]} dice: ${body} - ${new Date().toLocaleTimeString()}`);
+    console.log(
+      `${users[socket.id]} dice: ${body} - ${new Date().toLocaleTimeString()}`
+    );
 
     const currentTime = new Date().toLocaleTimeString();
 
