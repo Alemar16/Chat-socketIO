@@ -22,6 +22,11 @@ function App() {
     socket.emit("login", username);
   }
 
+  const handleLogout = () => {
+    socket.emit("logout");
+    setUsername("");
+  }
+
   const reciveMessage = (message) => {
     const newMessage = {
       body: message.body,
@@ -48,7 +53,11 @@ function App() {
         <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 ">
           {username ? (
             <>
-              <FormComponent onSubmit={handleSubmit} username={username} />
+              <FormComponent
+                onSubmit={handleSubmit}
+                username={username}
+                onLogout={handleLogout}
+              />
               <ListMessageComponent messages={messages} />
             </>
           ) : (
