@@ -19,15 +19,27 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
     <div className="max-w-md w-full">
       {username && (
         <div className="flex justify-between items-center  mb-2 mt-5 px-5 gap-5">
-          <p className="text-2xl font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-500 rounded-md">
-            Welcome, {username} !
-          </p>
-          <button
-            className="text-red-500 hover:text-red-700"
+          <span className="text-2xl font-bold text-white rounded-md font-mono shadow-md ring-2 ring-gray-950 inline-block p-2">
+            Welcome, {username}!
+          </span>
+
+          <svg
+            className="h-8 w-8 text-red-500 hover:text-red-700"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             onClick={handleLogout}
           >
-            Logout
-          </button>
+            <title>Logout</title>
+            <path stroke="none" d="M0 0h24v24H0z" />
+            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+            <path d="M7 12h14l-3 -3m0 6l3 -3" />
+          </svg>
         </div>
       )}
 
