@@ -12,29 +12,35 @@ const io = new SocketServer(server);
 const users = {};
 
 //uso morgan para ver en consola las peticiones
-app.use(morgan('dev'))
+app.use(morgan("dev"));
 
 //uso de express para levantar el front
-app.use(express.static(resolve('frontend/dist')));//desde server se levanta el front.
+app.use(express.static(resolve("frontend/dist"))); //desde server se levanta el front.
 
-//conexion socket io con hash de usuarios 
+//conexion socket io con hash de usuarios
 io.on("connection", (socket) => {
   console.log(`${socket.id} connected`);
+
+  // Emitir la lista de usuarios al cliente cuando hay un cambio
+  updateConnectedUsers();
 
   // Escuchar el evento de inicio de sesión
   socket.on("login", (username) => {
     users[socket.id] = username;
     console.log(`${socket.id} ${users[socket.id]} connected`);
+    updateConnectedUsers();
   });
 
   // Escuchar el evento de desconexión
   socket.on("disconnect", () => {
     handleUserDisconnect(socket);
+    updateConnectedUsers();
   });
 
   // Escuchar el evento de desconexión por logout
   socket.on("logout", () => {
     handleUserDisconnect(socket);
+    updateConnectedUsers();
   });
 
   // Función para manejar el evento de desconexión
@@ -42,6 +48,9 @@ io.on("connection", (socket) => {
     const username = users[socket.id];
     console.log(`${socket.id} ${username} disconnected`);
     delete users[socket.id];
+
+    // Emitir la lista actualizada después de desconectar un usuario
+    updateConnectedUsers();
   }
 
   // Escuchar el evento de mensaje
@@ -55,7 +64,7 @@ io.on("connection", (socket) => {
     const currentTime = new Date().toLocaleTimeString();
 
     // Enviar el mensaje de confirmación
-   /*  socket.emit("messageConfirmation", {
+    /*  socket.emit("messageConfirmation", {
       body: `Mensaje recibido correctamente a las ${currentTime}.`,
       from: "Server",
     }); */
@@ -63,13 +72,21 @@ io.on("connection", (socket) => {
     // Responder al mensaje
     socket.broadcast.emit("message", {
       body,
-      from: users[socket.id] || "Anonymous", //Mostrar el nombre de usuario si está disponible; de lo contrario, mostrar el ID. users[socket.id.slice(6), 
+      from: users[socket.id] || "Anonymous",
       time: currentTime,
-    }); // Responder al mensaje
+    });
   });
+
+  // Función para emitir la lista de usuarios a todos los clientes
+  function updateConnectedUsers() {
+    const connectedUsers = Object.values(users).map((username) => ({
+      id: socket.id,
+      username,
+    }));
+    io.emit("users", connectedUsers);
+  }
 });
 
-// Arrancar el servidor segun el port
+// Arrancar el servidor según el puerto
 server.listen(PORT);
 console.log("Server on", PORT);
-
