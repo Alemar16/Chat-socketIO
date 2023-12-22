@@ -11,15 +11,15 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
     setMessage("");
   };
 
-  const  handleLogout = () => {
+  const handleLogout = () => {
     onLogout();
-  }
+  };
 
   return (
     <div className="max-w-md w-full">
       {username && (
-        <div className="flex justify-between items-center  mb-2 mt-5 px-5 gap-5">
-          <span className="text-2xl font-bold text-white rounded-md font-mono shadow-md ring-2 ring-gray-950 inline-block p-2">
+        <div className="flex justify-between items-center  mb-2 mt-2 px-5 gap-5">
+          <span className="text-2xl font-bold text-white rounded-md font-mono p-2 ">
             Welcome, {username}!
           </span>
 
