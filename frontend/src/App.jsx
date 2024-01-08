@@ -62,30 +62,30 @@ function App() {
   };
 
   return (
-    <div className="h-screen bg-[url('./assets/image-background.jpg')] bg-cover bg-center text-white flex flex-col items-center">
-      {username ? (
-        <>
-          <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
-            <FormComponent
-              onSubmit={handleSubmit}
-              username={username}
-              onLogout={handleLogout}
-            />
-            <ListMessageComponent messages={messages} />
-          </div>
-          <div>
-            <ConnectedUsersList users={connectedUsers} />
-          </div>
-        </>
-      ) : (
-        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
-          <LoginComponent
-            onLogin={handleLogin}
-            onLoginAsAnonymous={handleLoginAsAnonymous}
-          />
-        </div>
-      )}
+    <>
+  {username ? (
+    <>
+      <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
+        <FormComponent
+          onSubmit={handleSubmit}
+          username={username}
+          onLogout={handleLogout}
+        />
+        <ListMessageComponent messages={messages} />
+      </div>
+      <div>
+        <ConnectedUsersList users={connectedUsers} />
+      </div>
+    </>
+  ) : (
+    <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
+      <LoginComponent
+        onLogin={handleLogin}
+        onLoginAsAnonymous={handleLoginAsAnonymous}
+      />
     </div>
+  )}
+  </>
   );
 }
 
