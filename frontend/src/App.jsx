@@ -3,21 +3,19 @@ import { useState, useEffect } from "react";
 import FormComponent from "./components/FormComponent/FormComponent";
 import ListMessageComponent from "./components/ListMessageComponent/ListMessageComponent";
 import LoginComponent from "./components/LoginComponent/LoginComponent";
-import ConnectedUsersList from "./components/ConnectedUsersList/ConnectedUsersList";
+
 
 const socket = io("/");
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
-  const [connectedUsers, setConnectedUsers] = useState([]);
+ 
 
   useEffect(() => {
     socket.on("message", reciveMessage);
-    socket.on("users", updateConnectedUsers);
     return () => {
       socket.off("message", reciveMessage);
-      socket.off("users", updateConnectedUsers);
     };
   }, []);
 
@@ -47,10 +45,6 @@ function App() {
     setMessages((state) => [newMessage, ...state]);
   };
 
-  const updateConnectedUsers = (users) => {
-    setConnectedUsers(users);
-  };
-
   const handleSubmit = (message) => {
     const newMessage = {
       body: message,
@@ -63,29 +57,28 @@ function App() {
 
   return (
     <>
-  {username ? (
-    <>
-      <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
-        <FormComponent
-          onSubmit={handleSubmit}
-          username={username}
-          onLogout={handleLogout}
-        />
-        <ListMessageComponent messages={messages} />
-      </div>
-      <div>
-        <ConnectedUsersList users={connectedUsers} />
-      </div>
+      {username ? (
+        <div className="border-2 border-zinc-600 p-2">
+          <div>
+            <FormComponent
+              onSubmit={handleSubmit}
+              username={username}
+              onLogout={handleLogout}
+            />
+          </div>
+          <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60">
+            <ListMessageComponent messages={messages} />
+          </div>
+        </div>
+      ) : (
+        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
+          <LoginComponent
+            onLogin={handleLogin}
+            onLoginAsAnonymous={handleLoginAsAnonymous}
+          />
+        </div>
+      )}
     </>
-  ) : (
-    <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
-      <LoginComponent
-        onLogin={handleLogin}
-        onLoginAsAnonymous={handleLoginAsAnonymous}
-      />
-    </div>
-  )}
-  </>
   );
 }
 
