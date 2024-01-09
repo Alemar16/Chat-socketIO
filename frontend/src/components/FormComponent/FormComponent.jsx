@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { ButtonLogout } from "../Buttons/ButtonLogout";
 import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
 import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
+import Header from "../Header/Header";
 
 const socket = io("/");
 
@@ -34,15 +35,7 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
   return (
     <div className="max-w-md w-full">
       <div className="relative">
-        {/* Contenedor del logo */}
-        <div className="text-center">
-          <img
-            src="/icons8-chat-100.png"
-            alt="Logo-Chat"
-            className="w-20 h-20 mx-auto mb-1"
-          />
-          <h1 className="text-3xl font-bold mb-5">Chat Socket.io</h1>
-        </div>
+        <Header />
 
         <div className="absolute top-0 right-0 m-1">
           <ButtonLogout onLogout={onLogout} />
@@ -61,7 +54,10 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="border-2 border-zinc-600 rounded p-1">
+      <form
+        onSubmit={handleSubmit}
+        className="border-2 border-zinc-600 rounded p-1"
+      >
         <div className="flex gap-2">
           <input
             placeholder="Write your message..."
