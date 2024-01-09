@@ -61,8 +61,8 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="p-8 pb-4 rounded">
-        <div className="flex gap-3">
+      <form onSubmit={handleSubmit} className="border-2 border-zinc-600 rounded p-1">
+        <div className="flex gap-2">
           <input
             placeholder="Write your message..."
             className="border-2 border-zinc-600 p-2 w-full rounded text-black bg-opacity-50 focus:bg-white focus:outline-none focus:bg-opacity-100 shadow-lg focus:shadow-indigo-900 transition-all duration-300"
