@@ -1,9 +1,9 @@
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { ButtonLogout } from "../ButtonLogout/ButtonLogout";
+import { ButtonLogout } from "../Buttons/ButtonLogout";
 import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
-import { ButtonShowUsers } from "../ButtonLogout/ButtonShowUsers";
+import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
 
 const socket = io("/");
 
