@@ -4,7 +4,7 @@ import { format } from "date-fns";
 const ListMessageComponent = ({ messages }) => {
   return (
     <div className="max-w-sm w-full">
-      <ul className="max-h-100 p-3 mb-5 overflow-y-auto scrollbar-none">
+      <ul className="max-h-70 p-3 mb-5 overflow-y-auto scrollbar-none">
   {messages.length > 0 ? (
     messages.map((message, index) => (
       <li
