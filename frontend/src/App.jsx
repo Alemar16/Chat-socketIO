@@ -58,7 +58,7 @@ function App() {
   return (
     <>
       {username ? (
-        <div className="border-2 border-zinc-600 p-2">
+        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-2">
           <div>
             <FormComponent
               onSubmit={handleSubmit}
