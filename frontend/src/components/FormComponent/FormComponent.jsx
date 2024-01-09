@@ -1,17 +1,17 @@
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { ButtonLogout } from "../Buttons/ButtonLogout";
+
 import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
 import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
-import Header from "../Header/Header";
+
 import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
 const socket = io("/");
 
 // ... (importaciones y código anterior)
 
-const FormComponent = ({ onSubmit, username, onLogout }) => {
+const FormComponent = ({ onSubmit, username }) => {
   const [message, setMessage] = useState("");
   const [showConnectedUsersModal, setShowConnectedUsersModal] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState([]);
@@ -35,17 +35,9 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
 
   return (
     <div className="max-w-md w-full">
-      <div className="relative">
-        <Header />
-
-        <div className="absolute top-0 right-0 m-1">
-          <ButtonLogout onLogout={onLogout} />
-        </div>
-      </div>
-
       {username && (
         <div className="flex justify-between items-center mb-2 mt-2 px-5 gap-5">
-         <GreetingComponent username={username}/>
+          <GreetingComponent username={username} />
 
           <div>
             <ButtonShowUsers onShowUsers={setShowConnectedUsersModal} />
@@ -92,7 +84,6 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
 FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
-  onLogout: PropTypes.func.isRequired,
 };
 
 export default FormComponent;
