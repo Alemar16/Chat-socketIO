@@ -5,6 +5,7 @@ import { ButtonLogout } from "../Buttons/ButtonLogout";
 import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
 import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
 import Header from "../Header/Header";
+import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
 const socket = io("/");
 
@@ -44,9 +45,7 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
 
       {username && (
         <div className="flex justify-between items-center mb-2 mt-2 px-5 gap-5">
-          <span className="text-2xl font-bold text-white rounded-md font-mono p-2">
-            Welcome, {username}!
-          </span>
+         <GreetingComponent username={username}/>
 
           <div>
             <ButtonShowUsers onShowUsers={setShowConnectedUsersModal} />
