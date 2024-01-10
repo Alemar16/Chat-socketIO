@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-// @ts-ignore
 import logoutIcon from "../../assets/icons/logout-icon.svg";
 
 

@@ -1,10 +1,27 @@
-//FormComponent.jsx
-import { useState } from "react";
+import io from "socket.io-client";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { ButtonLogout } from "../ButtonLogout/ButtonLogout";
 
-const FormComponent = ({ onSubmit, username, onLogout }) => {
+import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
+import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
+
+import GreetingComponent from "../GreetingComponent/GreetingComponent";
+
+const socket = io("/");
+
+// ... (importaciones y código anterior)
+
+const FormComponent = ({ onSubmit, username }) => {
   const [message, setMessage] = useState("");
+  const [showConnectedUsersModal, setShowConnectedUsersModal] = useState(false);
+  const [connectedUsers, setConnectedUsers] = useState([]);
+
+  useEffect(() => {
+    socket.on("users", updateConnectedUsers);
+    return () => {
+      socket.off("users", updateConnectedUsers);
+    };
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,33 +29,29 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
     setMessage("");
   };
 
+  const updateConnectedUsers = (users) => {
+    setConnectedUsers(users);
+  };
+
   return (
     <div className="max-w-md w-full">
       {username && (
-        <div className="flex justify-between items-center  mb-2 mt-2 px-5 gap-5">
-          <span className="text-2xl font-bold text-white rounded-md font-mono p-2 ">
-            Welcome, {username}!
-          </span>
+        <div className="flex justify-between items-center mb-2 mt-2 px-5 gap-5">
+          <GreetingComponent username={username} />
 
-          <ButtonLogout onLogout={onLogout} />
+          <div>
+            <ButtonShowUsers onShowUsers={setShowConnectedUsersModal} />
+          </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="p-8 pb-4 rounded">
-        <div>
-          <img
-            src="/icons8-chat-100.png"
-            alt="Logo-Chat"
-            className="w-20 h-20 mx-auto mb-1"
-          />
-          <h1 className="text-3xl font-bold mb-5 text-center">
-            Chat Socket.io
-          </h1>
-        </div>
-
-        <div className="flex gap-3">
+      <form
+        onSubmit={handleSubmit}
+        className="border-2 border-zinc-600 rounded p-1"
+      >
+        <div className="flex gap-2">
           <input
-            placeholder="write your message ..."
+            placeholder="Write your message..."
             className="border-2 border-zinc-600 p-2 w-full rounded text-black bg-opacity-50 focus:bg-white focus:outline-none focus:bg-opacity-100 shadow-lg focus:shadow-indigo-900 transition-all duration-300"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -51,13 +64,26 @@ const FormComponent = ({ onSubmit, username, onLogout }) => {
           </button>
         </div>
       </form>
+
+      {/* Renderizar el modal según el estado */}
+      {showConnectedUsersModal && (
+        <div className="modal">
+          <button
+            className="absolute top-2 right-2 text-white cursor-pointer"
+            onClick={() => setShowConnectedUsersModal(false)}
+          >
+            Close
+          </button>
+          <ConnectedUsersList users={connectedUsers} />
+        </div>
+      )}
     </div>
   );
 };
+
 FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
-  onLogout: PropTypes.func.isRequired,
 };
 
 export default FormComponent;

@@ -3,21 +3,21 @@ import { useState, useEffect } from "react";
 import FormComponent from "./components/FormComponent/FormComponent";
 import ListMessageComponent from "./components/ListMessageComponent/ListMessageComponent";
 import LoginComponent from "./components/LoginComponent/LoginComponent";
-import ConnectedUsersList from "./components/ConnectedUsersList/ConnectedUsersList";
+import Header from "./components/Header/Header";
+import { ButtonLogout } from "./components/Buttons/ButtonLogout";
+
 
 const socket = io("/");
 
-function App() {
+function App({onLogout}) {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
-  const [connectedUsers, setConnectedUsers] = useState([]);
+ 
 
   useEffect(() => {
     socket.on("message", reciveMessage);
-    socket.on("users", updateConnectedUsers);
     return () => {
       socket.off("message", reciveMessage);
-      socket.off("users", updateConnectedUsers);
     };
   }, []);
 
@@ -47,10 +47,6 @@ function App() {
     setMessages((state) => [newMessage, ...state]);
   };
 
-  const updateConnectedUsers = (users) => {
-    setConnectedUsers(users);
-  };
-
   const handleSubmit = (message) => {
     const newMessage = {
       body: message,
@@ -63,29 +59,35 @@ function App() {
 
   return (
     <>
-  {username ? (
-    <>
-      <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
-        <FormComponent
-          onSubmit={handleSubmit}
-          username={username}
-          onLogout={handleLogout}
-        />
-        <ListMessageComponent messages={messages} />
+      {username ? (
+        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-2">
+          <div>
+          <div className="relative">
+        <Header />
+
+        <div className="absolute top-0 right-0 m-1">
+          <ButtonLogout onLogout={handleLogout} />
+        </div>
       </div>
-      <div>
-        <ConnectedUsersList users={connectedUsers} />
-      </div>
+            <FormComponent
+              onSubmit={handleSubmit}
+              username={username}
+              
+            />
+          </div>
+          <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60">
+            <ListMessageComponent messages={messages} />
+          </div>
+        </div>
+      ) : (
+        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
+          <LoginComponent
+            onLogin={handleLogin}
+            onLoginAsAnonymous={handleLoginAsAnonymous}
+          />
+        </div>
+      )}
     </>
-  ) : (
-    <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
-      <LoginComponent
-        onLogin={handleLogin}
-        onLoginAsAnonymous={handleLoginAsAnonymous}
-      />
-    </div>
-  )}
-  </>
   );
 }
 
