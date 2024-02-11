@@ -1,8 +1,11 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Modal from "../Modal/Modal";
 
-const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
+const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
   const [username, setUsername] = useState("");
+
+
 
   const handleLogin = () => {
     console.log("Login button clicked with username:", username);
@@ -16,6 +19,7 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
 
   return (
     <div>
+       <Modal/>
       <div className="flex items-center shadow-lg p-2">
         <img src="/icons8-chat-100.png" alt="Logo-Chat" />
         <h1 className="text-xl font-bold mb-5">Chat Socket.io</h1>
