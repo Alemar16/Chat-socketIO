@@ -5,8 +5,6 @@ import Modal from "../Modal/Modal";
 const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
   const [username, setUsername] = useState("");
 
-
-
   const handleLogin = () => {
     console.log("Login button clicked with username:", username);
     onLogin(username);
@@ -21,7 +19,7 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
     <div>
        <Modal/>
       <div className="flex items-center shadow-lg p-2">
-        <img src="/icons8-chat-100.png" alt="Logo-Chat" />
+        <img src="/icons8-chat-100.png" alt="Chat Logo" />
         <h1 className="text-xl font-bold mb-5">Chat Socket.io</h1>
       </div>
       <div className="flex flex-col items-center shadow-lg p-2">
@@ -45,7 +43,7 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
           onClick={handleLoginAnonymous}
           className="bg-gray-500 text-white px-4 py-2 rounded-lg mt-3 hover:bg-gray-600 focus:outline-none focus:shadow-outline-blue"
         >
-          Ingresar como Anónimo
+          Login as Anonymous
         </button>
       </div>
     </div>
