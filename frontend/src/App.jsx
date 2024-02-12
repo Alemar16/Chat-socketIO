@@ -5,6 +5,7 @@ import ListMessageComponent from "./components/ListMessageComponent/ListMessageC
 import LoginComponent from "./components/LoginComponent/LoginComponent";
 import Header from "./components/Header/Header";
 import { ButtonLogout } from "./components/Buttons/ButtonLogout";
+import Footer from "./components/Footer/Footer";
 
 
 const socket = io("/");
@@ -78,6 +79,7 @@ function App({onLogout}) {
           <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60">
             <ListMessageComponent messages={messages} />
           </div>
+          <Footer />
         </div>
       ) : (
         <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
@@ -85,6 +87,7 @@ function App({onLogout}) {
             onLogin={handleLogin}
             onLoginAsAnonymous={handleLoginAsAnonymous}
           />
+          <Footer />
         </div>
       )}
     </>
