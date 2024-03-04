@@ -1,7 +1,7 @@
 function Footer() {
     return (
         <footer class="text-center sm:text-left">
-            <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+            <div class="mx-auto w-full max-w-screen-xl p-4 py-2 lg:py-2">
                 <div class="sm:flex sm:items-center sm:justify-between">
                     <span class="text-sm text-gray-800 sm:text-center">© 2024 <a href="https://portfolio-am-tau.vercel.app/"
                         target="_blank"
