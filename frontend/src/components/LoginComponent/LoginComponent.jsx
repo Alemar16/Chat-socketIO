@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
-import Swal from 'sweetalert2';
-import anonymousIcon from "../../assets/icons/icons8-anonymous-user-with-hat-and-glasses-layout-96.png"
+import Swal from "sweetalert2";
+import anonymousIcon from "../../assets/icons/icons8-anonymous-user-with-hat-and-glasses-layout-96.png";
 import TermsAndConditions from "../TermsAndConditions/TermsAndConditions";
 
 const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
@@ -18,15 +18,15 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
       title: "Terms and Conditions",
       input: "checkbox",
       inputPlaceholder: `I agree with the terms and conditions`,
-      confirmButtonText: "Continue",
+      confirmButtonText: `Continue&nbsp;<i class="fa fa-arrow-right"></i>`,
       inputValidator: (result) => {
         return !result && "You need to agree with the terms and conditions";
-      }
+      },
     });
 
     if (accept) {
       Swal.fire({
-        title: 'Anonymous Mode Activated',
+        title: "Anonymous Mode Activated",
         html: `
           <p>
             By using anonymous mode, your identity will be protected and a random nickname will be assigned to you while connected.
@@ -35,32 +35,45 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
             All data associated with your session will be deleted upon disconnection.
           </p>
         `,
-        icon: 'success',
+        icon: "success",
         imageUrl: anonymousIcon,
         imageWidth: 80,
-        confirmButtonText: 'Ok',
+        confirmButtonText: "Ok",
       });
       onLoginAsAnonymous();
     }
   };
 
-
   return (
     <div>
       <Modal />
-      <div className="flex items-center justify-center shadow-lg p-2"> {/* Alinea los elementos al centro horizontal y verticalmente */}
+      <div className="flex items-center justify-center shadow-lg p-2">
+        {" "}
+        {/* Alinea los elementos al centro horizontal y verticalmente */}
         <img
           src="/icons8-chat-100.png"
           alt="Chat Logo"
           className="w-20 h-20 mb-1" // Reduce el margen inferior de la imagen
         />
-        <h1 className="text-4xl font-bold mb-5" style={{ fontFamily: 'Boogaloo, cursive', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}> {/* Aumenta el tamaño de la fuente */}
-          <span style={{ color: '#852CA5', textStroke: '2px #000' }}>Flash</span><span style={{ color: '#4CCFF1' }}>Chat</span>
+        <h1
+          className="text-4xl font-bold mb-5"
+          style={{
+            fontFamily: "Boogaloo, cursive",
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          {" "}
+          {/* Aumenta el tamaño de la fuente */}
+          <span style={{ color: "#852CA5", textStroke: "2px #000" }}>
+            Flash
+          </span>
+          <span style={{ color: "#4CCFF1" }}>Chat</span>
         </h1>
       </div>
 
-      <div className="flex flex-col items-center shadow-lg p-4">
-        <div className="flex gap-3 h-10"> {/* Establece una altura común para el contenedor */}
+      <div className="flex flex-col items-center shadow-lg p-2">
+        <div className="flex gap-1 h-10">
+          {" "}
           <input
             placeholder="Enter your username..."
             className="border-none focus:outline-none bg-white text-gray-700 rounded-l-lg p-2 h-full" // Aplica la altura completa al input
@@ -77,14 +90,13 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
           <button
             type="button"
             onClick={handleLoginAnonymous}
-            className="bg-gray-500 p-4 rounded-lg hover:bg-gray-600 focus:outline-none focus:shadow-outline-blue flex justify-center items-center"
+            className="flex justify-center items-center ml-3 hover: transform hover:scale-110 duration-300"
+            title="Anonymous Mode"
           >
             <img src={anonymousIcon} alt="Anonymous Icon" className="w-8 h-8" />
           </button>
-
         </div>
       </div>
-
     </div>
   );
 };
