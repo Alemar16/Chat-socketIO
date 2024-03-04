@@ -6,14 +6,13 @@ import LoginComponent from "./components/LoginComponent/LoginComponent";
 import Header from "./components/Header/Header";
 import { ButtonLogout } from "./components/Buttons/ButtonLogout";
 import Footer from "./components/Footer/Footer";
-
+import TermsAndConditions from "./components/TermsAndConditions/TermsAndConditions";
 
 const socket = io("/");
 
-function App({onLogout}) {
+function App({ onLogout }) {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
- 
 
   useEffect(() => {
     socket.on("message", reciveMessage);
@@ -61,20 +60,16 @@ function App({onLogout}) {
   return (
     <>
       {username ? (
-        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-2">
+        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-2 m-5">
           <div>
-          <div className="relative">
-        <Header />
+            <div className="relative">
+              <Header />
 
-        <div className="absolute top-0 right-0 m-1">
-          <ButtonLogout onLogout={handleLogout} />
-        </div>
-      </div>
-            <FormComponent
-              onSubmit={handleSubmit}
-              username={username}
-              
-            />
+              <div className="absolute top-0 right-0 m-1">
+                <ButtonLogout onLogout={handleLogout} />
+              </div>
+            </div>
+            <FormComponent onSubmit={handleSubmit} username={username} />
           </div>
           <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60">
             <ListMessageComponent messages={messages} />
@@ -87,7 +82,10 @@ function App({onLogout}) {
             onLogin={handleLogin}
             onLoginAsAnonymous={handleLoginAsAnonymous}
           />
-          <Footer />
+          <div className="text-center mt-5 leading-tight">
+            <TermsAndConditions />
+            <Footer />
+          </div>
         </div>
       )}
     </>
