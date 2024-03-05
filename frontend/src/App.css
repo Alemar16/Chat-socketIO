@@ -1,0 +1,16 @@
+/* Estilo para personalizar el scrollbar vertical */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px; /* Ancho del scrollbar */
+}
+/* Estilo para el riel del scrollbar vertical */
+.overflow-y-auto::-webkit-scrollbar-track {
+  background-color: transparent; /* Color de fondo del riel */
+}
+/* Estilo para el mango del scrollbar vertical */
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: white; /* Color del mango del scrollbar */
+}
+/* Estilo para evitar el desborde de la barra de desplazamiento */
+.overflow-y-auto::-webkit-scrollbar-track-piece {
+  background-color: transparent; /* Color de fondo del riel */
+}
