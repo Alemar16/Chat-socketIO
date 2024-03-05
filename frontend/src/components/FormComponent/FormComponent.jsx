@@ -1,3 +1,5 @@
+// FormComponent.jsx
+
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
@@ -9,8 +11,6 @@ import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
 const socket = io("/");
 
-// ... (importaciones y código anterior)
-
 const FormComponent = ({ onSubmit, username }) => {
   const [message, setMessage] = useState("");
   const [showConnectedUsersModal, setShowConnectedUsersModal] = useState(false);
@@ -21,7 +21,7 @@ const FormComponent = ({ onSubmit, username }) => {
     return () => {
       socket.off("users", updateConnectedUsers);
     };
-  });
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,17 +34,18 @@ const FormComponent = ({ onSubmit, username }) => {
   };
 
   return (
-    <div className="max-w-md w-full">
+    <div className="max-w-md w-full relative">
       {username && (
         <div className="flex justify-between items-center mb-2 mt-2 px-5 gap-5">
           <GreetingComponent username={username} />
-
           <div>
-            <ButtonShowUsers onShowUsers={setShowConnectedUsersModal} />
+            <ButtonShowUsers
+              onShowUsers={setShowConnectedUsersModal}
+              connectedUsers={connectedUsers} // Pasar connectedUsers como prop
+            />
           </div>
         </div>
       )}
-
       <form
         onSubmit={handleSubmit}
         className="border-2 border-zinc-600 rounded p-1"
@@ -64,16 +65,8 @@ const FormComponent = ({ onSubmit, username }) => {
           </button>
         </div>
       </form>
-
-      {/* Renderizar el modal según el estado */}
       {showConnectedUsersModal && (
-        <div className="modal">
-          <button
-            className="absolute top-2 right-2 text-white cursor-pointer"
-            onClick={() => setShowConnectedUsersModal(false)}
-          >
-            Close
-          </button>
+        <div className="modal absolute top-40 left-0 z-50 w-full h-full flex items-center justify-center">
           <ConnectedUsersList users={connectedUsers} />
         </div>
       )}
