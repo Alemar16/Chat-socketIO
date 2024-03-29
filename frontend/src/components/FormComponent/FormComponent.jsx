@@ -26,10 +26,10 @@ const FormComponent = ({ onSubmit, username }) => {
 
   useEffect(() => {
     if (errorMessage) {
-      setErrorVisible(true); 
+      setErrorVisible(true);
       const timer = setTimeout(() => {
         setErrorMessage("");
-        setErrorVisible(false); 
+        setErrorVisible(false);
       }, 3000);
 
       return () => clearTimeout(timer);
@@ -59,7 +59,7 @@ const FormComponent = ({ onSubmit, username }) => {
           <div>
             <ButtonShowUsers
               onShowUsers={setShowConnectedUsersModal}
-              connectedUsers={connectedUsers} 
+              connectedUsers={connectedUsers}
             />
           </div>
         </div>
@@ -71,18 +71,20 @@ const FormComponent = ({ onSubmit, username }) => {
         }`}
       >
         <div className="flex gap-2">
-          <input
+          <textarea
+            rows={1}
             placeholder="Write your message..."
             className="p-2 w-full rounded text-black bg-opacity-50 focus:bg-white focus:outline-none focus:bg-opacity-100 "
+            style={{ resize: "none" }}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
           <ButtonSend onClick={handleSubmit} />
         </div>
       </form>
-        {errorMessage && (
-          <div className="text-red-600 text-sm ml-2 -mt-1">{errorMessage}</div>
-        )}
+      {errorMessage && (
+        <div className="text-red-600 text-sm ml-2 -mt-1">{errorMessage}</div>
+      )}
       {showConnectedUsersModal && (
         <div className="modal absolute top-40 left-0 z-50 w-full h-full flex items-center justify-center">
           <ConnectedUsersList users={connectedUsers} />
