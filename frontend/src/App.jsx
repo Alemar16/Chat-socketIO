@@ -64,16 +64,13 @@ function App({ onLogout }) {
           <div>
             <div className="relative">
               <Header />
-
               <div className="absolute top-0 right-0 m-1">
                 <ButtonLogout onLogout={handleLogout} />
               </div>
             </div>
             <FormComponent onSubmit={handleSubmit} username={username} />
           </div>
-          <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60">
-            <ListMessageComponent messages={messages} />
-          </div>
+          <ListMessageComponent messages={messages} />
           <Footer />
         </div>
       ) : (
