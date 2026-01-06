@@ -39,7 +39,7 @@ export const ButtonShare = () => {
   return (
     <button
       onClick={handleShare}
-      className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded shadow-md transition-colors duration-200 text-sm flex items-center gap-2"
+      className="text-purple-800 font-bold py-1 px-3 rounded transition-transform duration-200 text-sm flex items-center gap-2 hover:scale-110"
       title="Share Chat Link"
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">

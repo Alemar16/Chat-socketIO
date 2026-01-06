@@ -80,8 +80,10 @@ function App() {
           <div>
             <div className="relative">
               <Header />
-              <div className="absolute top-0 right-0 m-1 flex gap-2">
+              <div className="absolute top-0 left-0 m-1">
                 <ButtonShare />
+              </div>
+              <div className="absolute top-0 right-0 m-1">
                 <ButtonLogout onLogout={handleLogout} />
               </div>
             </div>
