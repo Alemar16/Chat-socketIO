@@ -22,8 +22,19 @@ const rateLimiter = new RateLimiter(5, 1000);
 
 const users = {};
 
-// Basic security headers
-app.use(helmet());
+// Basic security headers with Custom CSP for Media
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      connectSrc: ["'self'", "ws:", "wss:"], // Allow websockets
+      imgSrc: ["'self'", "data:", "blob:"], // Allow images from data URI
+      mediaSrc: ["'self'", "data:", "blob:"], // Allow audio/video from data URI (CRITICAL for Voice Messages)
+      scriptSrc: ["'self'", "'unsafe-inline'"], // Valid for simple React apps, ideally hash based
+      styleSrc: ["'self'", "'unsafe-inline'"],
+    },
+  },
+}));
 
 // Logging - only log non-sensitive request info (method, url, status)
 app.use(morgan("dev"));

@@ -9,12 +9,29 @@ import { ButtonShare } from "./components/Buttons/ButtonShare";
 import Footer from "./components/Footer/Footer";
 import TermsAndConditions from "./components/TermsAndConditions/TermsAndConditions";
 
+import notificationSound from "./assets/sounds/soft-notice-146623.mp3";
+import backgroundNotificationSound from "./assets/sounds/new-notification-on-your-device-138695.mp3";
+
 const socket = io("/");
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState(null);
+
+  const requestNotificationPermission = async () => {
+    if ("Notification" in window) {
+      if (Notification.permission === "default") {
+        await Notification.requestPermission();
+      }
+    }
+  };
+
+  const playNotification = (isBackground) => {
+    const soundToPlay = isBackground ? backgroundNotificationSound : notificationSound;
+    const audio = new Audio(soundToPlay);
+    audio.play().catch(error => console.error("Audio play failed:", error));
+  };
 
   useEffect(() => {
     // Room Logic
@@ -29,8 +46,37 @@ function App() {
     }
     setRoomId(room);
 
+    const reciveMessage = (message) => {
+      const newMessage = {
+        body: message.body,
+        from: message.from,
+        type: message.type || 'text',
+        caption: message.caption,
+        timestamp: message.time || new Date().toISOString(),
+        id: message.id,
+      };
+
+      setMessages((state) => [newMessage, ...state].slice(0, 100));
+      
+      if(message.from !== "Me") {
+          const isBackground = document.hidden;
+          playNotification(isBackground);
+
+          if (isBackground && Notification.permission === "granted") {
+            new Notification(`New message from ${message.from}`, {
+              body: message.type === 'text' ? message.body : 'Sent a media file',
+              icon: '/vite.svg', // Optional: Add an icon if available
+            });
+          }
+      }
+    };
+
+    const handleDeleteEvent = (id) => {
+      setMessages((state) => state.filter((msg) => msg.id !== id));
+    };
+
     socket.on("message", reciveMessage);
-    socket.on("delete", handleDeleteEvent); // Listen for deletes
+    socket.on("delete", handleDeleteEvent);
 
     return () => {
       socket.off("message", reciveMessage);
@@ -41,12 +87,12 @@ function App() {
   const handleLogin = (username) => {
     setUsername(username);
     socket.emit("login", { username, roomId });
+    requestNotificationPermission();
   };
 
   const handleLogout = () => {
     socket.emit("logout");
     setUsername("");
-    // Force reload to root path to generate a new room ID
     window.location.href = window.location.pathname;
   };
 
@@ -56,27 +102,8 @@ function App() {
     socket.emit("login", { username: anonymousUsername, roomId });
   };
 
-  const reciveMessage = (message) => {
-    const newMessage = {
-      body: message.body,
-      from: message.from,
-      type: message.type || 'text',
-      caption: message.caption, // Store caption if present
-      timestamp: message.time || new Date().toISOString(),
-      id: message.id, // Receive ID
-    };
-
-    setMessages((state) => [newMessage, ...state].slice(0, 100)); // Auto-Cleanup: Max 100
-  };
-
-  const handleDeleteEvent = (id) => {
-    setMessages((state) => state.filter((msg) => msg.id !== id));
-  };
-
   const handleDeleteMessage = (id) => {
-    // Delete local
     setMessages((state) => state.filter((msg) => msg.id !== id));
-    // Verify valid ID before sending
     if(id) {
         socket.emit("delete", id);
     }
@@ -101,12 +128,12 @@ function App() {
       body: imageData,
       from: "Me",
       type: 'image',
-      caption: caption, // Store caption
+      caption: caption,
       timestamp: new Date().toISOString(),
       id: id,
     };
     setMessages((prev) => [newMessage, ...prev].slice(0, 100)); // Auto-Cleanup
-    socket.emit("image", { body: imageData, caption, id }); // Send caption to server
+    socket.emit("image", { body: imageData, caption, id });
   };
 
   const handleAudioSubmit = (audioData) => {
