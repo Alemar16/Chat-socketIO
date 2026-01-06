@@ -169,16 +169,15 @@ function App() {
       {username ? (
         <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-4 w-full max-w-2xl h-[90vh] flex flex-col mt-10">
           <div>
-            <div className="relative">
-              <Header />
-              <div className="absolute top-0 right-0 m-1">
-                 <button 
-                  onClick={() => setIsSideMenuOpen(true)}
-                  className="p-2 text-white hover:text-gray-200 transition-colors drop-shadow-md"
-                >
-                  <Bars3Icon className="w-8 h-8" />
-                </button>
-              </div>
+            {/* Top Bar Container */}
+            <div className="flex items-center justify-between p-4 bg-transparent w-full">
+              <Header compact={true} />
+              <button 
+                onClick={() => setIsSideMenuOpen(true)}
+                className="p-2 text-white hover:text-gray-200 transition-colors drop-shadow-md"
+              >
+                 <Bars3Icon className="w-8 h-8" />
+              </button>
             </div>
             <SideMenu 
               isOpen={isSideMenuOpen} 
