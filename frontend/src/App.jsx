@@ -109,6 +109,19 @@ function App() {
     socket.emit("image", { body: imageData, caption, id }); // Send caption to server
   };
 
+  const handleAudioSubmit = (audioData) => {
+    const id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
+    const newMessage = {
+      body: audioData,
+      from: "Me",
+      type: 'audio',
+      timestamp: new Date().toISOString(),
+      id: id,
+    };
+    setMessages((prev) => [newMessage, ...prev].slice(0, 100)); // Auto-Cleanup
+    socket.emit("audio", { body: audioData, id });
+  };
+
   return (
     <>
       {username ? (
@@ -123,7 +136,7 @@ function App() {
                 <ButtonLogout onLogout={handleLogout} />
               </div>
             </div>
-            <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} username={username} socket={socket} />
+            <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
           </div>
           <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
           <div className="mt-auto">
