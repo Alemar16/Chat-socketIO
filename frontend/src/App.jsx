@@ -30,8 +30,11 @@ function App() {
     setRoomId(room);
 
     socket.on("message", reciveMessage);
+    socket.on("delete", handleDeleteEvent); // Listen for deletes
+
     return () => {
       socket.off("message", reciveMessage);
+      socket.off("delete", handleDeleteEvent);
     };
   }, []);
 
@@ -57,20 +60,53 @@ function App() {
     const newMessage = {
       body: message.body,
       from: message.from,
-      timestamp: new Date().toISOString(),
+      type: message.type || 'text',
+      caption: message.caption, // Store caption if present
+      timestamp: message.time || new Date().toISOString(),
+      id: message.id, // Receive ID
     };
 
-    setMessages((state) => [newMessage, ...state]);
+    setMessages((state) => [newMessage, ...state].slice(0, 100)); // Auto-Cleanup: Max 100
+  };
+
+  const handleDeleteEvent = (id) => {
+    setMessages((state) => state.filter((msg) => msg.id !== id));
+  };
+
+  const handleDeleteMessage = (id) => {
+    // Delete local
+    setMessages((state) => state.filter((msg) => msg.id !== id));
+    // Verify valid ID before sending
+    if(id) {
+        socket.emit("delete", id);
+    }
   };
 
   const handleSubmit = (message) => {
+    const id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
     const newMessage = {
       body: message,
       from: "Me",
+      type: 'text',
       timestamp: new Date().toISOString(),
+      id: id,
     };
-    setMessages([newMessage, ...messages]);
-    socket.emit("message", message);
+    setMessages([newMessage, ...messages].slice(0, 100)); // Auto-Cleanup
+    socket.emit("message", { body: message, id });
+  };
+
+  const handleImageSubmit = (imageData, caption) => {
+    const id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
+    const newMessage = {
+      body: imageData,
+      from: "Me",
+      type: 'image',
+      caption: caption, // Store caption
+      timestamp: new Date().toISOString(),
+      id: id,
+    };
+    setMessages((prev) => [newMessage, ...prev].slice(0, 100)); // Auto-Cleanup
+    socket.emit("image", { body: imageData, caption, id }); // Send caption to server
   };
 
   return (
@@ -87,9 +123,9 @@ function App() {
                 <ButtonLogout onLogout={handleLogout} />
               </div>
             </div>
-            <FormComponent onSubmit={handleSubmit} username={username} socket={socket} />
+            <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} username={username} socket={socket} />
           </div>
-          <ListMessageComponent messages={messages} />
+          <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
           <div className="mt-auto">
              <Footer />
           </div>
