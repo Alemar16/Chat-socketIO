@@ -3,10 +3,10 @@ import { format } from "date-fns";
 
 const ListMessageComponent = ({ messages }) => {
   return (
-    <div className="max-w-[384px] w-full relative">
-      <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow-lg shadow-slate-900/60">
+    <div className="w-full relative flex-grow flex flex-col min-h-0">
+      <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow-lg shadow-slate-900/60 flex flex-col h-full">
         {messages.length > 0 ? (
-          <ul className="max-h-[223px] overflow-y-auto p-3 mb-5">
+          <ul className="flex-1 overflow-y-auto p-3 mb-2 custom-scrollbar">
             {messages.map((message, index) => (
               <li
                 key={index}

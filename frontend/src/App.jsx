@@ -10,7 +10,7 @@ import TermsAndConditions from "./components/TermsAndConditions/TermsAndConditio
 
 const socket = io("/");
 
-function App({ onLogout }) {
+function App() {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
 
@@ -60,7 +60,7 @@ function App({ onLogout }) {
   return (
     <>
       {username ? (
-        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-2 m-5">
+        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-4 m-0 w-full max-w-2xl h-[90vh] flex flex-col">
           <div>
             <div className="relative">
               <Header />
@@ -71,7 +71,9 @@ function App({ onLogout }) {
             <FormComponent onSubmit={handleSubmit} username={username} />
           </div>
           <ListMessageComponent messages={messages} />
-          <Footer />
+          <div className="mt-auto">
+             <Footer />
+          </div>
         </div>
       ) : (
         <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">

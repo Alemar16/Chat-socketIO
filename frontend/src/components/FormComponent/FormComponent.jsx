@@ -52,7 +52,7 @@ const FormComponent = ({ onSubmit, username }) => {
   };
 
   return (
-    <div className="max-w-md w-full relative">
+    <div className="w-full relative">
       {username && (
         <div className="flex justify-between items-center mb-2 mt-2 px-5 gap-5">
           <GreetingComponent username={username} />
