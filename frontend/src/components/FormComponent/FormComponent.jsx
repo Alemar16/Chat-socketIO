@@ -1,4 +1,3 @@
-import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ButtonSend from "../Buttons/ButtonSend";
@@ -8,9 +7,7 @@ import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
 
 import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
-const socket = io("/");
-
-const FormComponent = ({ onSubmit, username }) => {
+const FormComponent = ({ onSubmit, username, socket }) => {
   const [message, setMessage] = useState("");
   const [showConnectedUsersModal, setShowConnectedUsersModal] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState([]);
@@ -22,7 +19,7 @@ const FormComponent = ({ onSubmit, username }) => {
     return () => {
       socket.off("users", updateConnectedUsers);
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     if (errorMessage) {
@@ -97,6 +94,7 @@ const FormComponent = ({ onSubmit, username }) => {
 FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
+  socket: PropTypes.object.isRequired,
 };
 
 export default FormComponent;

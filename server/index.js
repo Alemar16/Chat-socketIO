@@ -127,10 +127,10 @@ io.on("connection", (socket) => {
   // Función para emitir la lista de usuarios a todos los clientes DE UNA SALA
   function updateConnectedUsers(roomId) {
     // Filter users belonging to this room
-    const roomUsers = Object.values(users)
-        .filter(u => u.roomId === roomId)
-        .map((u) => ({
-            id: socket.id, // Note: This ID might be misleading in a list, but keeping structure
+    const roomUsers = Object.entries(users)
+        .filter(([id, u]) => u.roomId === roomId)
+        .map(([id, u]) => ({
+            id: id,
             username: u.username,
         }));
         

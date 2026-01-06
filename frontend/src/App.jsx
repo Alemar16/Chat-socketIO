@@ -83,7 +83,7 @@ function App() {
                 <ButtonLogout onLogout={handleLogout} />
               </div>
             </div>
-            <FormComponent onSubmit={handleSubmit} username={username} />
+            <FormComponent onSubmit={handleSubmit} username={username} socket={socket} />
           </div>
           <ListMessageComponent messages={messages} />
           <div className="mt-auto">
