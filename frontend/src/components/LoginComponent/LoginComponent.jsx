@@ -1,15 +1,15 @@
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Modal from "../Modal/Modal";
 import Swal from "sweetalert2";
 import anonymousIcon from "../../assets/icons/icons8-anonymous-user-with-hat-and-glasses-layout-96.png";
-import TermsAndConditions from "../TermsAndConditions/TermsAndConditions";
 
-const LoginComponent = ({ onLogin, onLoginAsAnonymous, modal }) => {
+
+const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
   const [username, setUsername] = useState("");
 
   const handleLogin = () => {
-    console.log("Login button clicked with username:", username);
+    // console.log("Login button clicked with username:", username); // Removed for privacy
     onLogin(username);
   };
 

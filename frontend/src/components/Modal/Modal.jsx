@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Swal from "sweetalert2";
 
+
+
 const Modal = () => {
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const modal = Swal.fire({
+    Swal.fire({
       title:
       '<span style="color: #852CA5; text-shadow: 2px 2px 4px #000; font-family: Boogaloo, cursive;">Flash</span><span style="color: #4CCFF1;text-shadow: 2px 2px 4px #000; font-family: Boogaloo, cursive;">Chat</span>',
       imageUrl: "/icons8-chat-100.png",
@@ -24,7 +25,7 @@ const Modal = () => {
       `,
       customClass: {
         modal: "rounded-lg shadow-xxl",
-        title: "text-center text-6xl mt-[-4rem]",
+        title: "text-center text-5xl mt-[-4rem] whitespace-nowrap",
         imageUrl: "mx-auto mt-3",
         htmlContainer: "p-4",
         confirmButton:
@@ -37,9 +38,9 @@ const Modal = () => {
       didOpen: (modalElement) => {
         modalElement.querySelector("#enlace").addEventListener("click", () => {
           navigator.clipboard.writeText(
-            "https://chat-socketio-n9to.onrender.com/"
+            window.location.href
           );
-          setCopied(true);
+
           // Change button text to "Copied"
           modalElement.querySelector("#enlace").innerText = "Copied";
           // Change button background and text color to green
