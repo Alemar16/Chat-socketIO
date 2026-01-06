@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
+import useVoiceRecorder from "../../hooks/useVoiceRecorder";
 import ButtonSend from "../Buttons/ButtonSend";
-import ButtonMic from "../Buttons/ButtonMic";
 
 import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
 import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
@@ -16,6 +16,15 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
   const [errorMessage, setErrorMessage] = useState("");
   const [errorVisible, setErrorVisible] = useState(false); // State para controlar la visibilidad del error
   const [previewImage, setPreviewImage] = useState(null); // State for image preview
+
+  const {
+      isRecording,
+      recordingTime,
+      startRecording,
+      stopRecording,
+      cancelRecording,
+      formatTime
+  } = useVoiceRecorder(onAudioSubmit);
 
   useEffect(() => {
     socket.on("users", updateConnectedUsers);
@@ -124,7 +133,41 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
               </div>
           </div>
         )}
-        <div className="flex gap-2 items-center">
+        {isRecording ? (
+             <div className="flex items-center justify-between w-full h-12 bg-white rounded px-2 gap-4 animate-fade-in relative">
+                {/* Cancel Button (Trash) */}
+                <button
+                    type="button"
+                    onClick={cancelRecording}
+                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    title="Cancel Recording"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                         <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.49 1.45 47.79 47.79 0 0 0-3.388-.475v.227c0 2.228-.016 4.39-.082 6.425a1.75 1.75 0 0 1-1.745 1.696H9.248a1.745 1.745 0 0 1-1.745-1.696c-.066-2.036-.08-4.2-.082-6.425v-.227a47.79 47.79 0 0 0-3.388.475.75.75 0 1 1-.49-1.45 48.816 48.816 0 0 1 3.878-.512v-.227c0-1.162.887-2.138 2.082-2.195a63.673 63.673 0 0 1 5.92 0c1.196.057 2.082 1.033 2.082 2.195ZM15.75 9h-7.5c.01 1.725.02 3.327.028 4.793.006.942.01 1.838.01 2.707a.245.245 0 0 0 .245.245h6.934a.245.245 0 0 0 .245-.245v-2.707c0-.285.003-.585.008-.9l.068-3.141Z" clipRule="evenodd" />
+                    </svg>
+                </button>
+
+                {/* Timer and Indicator */}
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                    <span className="font-mono font-bold text-gray-700 text-lg">{formatTime(recordingTime)}</span>
+                     <span className="text-xs text-gray-400 animate-pulse">Recording...</span>
+                </div>
+
+                {/* Send Button */}
+                <button
+                    type="button"
+                    onClick={stopRecording}
+                    className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 hover:scale-110 transition-transform shadow-md"
+                    title="Send Voice Message"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                         <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+                    </svg>
+                </button>
+             </div>
+        ) : (
+             <div className="flex gap-2 items-center w-full">
           <input
             type="file"
             accept="image/*"
@@ -142,7 +185,9 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
               <path strokeLinecap="round" strokeLinejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
             </svg>
           </button>
-          <ButtonMic onAudioSubmit={onAudioSubmit} />
+
+
+
           <textarea
             rows={1}
             placeholder="Write your message..."
@@ -151,8 +196,25 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <ButtonSend onClick={handleSubmit} />
+
+          {/* Dynamic Buttons */}
+          {message.trim() || previewImage ? (
+             <ButtonSend onClick={handleSubmit} />
+          ) : (
+             <button
+                type="button"
+                onClick={startRecording}
+                className="text-gray-500 hover:text-red-500 hover:bg-gray-100 p-2 rounded-full transition-colors"
+                title="Record Voice Message"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path d="M8.25 4.5a3.75 3.75 0 1 1 7.5 0v8.25a3.75 3.75 0 1 1-7.5 0V4.5Z" />
+                    <path d="M6 10.5a.75.75 0 0 1 .75.75v1.5a5.25 5.25 0 1 0 10.5 0v-1.5a.75.75 0 0 1 1.5 0v1.5a6.751 6.751 0 0 1-6 6.709v2.291h3a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1 0-1.5h3v-2.291a6.751 6.751 0 0 1-6-6.709v-1.5A.75.75 0 0 1 6 10.5Z" />
+                </svg>
+            </button>
+          )}
         </div>
+        )}
       </form>
       {errorMessage && (
         <div className="text-red-600 text-sm ml-2 -mt-1">{errorMessage}</div>
