@@ -4,6 +4,7 @@ import { Server as SocketServer } from "socket.io";
 import { resolve } from "path";
 import morgan from "morgan";
 import { PORT } from "./config.js";
+import helmet from "helmet";
 
 const app = express();
 const server = http.createServer(app);
@@ -11,7 +12,10 @@ const io = new SocketServer(server);
 
 const users = {};
 
-//uso morgan para ver en consola las peticiones
+// Basic security headers
+app.use(helmet());
+
+// Logging - only log non-sensitive request info (method, url, status)
 app.use(morgan("dev"));
 
 //uso de express para levantar el front
@@ -55,9 +59,12 @@ io.on("connection", (socket) => {
 
   // Escuchar el evento de mensaje
   socket.on("message", (body) => {
-    // Escuchar el mensaje
+    // Validate that body is a string and truncate if necessary to prevent logging massive payloads
+    if (typeof body !== 'string') return;
+    
+    // Privacy: Do NOT log the message content.
     console.log(
-      `${users[socket.id]} dice: ${body} - ${new Date().toLocaleTimeString()}`
+      `${users[socket.id]} sent a message at ${new Date().toLocaleTimeString()}`
     );
 
     // Obtener la hora actual
@@ -70,8 +77,9 @@ io.on("connection", (socket) => {
     }); */
 
     // Responder al mensaje
+    // Retransmit without storing
     socket.broadcast.emit("message", {
-      body,
+      body: body.slice(0, 5000), // Hard limit of 5000 chars
       from: users[socket.id] || "Anonymous",
       time: currentTime,
     });
