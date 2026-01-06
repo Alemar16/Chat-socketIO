@@ -1,9 +1,9 @@
 function Footer() {
   return (
-    <footer className="text-center sm:text-left">
+    <footer className="text-center">
       <div className="mx-auto w-full max-w-screen-xl p-4 py-2 lg:py-2">
-        <div className="sm:flex sm:items-center sm:justify-between">
-          <span className="text-sm text-gray-800 sm:text-center">
+        <div className="flex flex-col items-center justify-center">
+          <span className="text-sm text-gray-800 text-center">
             © 2024{" "}
             <a
               href="https://github.com/Alemar16/Chat-socketIO#"

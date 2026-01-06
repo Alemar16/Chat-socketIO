@@ -76,7 +76,7 @@ function App() {
   return (
     <>
       {username ? (
-        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-4 m-0 w-full max-w-2xl h-[90vh] flex flex-col">
+        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-4 w-full max-w-2xl h-[90vh] flex flex-col mt-10">
           <div>
             <div className="relative">
               <Header />
