@@ -46,6 +46,10 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                           </span>
                       )}
                   </div>
+                ) : message.type === 'audio' ? (
+                  <div className="flex flex-col min-w-[200px]">
+                      <audio controls src={message.body} className="w-full mt-1 mb-1" />
+                  </div>
                 ) : (
                   <span
                     className="text-sm font-poppins text-justify text-zinc-50"

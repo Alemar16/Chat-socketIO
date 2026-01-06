@@ -162,6 +162,40 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Handle Audio Events
+  socket.on("audio", (payload) => {
+    try {
+        const audioData = typeof payload === 'object' ? payload.body : payload;
+        const id = typeof payload === 'object' ? payload.id : null;
+
+        if (!rateLimiter.check(socket.id)) return;
+
+        if (typeof audioData !== 'string') return;
+
+        // Check size (allow up to 7MB for Base64 audio, approx 5MB binary)
+        if (audioData.length > 10000000) return;
+
+        // Verify it is audio
+        if (!audioData.startsWith('data:audio/')) return;
+
+        const userSender = users[socket.id];
+        if (userSender && userSender.roomId) {
+            const currentTime = new Date().toISOString();
+            console.log(`${userSender.username} sent an AUDIO in ${userSender.roomId}`);
+
+            socket.to(userSender.roomId).emit("message", {
+                body: audioData,
+                from: userSender.username || "Anonymous",
+                type: 'audio',
+                time: currentTime,
+                id: id,
+            });
+        }
+    } catch (error) {
+        console.error("Audio Error:", error.message);
+    }
+  });
+
   // Handle Delete Event
   socket.on("delete", (messageId) => {
       const user = users[socket.id];

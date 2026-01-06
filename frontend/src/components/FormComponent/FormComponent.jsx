@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import ButtonSend from "../Buttons/ButtonSend";
+import ButtonMic from "../Buttons/ButtonMic";
 
 import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
 import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
 
 import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
-const FormComponent = ({ onSubmit, onImageSubmit, username, socket }) => {
+const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socket }) => {
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null); // Ref for file input
   const [showConnectedUsersModal, setShowConnectedUsersModal] = useState(false);
@@ -141,6 +142,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, username, socket }) => {
               <path strokeLinecap="round" strokeLinejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
             </svg>
           </button>
+          <ButtonMic onAudioSubmit={onAudioSubmit} />
           <textarea
             rows={1}
             placeholder="Write your message..."
@@ -167,6 +169,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, username, socket }) => {
 FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onImageSubmit: PropTypes.func.isRequired,
+  onAudioSubmit: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
   socket: PropTypes.object.isRequired,
 };
