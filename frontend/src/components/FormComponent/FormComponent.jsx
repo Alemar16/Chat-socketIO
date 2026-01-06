@@ -14,6 +14,7 @@ import ButtonSend from "../Buttons/ButtonSend";
 
 import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
 import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
+import CameraModal from "../Modal/CameraModal";
 
 import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
@@ -26,7 +27,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
   const [errorVisible, setErrorVisible] = useState(false); // State para controlar la visibilidad del error
   const [previewImage, setPreviewImage] = useState(null); // State for image preview
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false); // State to toggle attachment options
-  const cameraInputRef = useRef(null); // Ref for camera input
+  const [showCameraModal, setShowCameraModal] = useState(false); // State to toggle camera modal
 
   const {
       isRecording,
@@ -101,6 +102,11 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
     setErrorMessage("");
   };
 
+  const handleCameraCapture = (imageDataUrl) => {
+    setPreviewImage(imageDataUrl);
+    setShowAttachmentOptions(false);
+  };
+
   const updateConnectedUsers = (users) => {
     setConnectedUsers(users);
   };
@@ -129,7 +135,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
              <div className="w-full flex justify-start p-2 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative gap-4">
                <button
                  type="button"
-                 onClick={() => cameraInputRef.current.click()}
+                 onClick={() => setShowCameraModal(true)}
                  className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 rounded-md transition-colors"
                >
                  <div className="bg-purple-100 p-2 rounded-full text-purple-600">
@@ -206,12 +212,11 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
             ref={fileInputRef}
             onChange={handleFileChange}
           />
-           <input
+          <input
             type="file"
             accept="image/*"
-            capture="environment"
             style={{ display: "none" }}
-            ref={cameraInputRef}
+            ref={fileInputRef}
             onChange={handleFileChange}
           />
           <button
@@ -258,6 +263,11 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
           <ConnectedUsersList users={connectedUsers} />
         </div>
       )}
+      <CameraModal 
+          isOpen={showCameraModal} 
+          onClose={() => setShowCameraModal(false)} 
+          onCapture={handleCameraCapture} 
+      />
     </div>
   );
 };
