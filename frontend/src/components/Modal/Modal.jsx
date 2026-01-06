@@ -6,6 +6,14 @@ import Swal from "sweetalert2";
 const Modal = () => {
 
   useEffect(() => {
+    // Check if we should skip the modal (e.g. user just joined a room via the modal)
+    if (sessionStorage.getItem("skip_welcome_modal")) {
+      setTimeout(() => {
+        sessionStorage.removeItem("skip_welcome_modal");
+      }, 2000);
+      return;
+    }
+
     Swal.fire({
       title:
       '<span style="color: #852CA5; text-shadow: 2px 2px 4px #000; font-family: Boogaloo, cursive;">Flash</span><span style="color: #4CCFF1;text-shadow: 2px 2px 4px #000; font-family: Boogaloo, cursive;">Chat</span>',
@@ -70,6 +78,7 @@ const Modal = () => {
           }
 
           if (roomId) {
+            sessionStorage.setItem("skip_welcome_modal", "true");
             const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + roomId;
             window.location.href = newUrl;
           }
