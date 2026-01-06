@@ -5,6 +5,7 @@ import ListMessageComponent from "./components/ListMessageComponent/ListMessageC
 import LoginComponent from "./components/LoginComponent/LoginComponent";
 import Header from "./components/Header/Header";
 import { ButtonLogout } from "./components/Buttons/ButtonLogout";
+import { ButtonShare } from "./components/Buttons/ButtonShare";
 import Footer from "./components/Footer/Footer";
 import TermsAndConditions from "./components/TermsAndConditions/TermsAndConditions";
 
@@ -13,8 +14,21 @@ const socket = io("/");
 function App() {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
+  const [roomId, setRoomId] = useState(null);
 
   useEffect(() => {
+    // Room Logic
+    const params = new URLSearchParams(window.location.search);
+    let room = params.get("room");
+    
+    if (!room) {
+      // Generate a simple random room ID if none exists
+      room = Math.random().toString(36).substring(2, 9);
+      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + room;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+    }
+    setRoomId(room);
+
     socket.on("message", reciveMessage);
     return () => {
       socket.off("message", reciveMessage);
@@ -23,7 +37,7 @@ function App() {
 
   const handleLogin = (username) => {
     setUsername(username);
-    socket.emit("login", username);
+    socket.emit("login", { username, roomId });
   };
 
   const handleLogout = () => {
@@ -34,7 +48,7 @@ function App() {
   const handleLoginAsAnonymous = () => {
     const anonymousUsername = `Anonymous_${Math.floor(Math.random() * 1000)}`;
     setUsername(anonymousUsername);
-    socket.emit("login", anonymousUsername);
+    socket.emit("login", { username: anonymousUsername, roomId });
   };
 
   const reciveMessage = (message) => {
@@ -64,7 +78,8 @@ function App() {
           <div>
             <div className="relative">
               <Header />
-              <div className="absolute top-0 right-0 m-1">
+              <div className="absolute top-0 right-0 m-1 flex gap-2">
+                <ButtonShare />
                 <ButtonLogout onLogout={handleLogout} />
               </div>
             </div>

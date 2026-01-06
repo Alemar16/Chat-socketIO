@@ -31,37 +31,49 @@ io.on("connection", (socket) => {
   console.log(`${socket.id} connected`);
 
   // Emitir la lista de usuarios al cliente cuando hay un cambio
-  updateConnectedUsers();
+  // updateConnectedUsers(); // Don't broadcast to everyone on connect, wait for room join
 
   // Escuchar el evento de inicio de sesión
-  socket.on("login", (username) => {
-    users[socket.id] = username;
-    console.log(`${socket.id} ${users[socket.id]} connected`);
-    updateConnectedUsers();
+  // Escuchar el evento de inicio de sesión con sala
+  socket.on("login", ({ username, roomId }) => {
+    // Join the room
+    socket.join(roomId);
+
+    // Store user info including room
+    users[socket.id] = { username, roomId };
+    
+    console.log(`${socket.id} ${username} joined ${roomId}`);
+    
+    // Update users ONLY in that room
+    updateConnectedUsers(roomId);
   });
 
   // Escuchar el evento de desconexión
   socket.on("disconnect", () => {
     handleUserDisconnect(socket);
-    updateConnectedUsers();
   });
 
   // Escuchar el evento de desconexión por logout
   socket.on("logout", () => {
     handleUserDisconnect(socket);
-    updateConnectedUsers();
   });
 
   // Función para manejar el evento de desconexión
   function handleUserDisconnect(socket) {
-    const username = users[socket.id];
-    console.log(`${socket.id} ${username} disconnected`);
-    delete users[socket.id];
-    rateLimiter.cleanup(socket.id); // Clean up rate limiter memory
+    const user = users[socket.id];
+    if (user) {
+      const { username, roomId } = user;
+      console.log(`${socket.id} ${username} disconnected from ${roomId}`);
+      
+      delete users[socket.id];
+      rateLimiter.cleanup(socket.id); // Clean up rate limiter memory
 
-    // Emitir la lista actualizada después de desconectar un usuario
-    updateConnectedUsers();
+      // Emitir la lista actualizada solo a esa sala
+      updateConnectedUsers(roomId);
+    }
   }
+
+
 
   // Escuchar el evento de mensaje
   socket.on("message", (body) => {
@@ -78,9 +90,13 @@ io.on("connection", (socket) => {
     if (typeof body !== 'string') return;
     
     // Privacy: Do NOT log the message content.
-    console.log(
-      `${users[socket.id]} sent a message at ${new Date().toLocaleTimeString()}`
-    );
+    // Privacy: Do NOT log the message content.
+    const user = users[socket.id];
+    if (user) {
+        console.log(
+        `${user.username} sent a message in ${user.roomId} at ${new Date().toLocaleTimeString()}`
+        );
+    }
 
     // Obtener la hora actual
     const currentTime = new Date().toLocaleTimeString();
@@ -93,23 +109,32 @@ io.on("connection", (socket) => {
 
     // Responder al mensaje
     // Retransmit without storing
-    socket.broadcast.emit("message", {
-      body: body.slice(0, 5000), // Hard limit of 5000 chars
-      from: users[socket.id] || "Anonymous",
-      time: currentTime,
-    });
+    // Responder al mensaje
+    // Retransmit without storing (Broadcast ONLY to room)
+    const userSender = users[socket.id];
+    if (userSender && userSender.roomId) {
+        socket.to(userSender.roomId).emit("message", {
+            body: body.slice(0, 5000), // Hard limit of 5000 chars
+            from: userSender.username || "Anonymous",
+            time: currentTime,
+        });
+    }
     } catch (error) {
        console.error("Socket Error:", error.message);
     }
   });
 
-  // Función para emitir la lista de usuarios a todos los clientes
-  function updateConnectedUsers() {
-    const connectedUsers = Object.values(users).map((username) => ({
-      id: socket.id,
-      username,
-    }));
-    io.emit("users", connectedUsers);
+  // Función para emitir la lista de usuarios a todos los clientes DE UNA SALA
+  function updateConnectedUsers(roomId) {
+    // Filter users belonging to this room
+    const roomUsers = Object.values(users)
+        .filter(u => u.roomId === roomId)
+        .map((u) => ({
+            id: socket.id, // Note: This ID might be misleading in a list, but keeping structure
+            username: u.username,
+        }));
+        
+    io.to(roomId).emit("users", roomUsers);
   }
 });
 
