@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
+import AudioMessage from "../AudioMessage/AudioMessage";
 
 const ListMessageComponent = ({ messages, onDelete }) => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -47,8 +48,8 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                       )}
                   </div>
                 ) : message.type === 'audio' ? (
-                  <div className="flex flex-col min-w-[200px]">
-                      <audio controls src={message.body} className="w-full mt-1 mb-1" />
+                  <div className="flex flex-col mt-1 mb-1">
+                      <AudioMessage src={message.body} />
                   </div>
                 ) : (
                   <span
