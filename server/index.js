@@ -10,7 +10,12 @@ import { RateLimiter } from "./rateLimiter.js";
 
 const app = express();
 const server = http.createServer(app);
-const io = new SocketServer(server);
+const io = new SocketServer(server, {
+  maxHttpBufferSize: 1e7, // Increase limit to 10MB
+  cors: {
+    origin: "*", // Allow all origins (since we're serving static files, but good for dev)
+  }
+});
 
 // Rate Limiter: 5 messages per second per user
 const rateLimiter = new RateLimiter(5, 1000);
@@ -99,7 +104,7 @@ io.on("connection", (socket) => {
     }
 
     // Obtener la hora actual
-    const currentTime = new Date().toLocaleTimeString();
+    const currentTime = new Date().toISOString();
 
     // Enviar el mensaje de confirmación
     /*  socket.emit("messageConfirmation", {
@@ -116,11 +121,48 @@ io.on("connection", (socket) => {
         socket.to(userSender.roomId).emit("message", {
             body: body.slice(0, 5000), // Hard limit of 5000 chars
             from: userSender.username || "Anonymous",
+            type: 'text',
             time: currentTime,
         });
     }
     } catch (error) {
        console.error("Socket Error:", error.message);
+    }
+  });
+
+  // Handle Image Events
+  socket.on("image", (imageData) => {
+    try {
+        // 1. Rate Limiting (re-use same limiter to prevent flood)
+        if (!rateLimiter.check(socket.id)) return;
+
+        // 2. Validate Payload
+        if (typeof imageData !== 'string') return;
+        
+        // Check size (allow up to 5MB of Base64)
+        if (imageData.length > 7000000) { 
+            // socket.emit("error", "Image too large"); 
+            return; 
+        }
+
+        // Check if it's actually an image
+        if (!imageData.startsWith('data:image/')) return;
+
+        const userSender = users[socket.id];
+        if (userSender && userSender.roomId) {
+            const currentTime = new Date().toISOString(); // ISO string for frontend date-fns
+            console.log(`${userSender.username} sent an IMAGE in ${userSender.roomId}`);
+
+            // Broadcast to room
+            socket.to(userSender.roomId).emit("message", {
+                body: imageData,
+                from: userSender.username || "Anonymous",
+                type: 'image', // Explicit type
+                time: currentTime,
+            });
+        }
+    } catch (error) {
+        console.error("Image Error:", error.message);
     }
   });
 

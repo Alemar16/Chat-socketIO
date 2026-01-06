@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import ButtonSend from "../Buttons/ButtonSend";
 
@@ -7,8 +7,9 @@ import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
 
 import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
-const FormComponent = ({ onSubmit, username, socket }) => {
+const FormComponent = ({ onSubmit, onImageSubmit, username, socket }) => {
   const [message, setMessage] = useState("");
+  const fileInputRef = useRef(null); // Ref for file input
   const [showConnectedUsersModal, setShowConnectedUsersModal] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,6 +33,27 @@ const FormComponent = ({ onSubmit, username, socket }) => {
       return () => clearTimeout(timer);
     }
   }, [errorMessage]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        setErrorMessage("Only image files are allowed.");
+        return;
+      }
+      if (file.size > 3000000) { // ~3MB
+        setErrorMessage("Image too large (Max 3MB).");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onImageSubmit(reader.result);
+      };
+      reader.readAsDataURL(file);
+      e.target.value = null; // Reset input
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -67,7 +89,24 @@ const FormComponent = ({ onSubmit, username, socket }) => {
           errorVisible ? "border-2 border-red-500" : ""
         }`}
       >
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
+          <button
+            type="button"
+            className="text-gray-500 hover:text-purple-600 transition-colors p-2"
+            onClick={() => fileInputRef.current.click()}
+            title="Send Image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+            </svg>
+          </button>
           <textarea
             rows={1}
             placeholder="Write your message..."
@@ -93,6 +132,7 @@ const FormComponent = ({ onSubmit, username, socket }) => {
 
 FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  onImageSubmit: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
   socket: PropTypes.object.isRequired,
 };

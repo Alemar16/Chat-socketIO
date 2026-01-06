@@ -57,7 +57,8 @@ function App() {
     const newMessage = {
       body: message.body,
       from: message.from,
-      timestamp: new Date().toISOString(),
+      type: message.type || 'text', // Handle type
+      timestamp: message.time || new Date().toISOString(), // Use server time if available
     };
 
     setMessages((state) => [newMessage, ...state]);
@@ -67,10 +68,22 @@ function App() {
     const newMessage = {
       body: message,
       from: "Me",
+      type: 'text',
       timestamp: new Date().toISOString(),
     };
     setMessages([newMessage, ...messages]);
     socket.emit("message", message);
+  };
+
+  const handleImageSubmit = (imageData) => {
+    const newMessage = {
+      body: imageData,
+      from: "Me",
+      type: 'image',
+      timestamp: new Date().toISOString(),
+    };
+    setMessages([newMessage, ...messages]);
+    socket.emit("image", imageData);
   };
 
   return (
@@ -87,7 +100,7 @@ function App() {
                 <ButtonLogout onLogout={handleLogout} />
               </div>
             </div>
-            <FormComponent onSubmit={handleSubmit} username={username} socket={socket} />
+            <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} username={username} socket={socket} />
           </div>
           <ListMessageComponent messages={messages} />
           <div className="mt-auto">
