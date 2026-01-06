@@ -126,6 +126,7 @@ io.on("connection", (socket) => {
         // Support object payload with ID or simple string
         const imageData = typeof payload === 'object' ? payload.body : payload;
         const id = typeof payload === 'object' ? payload.id : null;
+        const caption = typeof payload === 'object' ? payload.caption : ""; // Extract caption
 
         // 1. Rate Limiting (re-use same limiter to prevent flood)
         if (!rateLimiter.check(socket.id)) return;
@@ -151,6 +152,7 @@ io.on("connection", (socket) => {
                 body: imageData,
                 from: userSender.username || "Anonymous",
                 type: 'image', // Explicit type
+                caption: caption, // Broadcast caption
                 time: currentTime,
                 id: id, // Propagate ID
             });

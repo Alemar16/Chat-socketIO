@@ -61,6 +61,7 @@ function App() {
       body: message.body,
       from: message.from,
       type: message.type || 'text',
+      caption: message.caption, // Store caption if present
       timestamp: message.time || new Date().toISOString(),
       id: message.id, // Receive ID
     };
@@ -94,17 +95,18 @@ function App() {
     socket.emit("message", { body: message, id });
   };
 
-  const handleImageSubmit = (imageData) => {
+  const handleImageSubmit = (imageData, caption) => {
     const id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
     const newMessage = {
       body: imageData,
       from: "Me",
       type: 'image',
+      caption: caption, // Store caption
       timestamp: new Date().toISOString(),
       id: id,
     };
-    setMessages([newMessage, ...messages].slice(0, 100)); // Auto-Cleanup
-    socket.emit("image", { body: imageData, id });
+    setMessages((prev) => [newMessage, ...prev].slice(0, 100)); // Auto-Cleanup
+    socket.emit("image", { body: imageData, caption, id }); // Send caption to server
   };
 
   return (

@@ -33,12 +33,19 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                 </span>{" "}
                 
                 {message.type === 'image' ? (
-                  <img 
-                    src={message.body} 
-                    alt="Shared content" 
-                    className="max-w-[200px] max-h-[200px] object-cover rounded cursor-pointer hover:opacity-90 mt-1 transition-opacity"
-                    onClick={() => setSelectedImage(message.body)}
-                  />
+                  <div className="flex flex-col">
+                      <img 
+                        src={message.body} 
+                        alt="Shared content" 
+                        className="max-w-[200px] max-h-[200px] object-cover rounded cursor-pointer hover:opacity-90 mt-1 transition-opacity mb-1"
+                        onClick={() => setSelectedImage(message.body)}
+                      />
+                      {message.caption && (
+                          <span className="text-sm font-poppins text-justify text-zinc-50 mt-1 break-words" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.5)" }}>
+                              {message.caption}
+                          </span>
+                      )}
+                  </div>
                 ) : (
                   <span
                     className="text-sm font-poppins text-justify text-zinc-50"
@@ -125,6 +132,7 @@ ListMessageComponent.propTypes = {
       type: PropTypes.string,
       timestamp: PropTypes.string.isRequired,
       id: PropTypes.string, // ID is optional for old messages but should be present
+      caption: PropTypes.string, // Optional caption for images
     })
   ).isRequired,
   onDelete: PropTypes.func, // Optional callback

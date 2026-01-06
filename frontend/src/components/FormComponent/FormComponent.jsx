@@ -65,14 +65,13 @@ const FormComponent = ({ onSubmit, onImageSubmit, username, socket }) => {
       return;
     }
 
-    // Send Image if exists
+    // Send Image if exists (with optional caption)
     if (previewImage) {
-      onImageSubmit(previewImage);
+      onImageSubmit(previewImage, message); // Pass message as caption
       setPreviewImage(null);
-    }
-
-    // Send Message if exists
-    if (message.trim() !== "") {
+      setMessage(""); // Clear message after sending with image
+    } else if (message.trim() !== "") {
+      // Send Text Message only if no image
       onSubmit(message);
       setMessage("");
     }
