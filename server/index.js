@@ -5,10 +5,15 @@ import { resolve } from "path";
 import morgan from "morgan";
 import { PORT } from "./config.js";
 import helmet from "helmet";
+import { RateLimiter } from "./rateLimiter.js";
+
 
 const app = express();
 const server = http.createServer(app);
 const io = new SocketServer(server);
+
+// Rate Limiter: 5 messages per second per user
+const rateLimiter = new RateLimiter(5, 1000);
 
 const users = {};
 
@@ -52,6 +57,7 @@ io.on("connection", (socket) => {
     const username = users[socket.id];
     console.log(`${socket.id} ${username} disconnected`);
     delete users[socket.id];
+    rateLimiter.cleanup(socket.id); // Clean up rate limiter memory
 
     // Emitir la lista actualizada después de desconectar un usuario
     updateConnectedUsers();
@@ -59,6 +65,15 @@ io.on("connection", (socket) => {
 
   // Escuchar el evento de mensaje
   socket.on("message", (body) => {
+    try {
+        // 1. Rate Limiting Check
+        if (!rateLimiter.check(socket.id)) {
+            // Optional: Emit warning to user
+            // socket.emit("error", "Rate limit exceeded. Please slow down.");
+            return; // Silently drop spam
+        }
+
+        // 2. Validate that body is a string
     // Validate that body is a string and truncate if necessary to prevent logging massive payloads
     if (typeof body !== 'string') return;
     
@@ -83,6 +98,9 @@ io.on("connection", (socket) => {
       from: users[socket.id] || "Anonymous",
       time: currentTime,
     });
+    } catch (error) {
+       console.error("Socket Error:", error.message);
+    }
   });
 
   // Función para emitir la lista de usuarios a todos los clientes
