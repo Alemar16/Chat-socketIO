@@ -43,6 +43,8 @@ function App() {
   const handleLogout = () => {
     socket.emit("logout");
     setUsername("");
+    // Force reload to root path to generate a new room ID
+    window.location.href = window.location.pathname;
   };
 
   const handleLoginAsAnonymous = () => {

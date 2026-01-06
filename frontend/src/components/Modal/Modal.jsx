@@ -38,7 +38,7 @@ const Modal = () => {
       didOpen: (modalElement) => {
         modalElement.querySelector("#enlace").addEventListener("click", () => {
           navigator.clipboard.writeText(
-            "https://chat-socketio-n9to.onrender.com/"
+            window.location.href
           );
 
           // Change button text to "Copied"
