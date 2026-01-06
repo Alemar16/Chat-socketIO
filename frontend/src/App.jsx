@@ -4,7 +4,8 @@ import FormComponent from "./components/FormComponent/FormComponent";
 import ListMessageComponent from "./components/ListMessageComponent/ListMessageComponent";
 import LoginComponent from "./components/LoginComponent/LoginComponent";
 import Header from "./components/Header/Header";
-import { ButtonLogout } from "./components/Buttons/ButtonLogout";
+import { Bars3Icon } from "@heroicons/react/24/solid";
+import SideMenu from "./components/SideMenu/SideMenu";
 import { ButtonShare } from "./components/Buttons/ButtonShare";
 import Footer from "./components/Footer/Footer";
 import TermsAndConditions from "./components/TermsAndConditions/TermsAndConditions";
@@ -18,6 +19,8 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState(null);
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   const requestNotificationPermission = async () => {
     if ("Notification" in window) {
@@ -28,6 +31,7 @@ function App() {
   };
 
   const playNotification = (isBackground) => {
+    if (!soundEnabled) return;
     const soundToPlay = isBackground ? backgroundNotificationSound : notificationSound;
     const audio = new Audio(soundToPlay);
     audio.play().catch(error => console.error("Audio play failed:", error));
@@ -160,9 +164,23 @@ function App() {
                 <ButtonShare />
               </div>
               <div className="absolute top-0 right-0 m-1">
-                <ButtonLogout onLogout={handleLogout} />
+                 <button 
+                  onClick={() => setIsSideMenuOpen(true)}
+                  className="p-2 text-purple-600 hover:text-purple-800 transition-colors"
+                >
+                  <Bars3Icon className="w-8 h-8" />
+                </button>
               </div>
             </div>
+            <SideMenu 
+              isOpen={isSideMenuOpen} 
+              onClose={() => setIsSideMenuOpen(false)}
+              roomId={roomId}
+              username={username}
+              soundEnabled={soundEnabled}
+              setSoundEnabled={setSoundEnabled}
+              onLogout={handleLogout}
+            />
             <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
           </div>
           <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
