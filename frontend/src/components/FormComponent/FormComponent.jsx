@@ -5,7 +5,9 @@ import {
     MicrophoneIcon, 
     TrashIcon, 
     PaperAirplaneIcon,
-    XMarkIcon 
+    XMarkIcon,
+    CameraIcon,
+    PhotoIcon 
 } from "@heroicons/react/24/solid";
 import useVoiceRecorder from "../../hooks/useVoiceRecorder";
 import ButtonSend from "../Buttons/ButtonSend";
@@ -23,6 +25,8 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
   const [errorMessage, setErrorMessage] = useState("");
   const [errorVisible, setErrorVisible] = useState(false); // State para controlar la visibilidad del error
   const [previewImage, setPreviewImage] = useState(null); // State for image preview
+  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false); // State to toggle attachment options
+  const cameraInputRef = useRef(null); // Ref for camera input
 
   const {
       isRecording,
@@ -70,6 +74,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
       };
       reader.readAsDataURL(file);
       e.target.value = null; // Reset input
+      setShowAttachmentOptions(false); // Hide options after selection
     }
   };
 
@@ -119,6 +124,31 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
           errorVisible ? "border-2 border-red-500" : ""
         }`}
       >
+
+        {showAttachmentOptions && !previewImage && (
+             <div className="w-full flex justify-start p-2 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative gap-4">
+               <button
+                 type="button"
+                 onClick={() => cameraInputRef.current.click()}
+                 className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 rounded-md transition-colors"
+               >
+                 <div className="bg-purple-100 p-2 rounded-full text-purple-600">
+                    <CameraIcon className="w-6 h-6" />
+                 </div>
+                 <span className="text-xs text-gray-600 font-medium">Camera</span>
+               </button>
+               <button
+                 type="button"
+                 onClick={() => fileInputRef.current.click()}
+                 className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 rounded-md transition-colors"
+               >
+                 <div className="bg-blue-100 p-2 rounded-full text-blue-600">
+                    <PhotoIcon className="w-6 h-6" />
+                 </div>
+                 <span className="text-xs text-gray-600 font-medium">Gallery</span>
+               </button>
+             </div>
+        )}
         {previewImage && (
           <div className="w-full flex justify-start p-1 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative">
               <div className="relative group">
@@ -176,11 +206,19 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
             ref={fileInputRef}
             onChange={handleFileChange}
           />
+           <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            style={{ display: "none" }}
+            ref={cameraInputRef}
+            onChange={handleFileChange}
+          />
           <button
             type="button"
-            className="text-gray-500 hover:text-purple-600 transition-colors p-2"
-            onClick={() => fileInputRef.current.click()}
-            title="Send Image"
+            className={`text-gray-500 hover:text-purple-600 transition-colors p-2 ${showAttachmentOptions ? 'text-purple-600 bg-purple-50 rounded-full' : ''}`}
+            onClick={() => setShowAttachmentOptions(!showAttachmentOptions)}
+            title="Attach Image"
           >
             <PaperClipIcon className="w-6 h-6" />
           </button>
