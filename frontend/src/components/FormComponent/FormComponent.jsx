@@ -12,17 +12,13 @@ import {
 import useVoiceRecorder from "../../hooks/useVoiceRecorder";
 import ButtonSend from "../Buttons/ButtonSend";
 
-import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
-import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
 import CameraModal from "../Modal/CameraModal";
 
 import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
-const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socket }) => {
+const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username }) => {
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null); // Ref for file input
-  const [showConnectedUsersModal, setShowConnectedUsersModal] = useState(false);
-  const [connectedUsers, setConnectedUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorVisible, setErrorVisible] = useState(false); // State para controlar la visibilidad del error
   const [previewImage, setPreviewImage] = useState(null); // State for image preview
@@ -38,12 +34,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
       formatTime
   } = useVoiceRecorder(onAudioSubmit);
 
-  useEffect(() => {
-    socket.on("users", updateConnectedUsers);
-    return () => {
-      socket.off("users", updateConnectedUsers);
-    };
-  }, [socket]);
+
 
   useEffect(() => {
     if (errorMessage) {
@@ -107,21 +98,13 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
     setShowAttachmentOptions(false);
   };
 
-  const updateConnectedUsers = (users) => {
-    setConnectedUsers(users);
-  };
+
 
   return (
     <div className="w-full relative">
       {username && (
         <div className="flex justify-between items-center mb-2 mt-2 px-5 gap-5">
           <GreetingComponent username={username} />
-          <div>
-            <ButtonShowUsers
-              onShowUsers={setShowConnectedUsersModal}
-              connectedUsers={connectedUsers}
-            />
-          </div>
         </div>
       )}
       <form
@@ -258,11 +241,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
       {errorMessage && (
         <div className="text-red-600 text-sm ml-2 -mt-1">{errorMessage}</div>
       )}
-      {showConnectedUsersModal && (
-        <div className="modal absolute top-40 left-0 z-50 w-full h-full flex items-center justify-center">
-          <ConnectedUsersList users={connectedUsers} />
-        </div>
-      )}
+
       <CameraModal 
           isOpen={showCameraModal} 
           onClose={() => setShowCameraModal(false)} 
@@ -277,7 +256,6 @@ FormComponent.propTypes = {
   onImageSubmit: PropTypes.func.isRequired,
   onAudioSubmit: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
-  socket: PropTypes.object.isRequired,
 };
 
 export default FormComponent;

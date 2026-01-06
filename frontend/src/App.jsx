@@ -1,12 +1,11 @@
 import io from "socket.io-client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import FormComponent from "./components/FormComponent/FormComponent";
 import ListMessageComponent from "./components/ListMessageComponent/ListMessageComponent";
 import LoginComponent from "./components/LoginComponent/LoginComponent";
 import Header from "./components/Header/Header";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import SideMenu from "./components/SideMenu/SideMenu";
-import { ButtonShare } from "./components/Buttons/ButtonShare";
 import Footer from "./components/Footer/Footer";
 import TermsAndConditions from "./components/TermsAndConditions/TermsAndConditions";
 
@@ -21,6 +20,12 @@ function App() {
   const [roomId, setRoomId] = useState(null);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [connectedUsers, setConnectedUsers] = useState([]);
+  const soundEnabledRef = useRef(soundEnabled);
+
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
 
   const requestNotificationPermission = async () => {
     if ("Notification" in window) {
@@ -31,7 +36,7 @@ function App() {
   };
 
   const playNotification = (isBackground) => {
-    if (!soundEnabled) return;
+    if (!soundEnabledRef.current) return;
     const soundToPlay = isBackground ? backgroundNotificationSound : notificationSound;
     const audio = new Audio(soundToPlay);
     audio.play().catch(error => console.error("Audio play failed:", error));
@@ -79,12 +84,18 @@ function App() {
       setMessages((state) => state.filter((msg) => msg.id !== id));
     };
 
+    const updateConnectedUsers = (users) => {
+      setConnectedUsers(users);
+    };
+
     socket.on("message", reciveMessage);
     socket.on("delete", handleDeleteEvent);
+    socket.on("users", updateConnectedUsers);
 
     return () => {
       socket.off("message", reciveMessage);
       socket.off("delete", handleDeleteEvent);
+      socket.off("users", updateConnectedUsers);
     };
   }, []);
 
@@ -160,13 +171,10 @@ function App() {
           <div>
             <div className="relative">
               <Header />
-              <div className="absolute top-0 left-0 m-1">
-                <ButtonShare />
-              </div>
               <div className="absolute top-0 right-0 m-1">
                  <button 
                   onClick={() => setIsSideMenuOpen(true)}
-                  className="p-2 text-purple-600 hover:text-purple-800 transition-colors"
+                  className="p-2 text-white hover:text-gray-200 transition-colors drop-shadow-md"
                 >
                   <Bars3Icon className="w-8 h-8" />
                 </button>
@@ -180,6 +188,7 @@ function App() {
               soundEnabled={soundEnabled}
               setSoundEnabled={setSoundEnabled}
               onLogout={handleLogout}
+              connectedUsers={connectedUsers}
             />
             <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
           </div>

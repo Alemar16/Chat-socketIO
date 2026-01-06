@@ -5,14 +5,19 @@ import {
     LinkIcon, 
     UserIcon, 
     SpeakerWaveIcon, 
-    SpeakerXMarkIcon 
+    SpeakerXMarkIcon,
+    ChevronDownIcon,
+    ChevronUpIcon
 } from "@heroicons/react/24/solid";
 import Header from "../Header/Header";
 import { ButtonLogout } from "../Buttons/ButtonLogout";
 import Swal from 'sweetalert2';
+import { useState } from 'react';
 
-const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEnabled, onLogout }) => {
+const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEnabled, onLogout, connectedUsers }) => {
     
+    const [isUsersListOpen, setIsUsersListOpen] = useState(true);
+
     const copyToClipboard = (text, label) => {
         navigator.clipboard.writeText(text).then(() => {
             const Toast = Swal.mixin({
@@ -135,6 +140,42 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                         </div>
                     </div>
 
+                    {/* Connected Users Section */}
+                    <div className="space-y-4">
+                        <button 
+                            onClick={() => setIsUsersListOpen(!isUsersListOpen)}
+                            className="w-full flex items-center justify-between text-sm font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
+                        >
+                            <span>Usuarios conectados en esta sala # {connectedUsers.length}</span>
+                            {isUsersListOpen ? (
+                                <ChevronUpIcon className="w-4 h-4" />
+                            ) : (
+                                <ChevronDownIcon className="w-4 h-4" />
+                            )}
+                        </button>
+                        
+                        {isUsersListOpen && (
+                            <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+                                {connectedUsers.map((user, index) => (
+                                    <div key={index} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg border border-gray-100">
+                                        <div className="relative">
+                                            <div className="bg-purple-100 p-2 rounded-full text-purple-600">
+                                                <UserIcon className="w-4 h-4" />
+                                            </div>
+                                            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+                                        </div>
+                                        <span className={`font-medium text-sm truncate ${user.username === username ? 'text-purple-600' : 'text-gray-700'}`}>
+                                            {user.username === username ? `${user.username} (You)` : user.username}
+                                        </span>
+                                    </div>
+                                ))}
+                                {connectedUsers.length === 0 && (
+                                    <p className="text-sm text-gray-400 italic text-center py-2">No users connected</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
                 </div>
 
                 {/* Footer Section */}
@@ -159,6 +200,7 @@ SideMenu.propTypes = {
     soundEnabled: PropTypes.bool.isRequired,
     setSoundEnabled: PropTypes.func.isRequired,
     onLogout: PropTypes.func.isRequired,
+    connectedUsers: PropTypes.array,
 };
 
 export default SideMenu;

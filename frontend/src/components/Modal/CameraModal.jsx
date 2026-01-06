@@ -1,13 +1,37 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { XMarkIcon, CameraIcon, ArrowPathIcon, CheckIcon } from "@heroicons/react/24/solid";
 
 const CameraModal = ({ isOpen, onClose, onCapture }) => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
-    const [stream, setStream] = useState(null);
+    const streamRef = useRef(null);
     const [capturedImage, setCapturedImage] = useState(null);
     const [error, setError] = useState('');
+
+    const startCamera = useCallback(async () => {
+        try {
+            setError('');
+            const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: "user" } 
+            });
+            streamRef.current = mediaStream;
+            if (videoRef.current) {
+                videoRef.current.srcObject = mediaStream;
+            }
+        } catch (err) {
+            console.error("Error accessing camera:", err);
+            setError("Could not access camera. Please ensure permissions are granted.");
+        }
+    }, []);
+
+    const stopCamera = useCallback(() => {
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+        }
+        setCapturedImage(null);
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
@@ -18,31 +42,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
         return () => {
             stopCamera();
         };
-    }, [isOpen]);
-
-    const startCamera = async () => {
-        try {
-            setError('');
-            const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: "user" } 
-            });
-            setStream(mediaStream);
-            if (videoRef.current) {
-                videoRef.current.srcObject = mediaStream;
-            }
-        } catch (err) {
-            console.error("Error accessing camera:", err);
-            setError("Could not access camera. Please ensure permissions are granted.");
-        }
-    };
-
-    const stopCamera = () => {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-            setStream(null);
-        }
-        setCapturedImage(null);
-    };
+    }, [isOpen, startCamera, stopCamera]);
 
     const handleCapture = () => {
         if (videoRef.current && canvasRef.current) {
