@@ -3,9 +3,11 @@ import { useState } from "react";
 import Modal from "../Modal/Modal";
 import Swal from "sweetalert2";
 import anonymousIcon from "../../assets/icons/icons8-anonymous-user-with-hat-and-glasses-layout-96.png";
+import { useTranslation } from "react-i18next";
 
 
 const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
 
   const handleLogin = () => {
@@ -15,30 +17,23 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
 
   const handleLoginAnonymous = async () => {
     const { value: accept } = await Swal.fire({
-      title: "Terms and Conditions",
+      title: t('terms.title'),
       input: "checkbox",
-      inputPlaceholder: `I agree with the terms and conditions`,
-      confirmButtonText: `Continue&nbsp;<i class="fa fa-arrow-right"></i>`,
+      inputPlaceholder: t('login.agreeTerms'),
+      confirmButtonText: t('login.continue'),
       inputValidator: (result) => {
-        return !result && "You need to agree with the terms and conditions";
+        return !result && t('login.mustAgree');
       },
     });
 
     if (accept) {
       Swal.fire({
-        title: "Anonymous Mode Activated",
-        html: `
-          <p>
-            By using anonymous mode, your identity will be protected and a random nickname will be assigned to you while connected.
-          </p>
-          <p>
-            All data associated with your session will be deleted upon disconnection.
-          </p>
-        `,
+        title: t('login.anonymousActivated'),
+        html: t('login.anonymousInfo'),
         icon: "success",
         imageUrl: anonymousIcon,
         imageWidth: 80,
-        confirmButtonText: "Ok",
+        confirmButtonText: t('login.ok'),
       });
       onLoginAsAnonymous();
     }
@@ -75,7 +70,7 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
         <div className="flex gap-1 h-10">
           {" "}
           <input
-            placeholder="Enter your username..."
+            placeholder={t('login.enterUsername')}
             className="border-none focus:outline-none bg-white text-gray-700 rounded-l-lg p-2 h-full" // Aplica la altura completa al input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -85,13 +80,13 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
             onClick={handleLogin}
             className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue h-full" // Aplica la altura completa al botón
           >
-            Login
+            {t('login.login')}
           </button>
           <button
             type="button"
             onClick={handleLoginAnonymous}
             className="flex justify-center items-center ml-3 hover: transform hover:scale-110 duration-300"
-            title="Anonymous Mode"
+            title={t('login.anonymousMode')}
           >
             <img src={anonymousIcon} alt="Anonymous Icon" className="w-8 h-8" />
           </button>

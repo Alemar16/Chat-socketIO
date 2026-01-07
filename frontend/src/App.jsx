@@ -12,10 +12,12 @@ import GreetingComponent from "./components/GreetingComponent/GreetingComponent"
 
 import notificationSound from "./assets/sounds/soft-notice-146623.mp3";
 import backgroundNotificationSound from "./assets/sounds/new-notification-on-your-device-138695.mp3";
+import { useTranslation } from "react-i18next";
 
 const socket = io("/");
 
 function App() {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState(null);
@@ -73,8 +75,8 @@ function App() {
           playNotification(isBackground);
 
           if (isBackground && Notification.permission === "granted") {
-            new Notification(`New message from ${message.from}`, {
-              body: message.type === 'text' ? message.body : 'Sent a media file',
+            new Notification(t('notifications.newMessage', { from: message.from }), {
+              body: message.type === 'text' ? message.body : t('notifications.sentMedia'),
               icon: '/vite.svg', // Optional: Add an icon if available
             });
           }
@@ -98,7 +100,7 @@ function App() {
       socket.off("delete", handleDeleteEvent);
       socket.off("users", updateConnectedUsers);
     };
-  }, []);
+  }, [t]);
 
   const handleLogin = (username) => {
     setUsername(username);
@@ -168,7 +170,8 @@ function App() {
   return (
     <>
       {username ? (
-        <div className="backdrop-saturate-125 bg-white/20 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:mt-10 md:rounded-2xl overflow-hidden">
+        <div className="w-full h-[100dvh] flex items-center justify-center">
+          <div className="backdrop-saturate-125 bg-white/20 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:rounded-2xl overflow-hidden">
           {/* Header Section */}
           <div className="flex-none bg-transparent">
              <div className="flex items-center justify-between p-4 bg-transparent w-full">
@@ -210,18 +213,23 @@ function App() {
           </div>
 
 
+          </div>
         </div>
       ) : (
-        <div className="w-full min-h-[100dvh] flex flex-col justify-center items-center">
-            <div className="backdrop-saturate-125 bg-white/20 rounded-2xl w-[90%] max-w-md">
-              <LoginComponent
-                onLogin={handleLogin}
-                onLoginAsAnonymous={handleLoginAsAnonymous}
-              />
-              <div className="text-center mt-5 leading-tight mb-4">
-                <TermsAndConditions />
-                <Footer />
-              </div>
+        <div className="w-full min-h-[100dvh] flex flex-col items-center">
+            
+            <div className="flex-grow flex items-center justify-center w-full">
+                <div className="backdrop-saturate-125 bg-white/20 rounded-2xl w-[90%] max-w-md">
+                  <LoginComponent
+                    onLogin={handleLogin}
+                    onLoginAsAnonymous={handleLoginAsAnonymous}
+                  />
+                </div>
+            </div>
+
+            <div className="text-center leading-tight mb-6 mt-4">
+              <TermsAndConditions />
+              <Footer />
             </div>
         </div>
       )}

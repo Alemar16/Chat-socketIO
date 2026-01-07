@@ -1,0 +1,118 @@
+{
+  "welcome": "Bienvenido,",
+  "greeting": "¡Bienvenido, {{username}}!",
+  "connectedUsers": "Usuarios Conectados",
+  "noUsersConnected": "Sin usuarios conectados",
+  "roomDetails": "Detalles de la Sala",
+  "roomId": "ID de Sala",
+  "invitationLink": "Enlace de Invitación",
+  "copyLinkInvitation": "Copiar Enlace",
+  "settings": "Ajustes",
+  "notificationsLabel": "Notificaciones",
+  "language": "Idioma",
+  "theme": "Tema",
+  "about": "Acerca de Flash Chat",
+  "roomUrlCopied": "URL de la sala copiada al portapapeles",
+  "roomIdCopied": "ID de la sala copiado al portapapeles",
+  "copied": "copiado al portapapeles",
+  "you": "(Tú)",
+  "modal": {
+    "howToUse": "Cómo Usar:",
+    "step1": "Ingresa tu nombre y haz clic en \"<span class='font-bold'>{{login}}</span>\"<br> o <br> \"Ingresar como <span class='font-bold'>{{anonymous}}</span>\".",
+    "step2": "Comparte este enlace:",
+    "linkBtn": "Enlace",
+    "step3": "O únete a una sala:",
+    "joinPlaceholder": "Pega el enlace o ID de Sala",
+    "joinBtn": "Unirse",
+    "start": "¡Comienza a<br> Chatear y Disfruta!",
+    "copied": "Copiado"
+  },
+  "recommendations": {
+    "title": "Acerca de Flash Chat",
+    "intro": "Bienvenido a <span class='text-purple-600 font-bold'>FlashChat</span>. Esta herramienta está diseñada para facilitar la comunicación rápida y segura. Aquí tienes algunas guías para sacar el máximo provecho.",
+    "advantages": {
+      "title": "Principales Ventajas",
+      "speedTitle": "Velocidad en tiempo real:",
+      "speedContent": "Comunicación instantánea gracias a la tecnología que grandes plataformas como WhatsApp y Facebook utilizan.",
+      "privacyTitle": "Privacidad incomparable:",
+      "privacyContent": "No se guardan historiales permanentes y los mensajes se eliminan al cerrar o actualizar la página, caracteristica que garantiza la privacidad de los usuarios y hacer de sus datos generados inrastreables.",
+      "noLogsTitle": "Sin registros ni almacenamiento:",
+      "noLogsContent": "Olvídate de correos electrónicos o creación de cuentas. Al ser una aplicación diseñada para conversaciones fugaces, no requiere almacenamiento en la nube ni centros de memoria externos.",
+      "simplicityTitle": "Simplicidad y usabilidad:",
+      "simplicityContent": "Interfaz limpia y sin distracciones, con opciones para enviar imágenes y mensajes de voz de forma rápida.",
+      "flexibilityTitle": "Flexibilidad y control:",
+      "flexibilityContent": "Creación de múltiples salas privadas con enlace de invitación y visualización de contactos conectados."
+    },
+    "usage": {
+      "title": "Uso Recomendado",
+      "ephemeralTitle": "Conversaciones efímeras:",
+      "ephemeralContent": "Ideal para charlas rápidas que no requieren historial.",
+      "coordinationTitle": "Coordinación de equipos ágiles:",
+      "coordinationContent": "Sincronización rápida sin burocracia.",
+      "sharingTitle": "Compartir información rápida:",
+      "sharingContent": "Intercambio directo sin registros complejos.",
+      "privateDataTitle": "Datos y conversaciones privadas de valor:",
+      "privateDataContent": "Cada mensaje está procesado en tiempo real y no dejará información expuesta, ideal para tratar temas de importancia con total confidencialidad."
+    },
+    "security": {
+      "title": "Guías y Seguridad",
+      "passwords": "No compartas contraseñas o información financiera sensible.",
+      "reload": "Recuerda que si recargas la página, podrías perder el historial de mensajes local.",
+      "respect": "Sé respetuoso con los demás participantes de la sala."
+    },
+    "understood": "Entendido"
+  },
+  "terms": {
+    "link": "Términos y Condiciones",
+    "title": "Términos y Condiciones",
+    "agreement": "Acuerdo de Términos y Condiciones para el Modo Anónimo en Flash Chat",
+    "fullText": "<div class='scrollable-content' style='height: 300px; overflow-y: auto; text-align: justify; padding-right: 10px;'><h2 style='font-size: 1.2rem; margin-bottom: 0.5rem;'>Términos de Servicio y Deslinde de Responsabilidad</h2><p style='margin-bottom: 1rem; font-style: italic; font-size: 0.8rem;'>Última Actualización: Enero 2026</p><p><strong>1. Naturaleza del Servicio (Anónimo y Efímero)</strong><br>Flash Chat se proporciona como una herramienta de comunicación en tiempo real y efímera. <strong>No almacenamos registros, datos personales, mensajes ni direcciones IP</strong> una vez cerrada la sesión. Al usar este servicio, reconoces que las comunicaciones son temporales y su permanencia depende únicamente de la sesión activa.</p><p><strong>2. Responsabilidad Absoluta del Usuario</strong><br>Reconoces y aceptas que <strong>eres el único responsable</strong> del contenido que compartes, envías o recibes a través de Flash Chat. El desarrollador actúa puramente como intermediario técnico y no ejerce control, moderación ni supervisión sobre el contenido generado por los usuarios.</p><p><strong>3. Limitación de Responsabilidad</strong><br>EN la MÁXIMA MEDIDA PERMITIDA POR LA LEY, EL DESARROLLADOR NO SERÁ RESPONSABLE POR DAÑOS DIRECTOS, INDIRECTOS, INCIDENTALES O CONSECUENTES QUE SURJAN DEL USO DE ESTE SERVICIO. Esto incluye, pero no se limita a, contenido ofensivo compartido por otros usuarios, uso ilegal por terceros o fugas de datos causadas por brechas de seguridad del lado del cliente.</p><p><strong>4. Control de Acceso e Integridad del Servicio</strong><br>Dado que este servicio opera sin registro de usuarios, las medidas tradicionales de suspensión de cuenta no son aplicables. No obstante, el desarrollador se reserva el derecho de denegar, restringir o bloquear el acceso al servicio a cualquier usuario, mediante medidas técnicas como el bloqueo de direcciones IP, para preservar la integridad de la plataforma o en cumplimiento de obligaciones legales, sin necesidad de previo aviso.</p><p><strong>5. Actividades Prohibidas</strong><br>Queda estrictamente prohibido usar Flash Chat para: actividades ilegales, acoso, distribución de material de abuso sexual infantil (CSAM), distribución de malware o cualquier acción que viole leyes locales o internacionales. <strong>El usuario asume todas las consecuencias legales</strong> de tales acciones.</p><p><strong>6. Indemnización</strong><br>Aceptas mantener indemne al desarrollador ante cualquier reclamo, acción legal o demanda derivada de tu violación de estos términos o mal uso de la plataforma.</p><p><strong>7. Jurisdicción</strong><br>Estos términos se regirán por las leyes de la República Argentina.</p></div>",
+    "close": "Cerrar"
+  },
+  "footer": {
+    "rights": ". Todos los derechos reservados."
+  },
+  "notifications": {
+    "newMessage": "Nuevo mensaje de {{from}}",
+    "sentMedia": "Envió un archivo multimedia"
+  },
+  "login": {
+    "login": "Ingresar",
+    "anonymous": "Anónimo",
+    "anonymousMode": "Modo Anónimo",
+    "enterUsername": "Ingresa tu usuario...",
+    "agreeTerms": "Acepto los Términos y Condiciones",
+    "continue": "Continuar",
+    "mustAgree": "¡Debes aceptar los términos!",
+    "anonymousActivated": "Modo Anónimo Activado",
+    "anonymousInfo": "<p>Al usar el modo anónimo, tu identidad estará protegida.</p><p>Todos los datos asociados a tu sesión serán eliminados al salir.</p>",
+    "ok": "Entendido"
+  },
+  "form": {
+    "errorImageOnly": "Solo se permiten archivos de imagen.",
+    "errorImageSize": "Imagen demasiado grande (Máx 3MB).",
+    "errorEmpty": "Por favor escribe un mensaje o selecciona una imagen.",
+    "camera": "Cámara",
+    "gallery": "Galería",
+    "removeImage": "Eliminar imagen",
+    "cancelRecording": "Cancelar grabación",
+    "recording": "Grabando...",
+    "sendVoice": "Enviar mensaje de voz",
+    "attachImage": "Adjuntar imagen",
+    "placeholder": "Escribe tu mensaje...",
+    "recordVoice": "Grabar mensaje de voz"
+  },
+  "messages": {
+    "noMessages": "Aún no hay mensajes.",
+    "sharedContent": "Contenido compartido",
+    "deleteMessage": "Eliminar mensaje",
+    "fullSize": "Tamaño completo"
+  },
+  "logout": {
+    "title": "¡Espera!",
+    "text": "Si sales, todos los datos y mensajes se eliminarán permanentemente. Esta acción es irreversible.",
+    "confirmButton": "Sí, borrar y salir",
+    "cancelButton": "Cancelar",
+    "tooltip": "Salir y Borrar Datos"
+  }
+}

@@ -13,10 +13,12 @@ import useVoiceRecorder from "../../hooks/useVoiceRecorder";
 import ButtonSend from "../Buttons/ButtonSend";
 
 import CameraModal from "../Modal/CameraModal";
+import { useTranslation } from "react-i18next";
 
 
 
 const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
+  const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null); // Ref for file input
   const [errorMessage, setErrorMessage] = useState("");
@@ -52,11 +54,11 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
     const file = e.target.files[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        setErrorMessage("Only image files are allowed.");
+        setErrorMessage(t('form.errorImageOnly'));
         return;
       }
       if (file.size > 3000000) { // ~3MB
-        setErrorMessage("Image too large (Max 3MB).");
+        setErrorMessage(t('form.errorImageSize'));
         return;
       }
 
@@ -75,7 +77,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
     
     // Check if there is anything to send
     if (message.trim() === "" && !previewImage) {
-      setErrorMessage("Please write a message or select an image.");
+      setErrorMessage(t('form.errorEmpty'));
       return;
     }
 
@@ -120,7 +122,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
                  <div className="bg-purple-100 p-2 rounded-full text-purple-600">
                     <CameraIcon className="w-6 h-6" />
                  </div>
-                 <span className="text-xs text-gray-600 font-medium">Camera</span>
+                 <span className="text-xs text-gray-600 font-medium">{t('form.camera')}</span>
                </button>
                <button
                  type="button"
@@ -130,7 +132,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
                  <div className="bg-blue-100 p-2 rounded-full text-blue-600">
                     <PhotoIcon className="w-6 h-6" />
                  </div>
-                 <span className="text-xs text-gray-600 font-medium">Gallery</span>
+                 <span className="text-xs text-gray-600 font-medium">{t('form.gallery')}</span>
                </button>
              </div>
         )}
@@ -146,7 +148,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
                   type="button"
                   className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center hover:bg-black shadow-md transition-transform transform group-hover:scale-110"
                   onClick={() => setPreviewImage(null)}
-                  title="Remove Image"
+                  title={t('form.removeImage')}
                 >
                   <XMarkIcon className="w-3 h-3" />
                 </button>
@@ -160,7 +162,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
                     type="button"
                     onClick={cancelRecording}
                     className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                    title="Cancel Recording"
+                    title={t('form.cancelRecording')}
                 >
                     <TrashIcon className="w-6 h-6" />
                 </button>
@@ -169,7 +171,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
                     <span className="font-mono font-bold text-gray-700 text-lg">{formatTime(recordingTime)}</span>
-                     <span className="text-xs text-gray-400 animate-pulse">Recording...</span>
+                     <span className="text-xs text-gray-400 animate-pulse">{t('form.recording')}</span>
                 </div>
 
                 {/* Send Button */}
@@ -177,7 +179,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
                     type="button"
                     onClick={stopRecording}
                     className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 hover:scale-110 transition-transform shadow-md"
-                    title="Send Voice Message"
+                    title={t('form.sendVoice')}
                 >
                     <PaperAirplaneIcon className="w-5 h-5" />
                 </button>
@@ -202,7 +204,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
             type="button"
             className={`text-gray-500 hover:text-purple-600 transition-colors p-2 ${showAttachmentOptions ? 'text-purple-600 bg-purple-50 rounded-full' : ''}`}
             onClick={() => setShowAttachmentOptions(!showAttachmentOptions)}
-            title="Attach Image"
+            title={t('form.attachImage')}
           >
             <PaperClipIcon className="w-6 h-6" />
           </button>
@@ -211,7 +213,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
 
           <textarea
             rows={1}
-            placeholder="Write your message..."
+            placeholder={t('form.placeholder')}
             className="p-2 w-full rounded text-black bg-opacity-50 focus:bg-white focus:outline-none focus:bg-opacity-100 "
             style={{ resize: "none" }}
             value={message}
@@ -226,7 +228,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
                 type="button"
                 onClick={startRecording}
                 className="text-gray-500 hover:text-red-500 hover:bg-gray-100 p-2 rounded-full transition-colors"
-                title="Record Voice Message"
+                title={t('form.recordVoice')}
             >
                 <MicrophoneIcon className="w-6 h-6" />
             </button>
