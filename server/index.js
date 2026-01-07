@@ -21,6 +21,7 @@ const io = new SocketServer(server, {
 const rateLimiter = new RateLimiter(5, 1000);
 
 const users = {};
+const roomHistory = {}; // Volatile RAM History: { roomId: [messages] }
 
 // Basic security headers with Custom CSP for Media
 app.use(helmet({
@@ -63,6 +64,11 @@ io.on("connection", (socket) => {
     
 
     
+    // Verify if room has history and emit it to THIS user
+    if (roomHistory[normalizedRoomId]) {
+        socket.emit("history", roomHistory[normalizedRoomId]);
+    }
+    
     // Update users ONLY in that room
     updateConnectedUsers(normalizedRoomId);
   });
@@ -89,6 +95,12 @@ io.on("connection", (socket) => {
 
       // Emitir la lista actualizada solo a esa sala
       updateConnectedUsers(roomId);
+
+      // Check if room is empty to clean up history (Save RAM)
+      const remainingUsers = Object.values(users).filter(u => u.roomId === roomId).length;
+      if (remainingUsers === 0) {
+          delete roomHistory[roomId]; // Free memory
+      }
     }
   }
 
@@ -125,6 +137,18 @@ io.on("connection", (socket) => {
                 type: 'text',
                 time: currentTime,
                 id: id, // Propagate ID
+            });
+
+            // Save to History (Text Only)
+            if (!roomHistory[userSender.roomId]) {
+                roomHistory[userSender.roomId] = [];
+            }
+            roomHistory[userSender.roomId].push({
+                body: body.slice(0, 5000),
+                from: userSender.username || "Anonymous",
+                type: 'text',
+                time: currentTime,
+                id: id,
             });
         }
     } catch (error) {

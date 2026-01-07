@@ -120,11 +120,24 @@ function App() {
         setMessages((state) => state.filter((msg) => msg.id !== id));
     });
 
+    socket.on("history", (historyMessages) => {
+        const currentRoomId = roomIdRef.current;
+        const decryptedHistory = historyMessages.map(msg => ({
+            ...msg,
+            body: decryptMessage(msg.body, currentRoomId),
+            timestamp: msg.time // Map server 'time' to 'timestamp'
+        }));
+        // Rewrite messages with history (since it's a reload/join)
+        setMessages(decryptedHistory); 
+    });
+
     return () => {
       socket.off("connect");
       socket.off("users");
       socket.off("message");
+      socket.off("message");
       socket.off("delete");
+      socket.off("history");
     };
   }, []);
 
