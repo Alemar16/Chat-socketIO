@@ -95,7 +95,7 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                             e.stopPropagation(); // Prevent bubbling (e.g. if we add click to message later)
                             onDelete(message.id);
                         }}
-                        className="absolute -top-2 -left-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md transform hover:scale-110 z-10"
+                        className="absolute -top-2 -left-2 bg-red-500 text-white rounded-full p-1 shadow-md transform hover:scale-110 z-10"
                         title="Delete Message"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
