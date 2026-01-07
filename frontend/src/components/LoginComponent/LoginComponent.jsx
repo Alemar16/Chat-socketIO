@@ -67,25 +67,25 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
       </div>
 
       <div className="flex flex-col items-center shadow-lg p-2">
-        <div className="flex gap-1 h-10">
+        <div className="flex gap-1 h-10 w-full max-w-full px-2 sm:px-0">
           {" "}
           <input
             placeholder={t('login.enterUsername')}
-            className="border-none focus:outline-none bg-white text-gray-700 rounded-l-lg p-2 h-full" // Aplica la altura completa al input
+            className="border-none focus:outline-none bg-white text-gray-700 rounded-l-lg p-2 h-full flex-1 min-w-0" // Aplica la altura completa al input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
           <button
             type="button"
             onClick={handleLogin}
-            className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue h-full" // Aplica la altura completa al botón
+            className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue h-full whitespace-nowrap" // Aplica la altura completa al botón
           >
             {t('login.login')}
           </button>
           <button
             type="button"
             onClick={handleLoginAnonymous}
-            className="flex justify-center items-center ml-3 hover: transform hover:scale-110 duration-300"
+            className="flex justify-center items-center ml-3 hover: transform hover:scale-110 duration-300 shrink-0"
             title={t('login.anonymousMode')}
           >
             <img src={anonymousIcon} alt="Anonymous Icon" className="w-8 h-8" />
