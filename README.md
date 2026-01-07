@@ -12,11 +12,15 @@ Flash Chat is a secure and anonymous chat application offering a revolutionary p
 
 - **Secure and Anonymous Communication**: Users can choose to log in with a username or anonymously, with all data automatically deleted upon session closure.
 - **Real-time Messaging**: Enjoy seamless real-time messaging with the help of Socket.IO, ensuring instant communication.
+- **Internationalization (i18n)**: Fully translated into English and Spanish. Change languages instantly from the settings menu or the login screen.
 - **Voice Messaging**: Record and send voice messages easily. Features a WhatsApp-style recording interface (Timer, Cancel) and a custom audio player with progress bar.
 - **Image Sharing**: Share images with optional captions directly in the chat. Features include image preview before sending and a lightbox mode for viewing full-size images.
+- **Enhanced Room Management**: Create private rooms, copy invitation links or Room IDs with a single click, and view a real-time list of connected users via the new Side Menu.
 - **Smart Notifications**: Never miss a message. The app features a dual-notification system: a soft sound while you are active in the chat, and a distinct alert plus a System Notification when the app is in the background.
+- **Performance & Cleanup**: Automatic message cleanup (keeping the last 100 messages) ensures the app remains fast and lightweight during long sessions.
 - **Message Control**: Users can delete their own messages, providing better control over the conversation.
-- **User-friendly Interface**: The application is built with React.js and styled using Tailwind CSS, providing a sleek and intuitive user interface.
+- **Modern UI/UX**: A completely responsive design that works perfectly on mobile and desktop. Features a centered desktop layout, glassmorphism effects, standard "Flash Chat" branding, and Light/Dark theme toggles.
+- **Usage Recommendations**: Built-in guide with tips for secure and efficient usage.
 - **Customizable Alerts**: Integration with SweetAlert2 enhances user experience with customizable alerts and notifications.
 - **Easy Setup**: The project is divided into frontend and server directories, making setup hassle-free. Simply install dependencies with npm and run the project in development mode.
 
@@ -24,11 +28,13 @@ Flash Chat is a secure and anonymous chat application offering a revolutionary p
 
 - React.js with Vite for frontend development
 - Socket.IO for real-time communication
+- i18next & react-i18next for Internationalization
 - SweetAlert2 for enhanced user alerts
 - Node.js and Express for backend development
 - Tailwind CSS for styling
 - Helmet for backend security headers
 - Heroicons for a modern and consistent icon set
+- date-fns for time formatting
 
 ## Getting Started
 

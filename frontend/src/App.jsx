@@ -55,6 +55,14 @@ function App() {
       room = Math.random().toString(36).substring(2, 9);
       const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + room;
       window.history.pushState({ path: newUrl }, '', newUrl);
+    } else {
+      // Normalize to lowercase
+      const lowerRoom = room.toLowerCase();
+      if (room !== lowerRoom) {
+        room = lowerRoom;
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + room;
+        window.history.replaceState({ path: newUrl }, '', newUrl);
+      }
     }
     setRoomId(room);
 

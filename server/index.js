@@ -52,16 +52,19 @@ io.on("connection", (socket) => {
   // Escuchar el evento de inicio de sesión
   // Escuchar el evento de inicio de sesión con sala
   socket.on("login", ({ username, roomId }) => {
+    // Normalize room ID to ensure case-insensitivity
+    const normalizedRoomId = roomId ? roomId.toLowerCase() : "general"; 
+
     // Join the room
-    socket.join(roomId);
+    socket.join(normalizedRoomId);
 
     // Store user info including room
-    users[socket.id] = { username, roomId };
+    users[socket.id] = { username, roomId: normalizedRoomId };
     
-    console.log(`${socket.id} ${username} joined ${roomId}`);
+    console.log(`${socket.id} ${username} joined ${normalizedRoomId}`);
     
     // Update users ONLY in that room
-    updateConnectedUsers(roomId);
+    updateConnectedUsers(normalizedRoomId);
   });
 
   // Escuchar el evento de desconexión
