@@ -13,11 +13,12 @@ import GreetingComponent from "./components/GreetingComponent/GreetingComponent"
 import notificationSound from "./assets/sounds/soft-notice-146623.mp3";
 import backgroundNotificationSound from "./assets/sounds/new-notification-on-your-device-138695.mp3";
 import { useTranslation } from "react-i18next";
+import { generateRoomId } from "./utils/roomGenerator";
 
 const socket = io("/");
 
 function App() {
-  const { t } = useTranslation();
+  useTranslation();
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState(null);
@@ -45,14 +46,20 @@ function App() {
     audio.play().catch(error => console.error("Audio play failed:", error));
   };
 
+// ... (moved to top)
+
+// ... (existing imports)
+
+// ... inside App component
+
   useEffect(() => {
     // Room Logic
     const params = new URLSearchParams(window.location.search);
     let room = params.get("room");
     
     if (!room) {
-      // Generate a simple random room ID if none exists
-      room = Math.random().toString(36).substring(2, 9);
+      // Generate a friendly room ID if none exists
+      room = generateRoomId();
       const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + room;
       window.history.pushState({ path: newUrl }, '', newUrl);
     } else {
@@ -66,53 +73,49 @@ function App() {
     }
     setRoomId(room);
 
-    const reciveMessage = (message) => {
-      const newMessage = {
-        body: message.body,
-        from: message.from,
-        type: message.type || 'text',
-        caption: message.caption,
-        timestamp: message.time || new Date().toISOString(),
-        id: message.id,
-      };
+  }, []);
 
-      setMessages((state) => [...state, newMessage].slice(-100));
+  useEffect(() => {
+    socket.on("connect", () => {
+        console.log("Connected to server");
+    });
+
+    socket.on("users", (users) => {
+        setConnectedUsers(users);
+    });
+
+    socket.on("message", (message) => {
+      setMessages((state) => [...state, message].slice(-100));
       
-      if(message.from !== "Me") {
-          const isBackground = document.hidden;
-          playNotification(isBackground);
+      const isBackground = document.hidden;
+      playNotification(isBackground);
+    });
 
-          if (isBackground && Notification.permission === "granted") {
-            new Notification(t('notifications.newMessage', { from: message.from }), {
-              body: message.type === 'text' ? message.body : t('notifications.sentMedia'),
-              icon: '/vite.svg', // Optional: Add an icon if available
-            });
-          }
-      }
-    };
-
-    const handleDeleteEvent = (id) => {
-      setMessages((state) => state.filter((msg) => msg.id !== id));
-    };
-
-    const updateConnectedUsers = (users) => {
-      setConnectedUsers(users);
-    };
-
-    socket.on("message", reciveMessage);
-    socket.on("delete", handleDeleteEvent);
-    socket.on("users", updateConnectedUsers);
+    socket.on("delete", (id) => {
+        setMessages((state) => state.filter((msg) => msg.id !== id));
+    });
 
     return () => {
-      socket.off("message", reciveMessage);
-      socket.off("delete", handleDeleteEvent);
-      socket.off("users", updateConnectedUsers);
+      socket.off("connect");
+      socket.off("users");
+      socket.off("message");
+      socket.off("delete");
     };
-  }, [t]);
+  }, []);
 
-  const handleLogin = (username) => {
+  const handleLogin = (username, roomCode) => {
+    let finalRoomId = roomId;
+
+    if (roomCode) {
+        finalRoomId = roomCode.toLowerCase();
+        // Update URL to match the new room
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + finalRoomId;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+        setRoomId(finalRoomId);
+    }
+    
     setUsername(username);
-    socket.emit("login", { username, roomId });
+    socket.emit("login", { username, roomId: finalRoomId });
     requestNotificationPermission();
   };
 

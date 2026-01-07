@@ -9,10 +9,10 @@ import { useTranslation } from "react-i18next";
 const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
+  const [roomCode, setRoomCode] = useState("");
 
   const handleLogin = () => {
-    // console.log("Login button clicked with username:", username); // Removed for privacy
-    onLogin(username);
+    onLogin(username, roomCode);
   };
 
   const handleLoginAnonymous = async () => {
@@ -67,29 +67,44 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
       </div>
 
       <div className="flex flex-col items-center shadow-lg p-2">
-        <div className="flex gap-1 h-10 w-full max-w-full px-2 sm:px-0">
-          {" "}
-          <input
-            placeholder={t('login.enterUsername')}
-            className="border-none focus:outline-none bg-white text-gray-700 rounded-l-lg p-2 h-full flex-1 min-w-0" // Aplica la altura completa al input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <button
-            type="button"
-            onClick={handleLogin}
-            className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue h-full whitespace-nowrap" // Aplica la altura completa al botón
-          >
-            {t('login.login')}
-          </button>
-          <button
-            type="button"
-            onClick={handleLoginAnonymous}
-            className="flex justify-center items-center ml-3 hover: transform hover:scale-110 duration-300 shrink-0"
-            title={t('login.anonymousMode')}
-          >
-            <img src={anonymousIcon} alt="Anonymous Icon" className="w-8 h-8" />
-          </button>
+        <div className="flex flex-col gap-3 w-full max-w-full px-2 sm:px-0">
+          <div className="flex gap-1 h-10 w-full">
+            <input
+              placeholder={t('login.enterUsername')}
+              className="border-none focus:outline-none bg-white text-gray-700 rounded-l-lg p-2 h-full flex-1 min-w-0"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+             <button
+              type="button"
+              onClick={handleLogin}
+              className="bg-purple-600 text-white px-4 py-2 rounded-r-lg hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple h-full whitespace-nowrap font-bold"
+            >
+              {t('login.login')}
+            </button>
+             <button
+              type="button"
+              onClick={handleLoginAnonymous}
+              className="flex justify-center items-center ml-3 hover:transform hover:scale-110 duration-300 shrink-0"
+              title={t('login.anonymousMode')}
+            >
+              <img src={anonymousIcon} alt="Anonymous Icon" className="w-8 h-8" />
+            </button>
+          </div>
+          
+          <div className="flex flex-col gap-1 w-full">
+            <label className="text-white text-sm font-bold ml-1" style={{ textShadow: "1px 1px 2px black" }}>
+               {t('login.joinWithId')}
+            </label>
+            <div className="flex gap-1 h-10 w-full">
+               <input
+                placeholder={t('login.enterRoomCode')}
+                className="border-none focus:outline-none bg-white/80 text-gray-700 rounded-lg p-2 h-full flex-1 min-w-0 text-sm placeholder-gray-500"
+                value={roomCode}
+                onChange={(e) => setRoomCode(e.target.value)}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
