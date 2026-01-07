@@ -16,12 +16,16 @@ import Header from "../Header/Header";
 import { ButtonLogout } from "../Buttons/ButtonLogout";
 import Swal from 'sweetalert2';
 import { useState } from 'react';
+import { RecommendationsModal } from "../RecommendationsModal/RecommendationsModal";
 
 const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEnabled, onLogout, connectedUsers }) => {
     
     const [isUsersListOpen, setIsUsersListOpen] = useState(true);
     const [language, setLanguage] = useState('en'); // 'en' or 'es'
     const [theme, setTheme] = useState('light'); // 'light' or 'dark'
+    const [isRoomDetailsOpen, setIsRoomDetailsOpen] = useState(true);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [showRecommendations, setShowRecommendations] = useState(false);
 
     const copyToClipboard = (text, label) => {
         navigator.clipboard.writeText(text).then(() => {
@@ -81,119 +85,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                 {/* Body Section */}
                 <div className="flex-1 overflow-y-auto py-6 px-6 space-y-8">
                     
-                    {/* Room Details */}
-                    <div className="space-y-3">
-                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Room Details</h4>
-                        
-                        {/* Room ID Card */}
-                        <div className="bg-white p-3 rounded-xl flex items-center justify-between border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-gray-400 font-semibold uppercase">Room ID</span>
-                                <span className="font-mono font-bold text-gray-800 text-lg tracking-wider">{roomId}</span>
-                            </div>
-                            <button 
-                                onClick={() => copyToClipboard(roomId, "Room ID")}
-                                className="p-2 text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
-                                title="Copy ID"
-                            >
-                                <ClipboardDocumentIcon className="w-5 h-5" />
-                            </button>
-                        </div>
 
-                        {/* Copy URL Card/Button */}
-                        <button
-                            onClick={copyRoomUrl}
-                            className="w-full bg-white p-3 rounded-xl flex items-center justify-between border border-gray-200 shadow-sm hover:shadow-md transition-all group text-left"
-                        >
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-gray-400 font-semibold uppercase">Invitation Link</span>
-                                <span className="font-medium text-gray-600 group-hover:text-purple-600 transition-colors text-sm">Copy Link Invitation</span>
-                            </div>
-                            <div className="p-2 text-purple-600 bg-purple-50 group-hover:bg-purple-100 rounded-lg transition-colors">
-                                <LinkIcon className="w-5 h-5" />
-                            </div>
-                        </button>
-                    </div>
-
-                    {/* Settings Section */}
-                    <div className="space-y-3">
-                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Settings</h4>
-                        
-                        {/* Notifications Toggle */}
-                        <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
-                            <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-full ${soundEnabled ? 'bg-purple-100 text-purple-600' : 'bg-gray-100 text-gray-400'} transition-colors`}>
-                                    {soundEnabled ? (
-                                        <SpeakerWaveIcon className="w-5 h-5" />
-                                    ) : (
-                                        <SpeakerXMarkIcon className="w-5 h-5" />
-                                    )}
-                                </div>
-                                <span className="font-medium text-gray-700 text-sm">Notifications</span>
-                            </div>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input 
-                                    type="checkbox" 
-                                    className="sr-only peer" 
-                                    checked={soundEnabled}
-                                    onChange={(e) => setSoundEnabled(e.target.checked)}
-                                />
-                                <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
-                            </label>
-                        </div>
-
-                        {/* Language Toggle */}
-                        <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-full bg-blue-100 text-blue-600">
-                                    <GlobeAltIcon className="w-5 h-5" />
-                                </div>
-                                <span className="font-medium text-gray-700 text-sm">Language</span>
-                            </div>
-                            <div className="flex bg-gray-100 rounded-lg p-1">
-                                <button 
-                                    onClick={() => setLanguage('en')}
-                                    className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${language === 'en' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                                >
-                                    EN
-                                </button>
-                                <button 
-                                    onClick={() => setLanguage('es')}
-                                    className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${language === 'es' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                                >
-                                    ES
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Theme Toggle */}
-                        <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
-                            <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-full ${theme === 'dark' ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600'} transition-colors`}>
-                                    {theme === 'dark' ? (
-                                        <MoonIcon className="w-5 h-5" />
-                                    ) : (
-                                        <SunIcon className="w-5 h-5" />
-                                    )}
-                                </div>
-                                <span className="font-medium text-gray-700 text-sm">Theme</span>
-                            </div>
-                            <div className="flex bg-gray-100 rounded-lg p-1">
-                                <button 
-                                    onClick={() => setTheme('light')}
-                                    className={`p-1 rounded-md transition-all ${theme === 'light' ? 'bg-white text-amber-500 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                                >
-                                    <SunIcon className="w-4 h-4" />
-                                </button>
-                                <button 
-                                    onClick={() => setTheme('dark')}
-                                    className={`p-1 rounded-md transition-all ${theme === 'dark' ? 'bg-white text-indigo-500 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                                >
-                                    <MoonIcon className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
 
                     {/* Connected Users Section */}
                     <div className="space-y-3">
@@ -231,11 +123,160 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                         )}
                     </div>
 
+                    {/* Room Details */}
+                    <div className="space-y-3">
+                        <button 
+                            onClick={() => setIsRoomDetailsOpen(!isRoomDetailsOpen)}
+                            className="w-full flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors ml-1"
+                        >
+                            <span>Room Details</span>
+                            {isRoomDetailsOpen ? (
+                                <ChevronUpIcon className="w-4 h-4" />
+                            ) : (
+                                <ChevronDownIcon className="w-4 h-4" />
+                            )}
+                        </button>
+                        
+                        {isRoomDetailsOpen && (
+                            <div className="space-y-3">
+                                {/* Room ID Card */}
+                                <div className="bg-white p-3 rounded-xl flex items-center justify-between border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] text-gray-400 font-semibold uppercase">Room ID</span>
+                                        <span className="font-mono font-bold text-gray-800 text-lg tracking-wider">{roomId}</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => copyToClipboard(roomId, "Room ID")}
+                                        className="p-2 text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
+                                        title="Copy ID"
+                                    >
+                                        <ClipboardDocumentIcon className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                {/* Copy URL Card/Button */}
+                                <button
+                                    onClick={copyRoomUrl}
+                                    className="w-full bg-white p-3 rounded-xl flex items-center justify-between border border-gray-200 shadow-sm hover:shadow-md transition-all group text-left"
+                                >
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] text-gray-400 font-semibold uppercase">Invitation Link</span>
+                                        <span className="font-medium text-gray-600 group-hover:text-purple-600 transition-colors text-sm">Copy Link Invitation</span>
+                                    </div>
+                                    <div className="p-2 text-purple-600 bg-purple-50 group-hover:bg-purple-100 rounded-lg transition-colors">
+                                        <LinkIcon className="w-5 h-5" />
+                                    </div>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Settings Section */}
+                    <div className="space-y-3">
+                        <button 
+                            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                            className="w-full flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors ml-1"
+                        >
+                            <span>Settings</span>
+                            {isSettingsOpen ? (
+                                <ChevronUpIcon className="w-4 h-4" />
+                            ) : (
+                                <ChevronDownIcon className="w-4 h-4" />
+                            )}
+                        </button>
+
+                        {isSettingsOpen && (
+                            <div className="space-y-3">
+                                {/* Notifications Toggle */}
+                                <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-full ${soundEnabled ? 'bg-purple-100 text-purple-600' : 'bg-gray-100 text-gray-400'} transition-colors`}>
+                                            {soundEnabled ? (
+                                                <SpeakerWaveIcon className="w-5 h-5" />
+                                            ) : (
+                                                <SpeakerXMarkIcon className="w-5 h-5" />
+                                            )}
+                                        </div>
+                                        <span className="font-medium text-gray-700 text-sm">Notifications</span>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            className="sr-only peer" 
+                                            checked={soundEnabled}
+                                            onChange={(e) => setSoundEnabled(e.target.checked)}
+                                        />
+                                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </label>
+                                </div>
+
+                                {/* Language Toggle */}
+                                <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-full bg-blue-100 text-blue-600">
+                                            <GlobeAltIcon className="w-5 h-5" />
+                                        </div>
+                                        <span className="font-medium text-gray-700 text-sm">Language</span>
+                                    </div>
+                                    <div className="flex bg-gray-100 rounded-lg p-1">
+                                        <button 
+                                            onClick={() => setLanguage('en')}
+                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${language === 'en' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                        >
+                                            EN
+                                        </button>
+                                        <button 
+                                            onClick={() => setLanguage('es')}
+                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${language === 'es' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                        >
+                                            ES
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Theme Toggle */}
+                                <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-full ${theme === 'dark' ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600'} transition-colors`}>
+                                            {theme === 'dark' ? (
+                                                <MoonIcon className="w-5 h-5" />
+                                            ) : (
+                                                <SunIcon className="w-5 h-5" />
+                                            )}
+                                        </div>
+                                        <span className="font-medium text-gray-700 text-sm">Theme</span>
+                                    </div>
+                                    <div className="flex bg-gray-100 rounded-lg p-1">
+                                        <button 
+                                            onClick={() => setTheme('light')}
+                                            className={`p-1 rounded-md transition-all ${theme === 'light' ? 'bg-white text-amber-500 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                        >
+                                            <SunIcon className="w-4 h-4" />
+                                        </button>
+                                        <button 
+                                            onClick={() => setTheme('dark')}
+                                            className={`p-1 rounded-md transition-all ${theme === 'dark' ? 'bg-white text-indigo-500 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                        >
+                                            <MoonIcon className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                 </div>
 
                 {/* Footer Section */}
                 <div className="p-6 border-t border-gray-100 bg-gray-50">
-                    <div className="flex justify-center w-full">
+                    <div className="flex justify-between items-center w-full">
+                       <button 
+                           onClick={() => setShowRecommendations(true)}
+                           className="text-xs font-medium text-gray-500 hover:text-purple-600 underline tracking-wide transition-colors"
+                       >
+                           Acerca de Flash Chat
+                       </button>
+
                        <ButtonLogout onLogout={() => {
                            onLogout();
                            onClose();
@@ -243,6 +284,12 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                     </div>
                 </div>
             </div>
+
+            {/* Recommendations Modal */}
+            <RecommendationsModal 
+                isOpen={showRecommendations} 
+                onClose={() => setShowRecommendations(false)} 
+            />
         </>
     );
 };
