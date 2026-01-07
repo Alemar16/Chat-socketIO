@@ -167,8 +167,9 @@ function App() {
   return (
     <>
       {username ? (
-        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-4 w-full max-w-2xl h-[90vh] flex flex-col mt-10">
-          <div>
+        <div className="backdrop-saturate-125 bg-white/20 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:mt-10 md:rounded-2xl overflow-hidden">
+          {/* Header & Input Section */}
+          <div className="flex-none bg-transparent">
             {/* Top Bar Container */}
             <div className="flex items-center justify-between p-4 bg-transparent w-full">
               <Header compact={true} />
@@ -191,21 +192,28 @@ function App() {
             />
             <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
           </div>
-          <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
-          <div className="mt-auto">
-             <Footer />
+          
+          {/* Messages Section - Grows to fill space */}
+          <div className="flex-1 min-h-0 relative w-full">
+             <div className="absolute inset-0">
+               <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
+             </div>
           </div>
+
+
         </div>
       ) : (
-        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
-          <LoginComponent
-            onLogin={handleLogin}
-            onLoginAsAnonymous={handleLoginAsAnonymous}
-          />
-          <div className="text-center mt-5 leading-tight">
-            <TermsAndConditions />
-            <Footer />
-          </div>
+        <div className="w-full min-h-[100dvh] flex flex-col justify-center items-center">
+            <div className="backdrop-saturate-125 bg-white/20 rounded-2xl w-[90%] max-w-md">
+              <LoginComponent
+                onLogin={handleLogin}
+                onLoginAsAnonymous={handleLoginAsAnonymous}
+              />
+              <div className="text-center mt-5 leading-tight mb-4">
+                <TermsAndConditions />
+                <Footer />
+              </div>
+            </div>
         </div>
       )}
     </>

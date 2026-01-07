@@ -8,7 +8,7 @@ const ListMessageComponent = ({ messages, onDelete }) => {
 
   return (
     <div className="w-full relative flex-grow flex flex-col min-h-0">
-      <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow-lg shadow-slate-900/60 flex flex-col h-full">
+      <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow-lg shadow-slate-900/60 flex flex-col h-full mx-2">
         {messages.length > 0 ? (
           <ul className="flex-1 overflow-y-auto p-3 mb-2 custom-scrollbar">
             {messages.map((message, index) => (

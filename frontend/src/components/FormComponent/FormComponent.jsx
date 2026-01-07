@@ -109,7 +109,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username }) => 
       )}
       <form
         onSubmit={handleSubmit}
-        className={`rounded-md bg-white p-2 mb-1 flex flex-col gap-2 shadow-sm ${
+        className={`rounded-md bg-white p-2 mb-1 mx-2 flex flex-col gap-2 shadow-sm ${
           errorVisible ? "border-2 border-red-500" : ""
         }`}
       >
