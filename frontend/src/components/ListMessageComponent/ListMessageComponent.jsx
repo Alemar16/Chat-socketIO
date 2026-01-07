@@ -1,20 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
 import AudioMessage from "../AudioMessage/AudioMessage";
 
 const ListMessageComponent = ({ messages, onDelete }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <div className="w-full relative flex-grow flex flex-col min-h-0">
       <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow-lg shadow-slate-900/60 flex flex-col h-full mx-2">
         {messages.length > 0 ? (
-          <ul className="flex-1 overflow-y-auto p-3 mb-2 custom-scrollbar flex flex-col justify-end">
+          <ul className="flex-1 overflow-y-auto p-3 mb-2 custom-scrollbar flex flex-col">
             {messages.map((message, index) => (
               <li
                 key={index}
-                className={`my-2 p-2 table text-sm rounded-md shadow-lg shadow-indigo-900/80 relative group ${
+                className={`my-2 p-2 table text-sm rounded-md shadow-lg shadow-indigo-900/80 relative group first:mt-auto ${
                   message.from === "Me"
                     ? "bg-purple-700 ml-auto"
                     : "bg-blue-400"
@@ -96,6 +105,7 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                 )}
               </li>
             ))}
+            <div ref={messagesEndRef} />
           </ul>
         ) : (
           <p className="p-2 text-sm text-gray-800 flex items-center justify-center">

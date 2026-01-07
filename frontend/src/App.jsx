@@ -66,7 +66,7 @@ function App() {
         id: message.id,
       };
 
-      setMessages((state) => [newMessage, ...state].slice(0, 100));
+      setMessages((state) => [...state, newMessage].slice(-100));
       
       if(message.from !== "Me") {
           const isBackground = document.hidden;
@@ -134,7 +134,7 @@ function App() {
       timestamp: new Date().toISOString(),
       id: id,
     };
-    setMessages([newMessage, ...messages].slice(0, 100)); // Auto-Cleanup
+    setMessages((state) => [...state, newMessage].slice(-100)); // Auto-Cleanup
     socket.emit("message", { body: message, id });
   };
 
@@ -148,7 +148,7 @@ function App() {
       timestamp: new Date().toISOString(),
       id: id,
     };
-    setMessages((prev) => [newMessage, ...prev].slice(0, 100)); // Auto-Cleanup
+    setMessages((prev) => [...prev, newMessage].slice(-100)); // Auto-Cleanup
     socket.emit("image", { body: imageData, caption, id });
   };
 
@@ -161,7 +161,7 @@ function App() {
       timestamp: new Date().toISOString(),
       id: id,
     };
-    setMessages((prev) => [newMessage, ...prev].slice(0, 100)); // Auto-Cleanup
+    setMessages((prev) => [...prev, newMessage].slice(-100)); // Auto-Cleanup
     socket.emit("audio", { body: audioData, id });
   };
 
