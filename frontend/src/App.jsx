@@ -97,7 +97,8 @@ function App() {
       const decryptedMessage = {
           ...message,
           body: decryptedBody,
-          caption: decryptedCaption
+          caption: decryptedCaption,
+          timestamp: message.time // Map server 'time' to 'timestamp'
       };
 
       setMessages((state) => [...state, decryptedMessage].slice(-100));
