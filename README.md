@@ -23,6 +23,11 @@ Flash Chat is a secure and anonymous chat application offering a revolutionary p
 - **Usage Recommendations**: Built-in guide with tips for secure and efficient usage.
 - **Customizable Alerts**: Integration with SweetAlert2 enhances user experience with customizable alerts and notifications.
 - **Easy Setup**: The project is divided into frontend and server directories, making setup hassle-free. Simply install dependencies with npm and run the project in development mode.
+- **Security & Privacy (New)**:
+  - **No-Log Policy**: The server does NOT store any logs of user activity, connections, or message metadata.
+  - **Transparent Encryption**: All messages are encrypted in the browser using the Room ID as a key. The server only sees encrypted data.
+  - **Volatile History**: A temporary history of text messages is kept in the server's RAM to help users catch up if they reload. This history is encrypted and is automatically deleted when the room becomes empty.
+  - **Auto-Reconnection**: Smart logic to restore your session if your mobile device momentarily disconnects.
 
 ## Technologies Used
 

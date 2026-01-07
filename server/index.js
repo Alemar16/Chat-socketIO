@@ -191,6 +191,18 @@ io.on("connection", (socket) => {
                 time: currentTime,
                 id: id, // Propagate ID
             });
+            
+             // Save Placeholder to History (Save RAM, Keep Context)
+             if (!roomHistory[userSender.roomId]) {
+                 roomHistory[userSender.roomId] = [];
+             }
+             roomHistory[userSender.roomId].push({
+                 body: null, // No heavy data
+                 from: userSender.username || "Anonymous",
+                 type: 'placeholder_image', // Special type for frontend rendering
+                 time: currentTime,
+                 id: id,
+             });
         }
     } catch (error) {
         console.error("Image Error:", error.message);
@@ -221,6 +233,18 @@ io.on("connection", (socket) => {
                 body: audioData,
                 from: userSender.username || "Anonymous",
                 type: 'audio',
+                time: currentTime,
+                id: id,
+            });
+
+            // Save Placeholder to History
+            if (!roomHistory[userSender.roomId]) {
+                roomHistory[userSender.roomId] = [];
+            }
+            roomHistory[userSender.roomId].push({
+                body: null,
+                from: userSender.username || "Anonymous",
+                type: 'placeholder_audio',
                 time: currentTime,
                 id: id,
             });

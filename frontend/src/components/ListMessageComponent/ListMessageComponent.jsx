@@ -70,6 +70,33 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                   >
                     {message.body}
                   </span>
+
+                )}
+
+                {/* Placeholders for Expired Content (History) */}
+                {(message.type === 'placeholder_image' || message.type === 'placeholder_audio') && (
+                    <div className="flex flex-col items-start gap-2 p-2 bg-white/20 rounded-lg border border-white/10 mt-1 mb-1 max-w-[250px]">
+                        <div className="flex items-center gap-2 text-zinc-200">
+                             {message.type === 'placeholder_image' ? (
+                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 opacity-80">
+                                   <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clipRule="evenodd" />
+                                 </svg>
+                             ) : (
+                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 opacity-80">
+                                   <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.805l-1.008 3.604a2.25 2.25 0 001.374 2.789l.334.096A9.008 9.008 0 003.55 16.29a3.756 3.756 0 003.011 3.511C8.36 20.35 10.16 21 12 21c1.315 0 2.583-.332 3.715-.923a3.75 3.75 0 001.98-2.593l.335-.096a2.25 2.25 0 001.373-2.79L18.426 11c-.342-1.14-1.518-1.805-2.66-1.805H13.5V4.06zM9.59 13.565l-1.293-1.292a1 1 0 00-1.414 1.414l1.293 1.293a1 1 0 001.414-1.414z" />
+                                 </svg> 
+                             )}
+                             <span className="text-xs font-bold uppercase tracking-wider opacity-80">
+                                 {t('messages.contentExpired', 'Content Expired')}
+                             </span>
+                        </div>
+                        <p className="text-[10px] text-zinc-300 italic leading-snug">
+                             {message.type === 'placeholder_image' 
+                                ? t('messages.imageRemoved', 'This image was removed for privacy & performance.')
+                                : t('messages.audioRemoved', 'This audio was removed for privacy & performance.')
+                             }
+                        </p>
+                    </div>
                 )}
 
                 {/* Marca de tiempo del mensaje */}
