@@ -168,36 +168,39 @@ function App() {
     <>
       {username ? (
         <div className="backdrop-saturate-125 bg-white/20 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:mt-10 md:rounded-2xl overflow-hidden">
-          {/* Header & Input Section */}
+          {/* Header Section */}
           <div className="flex-none bg-transparent">
-            {/* Top Bar Container */}
-            <div className="flex items-center justify-between p-4 bg-transparent w-full">
-              <Header compact={true} />
-              <button 
-                onClick={() => setIsSideMenuOpen(true)}
-                className="p-2 text-white hover:text-gray-200 transition-colors drop-shadow-md"
-              >
-                 <Bars3Icon className="w-8 h-8" />
-              </button>
-            </div>
-            <SideMenu 
-              isOpen={isSideMenuOpen} 
-              onClose={() => setIsSideMenuOpen(false)}
-              roomId={roomId}
-              username={username}
-              soundEnabled={soundEnabled}
-              setSoundEnabled={setSoundEnabled}
-              onLogout={handleLogout}
-              connectedUsers={connectedUsers}
-            />
-            <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
+             <div className="flex items-center justify-between p-4 bg-transparent w-full">
+               <Header compact={true} />
+               <button 
+                 onClick={() => setIsSideMenuOpen(true)}
+                 className="p-2 text-white hover:text-gray-200 transition-colors drop-shadow-md"
+               >
+                  <Bars3Icon className="w-8 h-8" />
+               </button>
+             </div>
+             <SideMenu 
+               isOpen={isSideMenuOpen} 
+               onClose={() => setIsSideMenuOpen(false)}
+               roomId={roomId}
+               username={username}
+               soundEnabled={soundEnabled}
+               setSoundEnabled={setSoundEnabled}
+               onLogout={handleLogout}
+               connectedUsers={connectedUsers}
+             />
           </div>
           
           {/* Messages Section - Grows to fill space */}
-          <div className="flex-1 min-h-0 relative w-full">
-             <div className="absolute inset-0">
+          <div className="flex-1 min-h-0 relative w-full overflow-hidden">
+             <div className="absolute inset-0 flex flex-col">
                <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
              </div>
+          </div>
+
+          {/* Input Section - Fixed at bottom */}
+          <div className="flex-none w-full bg-transparent pb-2 pt-2">
+             <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
           </div>
 
 
