@@ -44,7 +44,7 @@ app.use(express.static(resolve("frontend/dist"))); //desde server se levanta el 
 
 //conexion socket io con hash de usuarios
 io.on("connection", (socket) => {
-  console.log(`${socket.id} connected`);
+
 
   // Emitir la lista de usuarios al cliente cuando hay un cambio
   // updateConnectedUsers(); // Don't broadcast to everyone on connect, wait for room join
@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
     // Store user info including room
     users[socket.id] = { username, roomId: normalizedRoomId };
     
-    console.log(`${socket.id} ${username} joined ${normalizedRoomId}`);
+
     
     // Update users ONLY in that room
     updateConnectedUsers(normalizedRoomId);
@@ -82,7 +82,7 @@ io.on("connection", (socket) => {
     const user = users[socket.id];
     if (user) {
       const { username, roomId } = user;
-      console.log(`${socket.id} ${username} disconnected from ${roomId}`);
+
       
       delete users[socket.id];
       rateLimiter.cleanup(socket.id); // Clean up rate limiter memory
@@ -111,9 +111,7 @@ io.on("connection", (socket) => {
     
         const user = users[socket.id];
         if (user) {
-            console.log(
-            `${user.username} sent a message in ${user.roomId} at ${new Date().toLocaleTimeString()}`
-            );
+            // Log removed for privacy
         }
 
         // Obtener la hora actual
@@ -159,7 +157,6 @@ io.on("connection", (socket) => {
         const userSender = users[socket.id];
         if (userSender && userSender.roomId) {
             const currentTime = new Date().toISOString(); // ISO string for frontend date-fns
-            console.log(`${userSender.username} sent an IMAGE in ${userSender.roomId}`);
 
             // Broadcast to room
             socket.to(userSender.roomId).emit("message", {
@@ -195,7 +192,6 @@ io.on("connection", (socket) => {
         const userSender = users[socket.id];
         if (userSender && userSender.roomId) {
             const currentTime = new Date().toISOString();
-            console.log(`${userSender.username} sent an AUDIO in ${userSender.roomId}`);
 
             socket.to(userSender.roomId).emit("message", {
                 body: audioData,
