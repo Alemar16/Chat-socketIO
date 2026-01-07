@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import QRCode from "react-qr-code";
 import { 
     XMarkIcon, 
     ClipboardDocumentIcon, 
@@ -154,6 +155,19 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                     >
                                         <ClipboardDocumentIcon className="w-5 h-5" />
                                     </button>
+                                </div>
+                                
+                                {/* QR Code Card */}
+                                <div className="bg-white p-4 rounded-xl flex flex-col items-center justify-center border border-gray-200 shadow-sm">
+                                    <span className="text-[10px] text-gray-400 font-semibold uppercase mb-2">{t('scanToJoin')}</span>
+                                    <div className="bg-white p-2 rounded-lg border border-gray-100">
+                                        <QRCode 
+                                            value={window.location.href} 
+                                            size={128}
+                                            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                                            viewBox={`0 0 256 256`}
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Copy URL Card/Button */}

@@ -36,11 +36,7 @@ const Modal = () => {
           <button id="enlace" style="background-color: #ffffff; border: 1px solid #3182ce; color: #3182ce; padding: 8px 16px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 4px; transition: background-color 0.3s, color 0.3s;" class="text-blue-800 cursor-pointer font-bold">${t('modal.linkBtn')}</button>
           <br>
           <br>
-           <li style="color: black;">${t('modal.step3')}</li>
-           <div style="display: flex; gap: 5px; justify-content: center; margin-top: 5px;">
-             <input id="join-room-input" type="text" placeholder="${t('modal.joinPlaceholder')}" style="border: 1px solid #ccc; padding: 8px; border-radius: 4px; width: 60%; color: black;" />
-             <button id="join-btn" style="background-color: #4CCFF1; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">${t('modal.joinBtn')}</button>
-           </div>
+
           <br>
           <li class="text-red-900 font-bold text-3xl"><span style="color: #4CCFF1; text-shadow: 2px 2px 4px #000; font-family: Boogaloo, cursive;">${t('modal.start')}</span></li> 
          
@@ -76,29 +72,7 @@ const Modal = () => {
           enlaceBtn.style.color = "#ffffff";
         });
 
-        // Join room logic
-        const joinBtn = modalElement.querySelector("#join-btn");
-        const joinInput = modalElement.querySelector("#join-room-input");
 
-        joinBtn.addEventListener("click", () => {
-          const inputVal = joinInput.value.trim();
-          if (!inputVal) return;
-
-          let roomId;
-          try {
-            const url = new URL(inputVal);
-            roomId = url.searchParams.get("room");
-          } catch (e) {
-            // If not a URL, assume it's the room ID itself
-            roomId = inputVal;
-          }
-
-          if (roomId) {
-            sessionStorage.setItem("skip_welcome_modal", "true");
-            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + roomId;
-            window.location.href = newUrl;
-          }
-        });
       },
     });
 
