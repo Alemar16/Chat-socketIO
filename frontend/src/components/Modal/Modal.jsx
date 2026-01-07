@@ -47,7 +47,7 @@ const Modal = () => {
         </ol>
       `,
       customClass: {
-        modal: "rounded-lg shadow-xxl",
+        popup: "rounded-lg shadow-xxl bg-white/95 backdrop-blur-md",
         title: "text-center text-5xl mt-[-4rem] whitespace-nowrap",
         imageUrl: "mx-auto mt-3",
         htmlContainer: "p-4",
@@ -55,8 +55,7 @@ const Modal = () => {
         "bg-purple-900 text-white px-4 py-2 rounded-lg shadow-md hover:bg-purple-800 focus:outline-none focus:shadow-outline-blue",
       },
       width: 500,
-      padding: "0.5em",
-      background: "rgba(180, 180, 180, 0.7)", 
+      padding: "0.5em", 
 
       didOpen: (modalElement) => {
         // Language Switcher Logic
