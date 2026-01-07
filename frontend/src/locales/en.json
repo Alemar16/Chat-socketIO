@@ -1,0 +1,119 @@
+{
+  "welcome": "Welcome,",
+  "greeting": "Welcome, {{username}}!",
+  "connectedUsers": "Connected Users",
+  "noUsersConnected": "No users connected",
+  "roomDetails": "Room Details",
+  "roomId": "Room ID",
+  "invitationLink": "Invitation Link",
+  "copyLinkInvitation": "Copy Link Invitation",
+  "settings": "Settings",
+  "notificationsLabel": "Notifications",
+  "language": "Language",
+  "theme": "Theme",
+  "about": "About Flash Chat",
+  "roomUrlCopied": "Room URL copied to clipboard",
+  "roomIdCopied": "Room ID copied to clipboard",
+  "copied": "copied to clipboard",
+  "you": "(You)",
+  "modal": {
+    "howToUse": "How to Use:",
+    "step1": "Enter your name and click \"<span class='font-bold'>{{login}}</span>\"<br> or <br> \"Enter as <span class='font-bold'>{{anonymous}}</span>\".",
+    "step2": "Share this link:",
+    "linkBtn": "Link",
+    "step3": "Or join a room:",
+    "joinPlaceholder": "Paste link or Room ID",
+    "joinBtn": "Join",
+    "start": "Start<br> Chatting and Enjoy!",
+    "copied": "Copied"
+  },
+  "recommendations": {
+    "title": "About Flash Chat",
+    "intro": "Welcome to <span class='text-purple-600 font-bold'>FlashChat</span>. This tool is designed to facilitate quick and secure communication. Here are some guidelines to get the most out of it.",
+    "advantages": {
+      "title": "Main Advantages",
+      "speedTitle": "Real-time speed:",
+      "speedContent": "Instant communication thanks to technology used by major platforms.",
+      "privacyTitle": "Unmatched privacy:",
+      "privacyContent": "No permanent history is saved and messages are deleted when closing or refreshing the page.",
+      "noLogsTitle": "No logs or storage:",
+      "noLogsContent": "Forget emails or account creation. No cloud storage.",
+      "simplicityTitle": "Simplicity and usability:",
+      "simplicityContent": "Clean interface without distractions.",
+      "flexibilityTitle": "Flexibility and control:",
+      "flexibilityContent": "Create multiple private rooms."
+    },
+    "usage": {
+      "title": "Recommended Use",
+      "ephemeralTitle": "Ephemeral conversations:",
+      "ephemeralContent": "Ideal for quick chats that require no history.",
+      "coordinationTitle": "Agile team coordination:",
+      "coordinationContent": "Quick synchronization without bureaucracy.",
+      "sharingTitle": "Quick info sharing:",
+      "sharingContent": "Direct exchange without complex registrations.",
+      "privateDataTitle": "Private data and conversations:",
+      "privateDataContent": "Processed in real-time, leaving no exposed info."
+    },
+    "security": {
+      "title": "Guidelines & Security",
+      "passwords": "Do not share passwords or sensitive financial information.",
+      "reload": "Remember that if you reload the page, you might lose the local message history.",
+      "respect": "Be respectful to other participants in the room."
+    },
+    "understood": "Understood"
+  },
+  "terms": {
+    "link": "Terms and Conditions",
+    "title": "Terms and Conditions",
+    "agreement": "Terms and Conditions Agreement for Anonymous Mode in Flash Chat",
+    "section1": "<strong>1. Statement of Intent</strong><br>The Anonymous Mode in Flash Chat is provided with the purpose of protecting the identity...",
+    "fullText": "<div class='scrollable-content' style='height: 300px; overflow-y: auto; text-align: justify; padding-right: 10px;'><h2 style='font-size: 1.2rem; margin-bottom: 0.5rem;'>Terms of Service and Disclaimer</h2><p style='margin-bottom: 1rem; font-style: italic; font-size: 0.8rem;'>Last Updated: January 2026</p><p><strong>1. Nature of the Service (Anonymous & Ephemeral)</strong><br>Flash Chat is provided as a real-time, ephemeral communication tool. <strong>We do not store logs, personal data, messages, or IP addresses</strong> once the session is closed. By using this service, you acknowledge that communications are temporary and their permanence depends solely on the active session.</p><p><strong>2. Absolute User Responsibility</strong><br>You acknowledge and agree that <strong>you are solely responsible</strong> for the content you share, send, or receive through Flash Chat. The developer acts purely as a technical intermediary and exercises no control, moderation, or supervision over user-generated content.</p><p><strong>3. Limitation of Liability</strong><br>TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE DEVELOPER SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING FROM THE USE OF THIS SERVICE. This includes, but is not limited to, offensive content shared by other users, illegal usage by third parties, or data leaks caused by client-side security breaches (e.g., malware on your device).</p><p><strong>4. Access Control and Service Integrity</strong><br>Since this service operates without user registration, traditional account suspension measures are not applicable. However, the developer reserves the right to deny, restrict, or block access to the service for any user, utilizing technical measures such as IP blocking, to preserve platform integrity or actively comply with legal obligations, without prior notice.</p><p><strong>5. Prohibited Activities</strong><br>It is strictly prohibited to use Flash Chat for: illegal activities, harassment, distribution of child sexual abuse material (CSAM), malware distribution, or any action that violates local or international laws. <strong>The user assumes all legal consequences</strong> of such actions.</p><p><strong>6. Indemnification</strong><br>You agree to indemnify and hold the developer harmless from any claims, legal actions, or demands arising from your violation of these terms or misuse of the platform.</p><p><strong>7. Governing Law</strong><br>These terms shall be governed by the laws of the Republic of Argentina.</p></div>",
+    "close": "Close"
+  },
+  "footer": {
+    "rights": ". All Rights Reserved."
+  },
+  "notifications": {
+    "newMessage": "New message from {{from}}",
+    "sentMedia": "Sent a media file"
+  },
+  "login": {
+    "login": "Login",
+    "anonymous": "Anonymous",
+    "anonymousMode": "Anonymous Mode",
+    "enterUsername": "Enter your username...",
+    "agreeTerms": "I agree to the Terms and Conditions",
+    "continue": "Continue",
+    "mustAgree": "You must agree to the terms!",
+    "anonymousActivated": "Anonymous Mode Activated",
+    "anonymousInfo": "<p>By using anonymous mode, your identity will be protected.</p><p>All data associated with your session will be deleted upon logout.</p>",
+    "ok": "OK"
+  },
+  "form": {
+    "errorImageOnly": "Only image files are allowed.",
+    "errorImageSize": "Image too large (Max 3MB).",
+    "errorEmpty": "Please write a message or select an image.",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "removeImage": "Remove Image",
+    "cancelRecording": "Cancel Recording",
+    "recording": "Recording...",
+    "sendVoice": "Send Voice Message",
+    "attachImage": "Attach Image",
+    "placeholder": "Write your message...",
+    "recordVoice": "Record Voice Message"
+  },
+  "messages": {
+    "noMessages": "No messages yet.",
+    "sharedContent": "Shared content",
+    "deleteMessage": "Delete Message",
+    "fullSize": "Full size"
+  },
+  "logout": {
+    "title": "Wait!",
+    "text": "If you leave, all data and messages will be permanently deleted. This action is irreversible.",
+    "confirmButton": "Yes, delete & exit",
+    "cancelButton": "Cancel",
+    "tooltip": "Exit & Delete Data"
+  }
+}

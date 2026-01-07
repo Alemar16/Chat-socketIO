@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { XMarkIcon, ShieldCheckIcon, RocketLaunchIcon, ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
 
 import { useState } from 'react';
+import { useTranslation, Trans } from 'react-i18next'; // Added Trans just in case, but using separated keys
 
 const ModalSection = ({ title, icon: Icon, children, colorClass, isOpen, onToggle }) => (
     <div className="border border-gray-100 rounded-lg overflow-hidden transition-all duration-300">
@@ -42,6 +43,7 @@ ModalSection.propTypes = {
 };
 
 export const RecommendationsModal = ({ isOpen, onClose }) => {
+    const { t } = useTranslation();
     // Initial state: first section open, others closed
     const [openSections, setOpenSections] = useState({
         advantages: true, // Default open
@@ -71,7 +73,7 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                 
                 {/* Header */}
                 <div className="bg-purple-600 px-6 py-4 flex items-center justify-between flex-shrink-0">
-                    <h3 className="text-white font-bold text-lg tracking-wide">Acerca de Flash Chat</h3>
+                    <h3 className="text-white font-bold text-lg tracking-wide">{t('recommendations.title')}</h3>
                     <button 
                         onClick={onClose}
                         className="text-white/80 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
@@ -85,45 +87,45 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                     
                     {/* Intro */}
                     <p className="text-gray-600 text-sm leading-relaxed pb-2">
-                        Bienvenido a <span className="text-purple-600 font-bold">FlashChat</span>. Esta herramienta está diseñada para facilitar la comunicación rápida y segura. Aquí tienes algunas guías para sacar el máximo provecho.
+                        <Trans i18nKey="recommendations.intro" components={{ span: <span className="text-purple-600 font-bold" /> }} />
                     </p>
 
                     {/* Section 1: Advantages */}
                     <ModalSection 
-                        title="Principales Ventajas" 
+                        title={t('recommendations.advantages.title')} 
                         icon={RocketLaunchIcon}
                         colorClass={{ bg: 'bg-purple-50', text: 'text-purple-700' }}
                         isOpen={openSections.advantages}
                         onToggle={() => toggleSection('advantages')}
                     >
                         <ul className="space-y-3 list-disc list-inside">
-                            <li><span className="font-medium text-purple-900">Velocidad en tiempo real:</span> Comunicación instantánea gracias a la tecnología que grandes plataformas como WhatsApp y Facebook utilizan.</li>
-                            <li><span className="font-medium text-purple-900">Privacidad incomparable:</span> No se guardan historiales permanentes y los mensajes se eliminan al cerrar o actualizar la página, caracteristica que garantiza la privacidad de los usuarios y hacer de sus datos generados inrastreables.</li>
-                            <li><span className="font-medium text-purple-900">Sin registros ni almacenamiento:</span> Olvídate de correos electrónicos o creación de cuentas. Al ser una aplicación diseñada para conversaciones fugaces, no requiere almacenamiento en la nube ni centros de memoria externos.</li>
-                            <li><span className="font-medium text-purple-900">Simplicidad y usabilidad:</span> Interfaz limpia y sin distracciones, con opciones para enviar imágenes y mensajes de voz de forma rápida.</li>
-                            <li><span className="font-medium text-purple-900">Flexibilidad y control:</span> Creación de múltiples salas privadas con enlace de invitación y visualización de contactos conectados.</li>
+                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.speedTitle')}</span> {t('recommendations.advantages.speedContent')}</li>
+                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.privacyTitle')}</span> {t('recommendations.advantages.privacyContent')}</li>
+                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.noLogsTitle')}</span> {t('recommendations.advantages.noLogsContent')}</li>
+                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.simplicityTitle')}</span> {t('recommendations.advantages.simplicityContent')}</li>
+                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.flexibilityTitle')}</span> {t('recommendations.advantages.flexibilityContent')}</li>
                         </ul>
                     </ModalSection>
 
                     {/* Section 2: Main Use */}
                     <ModalSection 
-                        title="Uso Recomendado" 
+                        title={t('recommendations.usage.title')} 
                         icon={ChatBubbleLeftRightIcon}
                         colorClass={{ bg: 'bg-blue-50', text: 'text-blue-600' }}
                         isOpen={openSections.usage}
                         onToggle={() => toggleSection('usage')}
                     >
                         <ul className="space-y-2 list-disc list-inside">
-                            <li><span className="font-medium text-blue-900">Conversaciones efímeras:</span> Ideal para charlas rápidas que no requieren historial.</li>
-                            <li><span className="font-medium text-blue-900">Coordinación de equipos ágiles:</span> Sincronización rápida sin burocracia.</li>
-                            <li><span className="font-medium text-blue-900">Compartir información rápida:</span> Intercambio directo sin registros complejos.</li>
-                            <li><span className="font-medium text-blue-900">Datos y conversaciones privadas de valor:</span> Cada mensaje está procesado en tiempo real y no dejará información expuesta, ideal para tratar temas de importancia con total confidencialidad.</li>
+                            <li><span className="font-medium text-blue-900">{t('recommendations.usage.ephemeralTitle')}</span> {t('recommendations.usage.ephemeralContent')}</li>
+                            <li><span className="font-medium text-blue-900">{t('recommendations.usage.coordinationTitle')}</span> {t('recommendations.usage.coordinationContent')}</li>
+                            <li><span className="font-medium text-blue-900">{t('recommendations.usage.sharingTitle')}</span> {t('recommendations.usage.sharingContent')}</li>
+                            <li><span className="font-medium text-blue-900">{t('recommendations.usage.privateDataTitle')}</span> {t('recommendations.usage.privateDataContent')}</li>
                         </ul>
                     </ModalSection>
 
                     {/* Section 3: Safety/Guidelines */}
                     <ModalSection 
-                        title="Guías y Seguridad" 
+                        title={t('recommendations.security.title')} 
                         icon={ShieldCheckIcon}
                         colorClass={{ bg: 'bg-green-50', text: 'text-green-600' }}
                         isOpen={openSections.security}
@@ -132,15 +134,15 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                         <ul className="space-y-2">
                             <li className="flex gap-2">
                                 <span className="text-green-500 font-bold">•</span>
-                                <span>No compartas contraseñas o información financiera sensible.</span>
+                                <span>{t('recommendations.security.passwords')}</span>
                             </li>
                             <li className="flex gap-2">
                                 <span className="text-green-500 font-bold">•</span>
-                                <span>Recuerda que si recargas la página, podrías perder el historial de mensajes local.</span>
+                                <span>{t('recommendations.security.reload')}</span>
                             </li>
                             <li className="flex gap-2">
                                 <span className="text-green-500 font-bold">•</span>
-                                <span>Sé respetuoso con los demás participantes de la sala.</span>
+                                <span>{t('recommendations.security.respect')}</span>
                             </li>
                         </ul>
                     </ModalSection>
@@ -153,7 +155,7 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                         onClick={onClose}
                         className="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors"
                     >
-                        Entendido
+                        {t('recommendations.understood')}
                     </button>
                 </div>
 

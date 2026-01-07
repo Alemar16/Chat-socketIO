@@ -3,8 +3,10 @@ import PropTypes from "prop-types";
 import { format } from "date-fns";
 import AudioMessage from "../AudioMessage/AudioMessage";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import { useTranslation } from "react-i18next";
 
 const ListMessageComponent = ({ messages, onDelete }) => {
+  const { t } = useTranslation();
   const [selectedImage, setSelectedImage] = useState(null);
   const messagesEndRef = useRef(null);
 
@@ -47,7 +49,7 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                   <div className="flex flex-col">
                       <img 
                         src={message.body} 
-                        alt="Shared content" 
+                        alt={t('messages.sharedContent')} 
                         className="max-w-[200px] max-h-[200px] object-cover rounded cursor-pointer hover:opacity-90 mt-1 transition-opacity mb-1"
                         onClick={() => setSelectedImage(message.body)}
                       />
@@ -97,7 +99,7 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                             onDelete(message.id);
                         }}
                         className="absolute top-1 right-2 text-white/70 hover:text-white transition-colors z-10 p-1"
-                        title="Delete Message"
+                        title={t('messages.deleteMessage')}
                     >
                         <TrashIcon className="w-4 h-4" />
                     </button>
@@ -108,7 +110,7 @@ const ListMessageComponent = ({ messages, onDelete }) => {
           </ul>
         ) : (
           <p className="p-2 text-sm text-gray-800 flex items-center justify-center">
-            No messages yet.
+            {t('messages.noMessages')}
           </p>
         )}
       </div>
@@ -122,7 +124,7 @@ const ListMessageComponent = ({ messages, onDelete }) => {
             <div className="relative max-w-4xl max-h-screen">
                  <img 
                     src={selectedImage} 
-                    alt="Full size" 
+                    alt={t('messages.fullSize')} 
                     className="max-w-full max-h-[90vh] rounded shadow-2xl" 
                 />
                  <button 
@@ -137,6 +139,7 @@ const ListMessageComponent = ({ messages, onDelete }) => {
     </div>
   );
 };
+
 
 ListMessageComponent.propTypes = {
   messages: PropTypes.arrayOf(

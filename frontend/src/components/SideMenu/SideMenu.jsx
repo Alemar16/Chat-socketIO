@@ -17,11 +17,13 @@ import { ButtonLogout } from "../Buttons/ButtonLogout";
 import Swal from 'sweetalert2';
 import { useState } from 'react';
 import { RecommendationsModal } from "../RecommendationsModal/RecommendationsModal";
+import { useTranslation } from 'react-i18next';
 
 const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEnabled, onLogout, connectedUsers }) => {
     
+    const { t, i18n } = useTranslation();
     const [isUsersListOpen, setIsUsersListOpen] = useState(true);
-    const [language, setLanguage] = useState('en'); // 'en' or 'es'
+    // const [language, setLanguage] = useState('en'); // Removed local state
     const [theme, setTheme] = useState('light'); // 'light' or 'dark'
     const [isRoomDetailsOpen, setIsRoomDetailsOpen] = useState(true);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -77,7 +79,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                         <Header />
                     </div>
                     <div className="text-center mt-0">
-                        <span className="text-gray-500 font-medium text-sm">Welcome, </span>
+                        <span className="text-gray-500 font-medium text-sm">{t('welcome')} </span>
                         <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500 text-lg">{username}!</span>
                     </div>
                 </div>
@@ -93,7 +95,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                             onClick={() => setIsUsersListOpen(!isUsersListOpen)}
                             className="w-full flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors ml-1"
                         >
-                            <span>Connected Users ({connectedUsers.length})</span>
+                            <span>{t('connectedUsers')} ({connectedUsers.length})</span>
                             {isUsersListOpen ? (
                                 <ChevronUpIcon className="w-4 h-4" />
                             ) : (
@@ -112,12 +114,12 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                             <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
                                         </div>
                                         <span className={`font-medium text-sm truncate ${user.username === username ? 'text-purple-600' : 'text-gray-700'}`}>
-                                            {user.username === username ? `${user.username} (You)` : user.username}
+                                            {user.username === username ? `${user.username} ${t('you')}` : user.username}
                                         </span>
                                     </div>
                                 ))}
                                 {connectedUsers.length === 0 && (
-                                    <p className="text-sm text-gray-400 italic text-center py-2">No users connected</p>
+                                    <p className="text-sm text-gray-400 italic text-center py-2">{t('noUsersConnected')}</p>
                                 )}
                             </div>
                         )}
@@ -129,7 +131,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                             onClick={() => setIsRoomDetailsOpen(!isRoomDetailsOpen)}
                             className="w-full flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors ml-1"
                         >
-                            <span>Room Details</span>
+                            <span>{t('roomDetails')}</span>
                             {isRoomDetailsOpen ? (
                                 <ChevronUpIcon className="w-4 h-4" />
                             ) : (
@@ -142,11 +144,11 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                 {/* Room ID Card */}
                                 <div className="bg-white p-3 rounded-xl flex items-center justify-between border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-gray-400 font-semibold uppercase">Room ID</span>
+                                        <span className="text-[10px] text-gray-400 font-semibold uppercase">{t('roomId')}</span>
                                         <span className="font-mono font-bold text-gray-800 text-lg tracking-wider">{roomId}</span>
                                     </div>
                                     <button 
-                                        onClick={() => copyToClipboard(roomId, "Room ID")}
+                                        onClick={() => copyToClipboard(roomId, t('roomId'))}
                                         className="p-2 text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
                                         title="Copy ID"
                                     >
@@ -160,8 +162,8 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                     className="w-full bg-white p-3 rounded-xl flex items-center justify-between border border-gray-200 shadow-sm hover:shadow-md transition-all group text-left"
                                 >
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-gray-400 font-semibold uppercase">Invitation Link</span>
-                                        <span className="font-medium text-gray-600 group-hover:text-purple-600 transition-colors text-sm">Copy Link Invitation</span>
+                                        <span className="text-[10px] text-gray-400 font-semibold uppercase">{t('invitationLink')}</span>
+                                        <span className="font-medium text-gray-600 group-hover:text-purple-600 transition-colors text-sm">{t('copyLinkInvitation')}</span>
                                     </div>
                                     <div className="p-2 text-purple-600 bg-purple-50 group-hover:bg-purple-100 rounded-lg transition-colors">
                                         <LinkIcon className="w-5 h-5" />
@@ -177,7 +179,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                             onClick={() => setIsSettingsOpen(!isSettingsOpen)}
                             className="w-full flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors ml-1"
                         >
-                            <span>Settings</span>
+                            <span>{t('settings')}</span>
                             {isSettingsOpen ? (
                                 <ChevronUpIcon className="w-4 h-4" />
                             ) : (
@@ -197,7 +199,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                                 <SpeakerXMarkIcon className="w-5 h-5" />
                                             )}
                                         </div>
-                                        <span className="font-medium text-gray-700 text-sm">Notifications</span>
+                                        <span className="font-medium text-gray-700 text-sm">{t('notificationsLabel')}</span>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input 
@@ -216,18 +218,18 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                         <div className="p-2 rounded-full bg-blue-100 text-blue-600">
                                             <GlobeAltIcon className="w-5 h-5" />
                                         </div>
-                                        <span className="font-medium text-gray-700 text-sm">Language</span>
+                                        <span className="font-medium text-gray-700 text-sm">{t('language')}</span>
                                     </div>
                                     <div className="flex bg-gray-100 rounded-lg p-1">
                                         <button 
-                                            onClick={() => setLanguage('en')}
-                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${language === 'en' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                            onClick={() => i18n.changeLanguage('en')}
+                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${i18n.resolvedLanguage === 'en' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                                         >
                                             EN
                                         </button>
                                         <button 
-                                            onClick={() => setLanguage('es')}
-                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${language === 'es' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                            onClick={() => i18n.changeLanguage('es')}
+                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${i18n.resolvedLanguage === 'es' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                                         >
                                             ES
                                         </button>
@@ -244,7 +246,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                                 <SunIcon className="w-5 h-5" />
                                             )}
                                         </div>
-                                        <span className="font-medium text-gray-700 text-sm">Theme</span>
+                                        <span className="font-medium text-gray-700 text-sm">{t('theme')}</span>
                                     </div>
                                     <div className="flex bg-gray-100 rounded-lg p-1">
                                         <button 
@@ -274,7 +276,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                            onClick={() => setShowRecommendations(true)}
                            className="text-xs font-medium text-gray-500 hover:text-purple-600 underline tracking-wide transition-colors"
                        >
-                           Acerca de Flash Chat
+                           {t('about')}
                        </button>
 
                        <ButtonLogout onLogout={() => {
