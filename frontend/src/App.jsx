@@ -28,6 +28,7 @@ function App() {
   const [connectedUsers, setConnectedUsers] = useState([]);
   const soundEnabledRef = useRef(soundEnabled);
   const roomIdRef = useRef(roomId); // Ref to access current roomId in callbacks
+  const usernameRef = useRef(username); // Ref to access current username for reconnect
 
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
@@ -82,6 +83,14 @@ function App() {
   useEffect(() => {
     socket.on("connect", () => {
         console.log("Connected to server");
+        // Auto-Re-Login: If we have a user and room, re-join.
+        // This fixes mobile "ghost" connections after backgrounding.
+        if (usernameRef.current && roomIdRef.current) {
+            socket.emit("login", { 
+                username: usernameRef.current, 
+                roomId: roomIdRef.current 
+            });
+        }
     });
 
     socket.on("users", (users) => {
@@ -132,6 +141,7 @@ function App() {
     }
     
     setUsername(username);
+    usernameRef.current = username; // Update ref
     socket.emit("login", { username, roomId: finalRoomId });
     requestNotificationPermission();
   };
@@ -139,12 +149,14 @@ function App() {
   const handleLogout = () => {
     socket.emit("logout");
     setUsername("");
+    usernameRef.current = ""; // Reset ref
     window.location.href = window.location.pathname;
   };
 
   const handleLoginAsAnonymous = () => {
     const anonymousUsername = `Anonymous_${Math.floor(Math.random() * 1000)}`;
     setUsername(anonymousUsername);
+    usernameRef.current = anonymousUsername; // Update ref
     socket.emit("login", { username: anonymousUsername, roomId });
   };
 
