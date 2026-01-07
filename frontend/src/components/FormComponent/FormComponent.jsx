@@ -5,24 +5,25 @@ import {
     MicrophoneIcon, 
     TrashIcon, 
     PaperAirplaneIcon,
-    XMarkIcon 
+    XMarkIcon,
+    CameraIcon,
+    PhotoIcon 
 } from "@heroicons/react/24/solid";
 import useVoiceRecorder from "../../hooks/useVoiceRecorder";
 import ButtonSend from "../Buttons/ButtonSend";
 
-import ConnectedUsersList from "../ConnectedUsersList/ConnectedUsersList";
-import { ButtonShowUsers } from "../Buttons/ButtonShowUsers";
+import CameraModal from "../Modal/CameraModal";
 
-import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
-const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socket }) => {
+
+const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null); // Ref for file input
-  const [showConnectedUsersModal, setShowConnectedUsersModal] = useState(false);
-  const [connectedUsers, setConnectedUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorVisible, setErrorVisible] = useState(false); // State para controlar la visibilidad del error
   const [previewImage, setPreviewImage] = useState(null); // State for image preview
+  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false); // State to toggle attachment options
+  const [showCameraModal, setShowCameraModal] = useState(false); // State to toggle camera modal
 
   const {
       isRecording,
@@ -33,12 +34,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
       formatTime
   } = useVoiceRecorder(onAudioSubmit);
 
-  useEffect(() => {
-    socket.on("users", updateConnectedUsers);
-    return () => {
-      socket.off("users", updateConnectedUsers);
-    };
-  }, [socket]);
+
 
   useEffect(() => {
     if (errorMessage) {
@@ -70,6 +66,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
       };
       reader.readAsDataURL(file);
       e.target.value = null; // Reset input
+      setShowAttachmentOptions(false); // Hide options after selection
     }
   };
 
@@ -96,29 +93,47 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
     setErrorMessage("");
   };
 
-  const updateConnectedUsers = (users) => {
-    setConnectedUsers(users);
+  const handleCameraCapture = (imageDataUrl) => {
+    setPreviewImage(imageDataUrl);
+    setShowAttachmentOptions(false);
   };
+
+
 
   return (
     <div className="w-full relative">
-      {username && (
-        <div className="flex justify-between items-center mb-2 mt-2 px-5 gap-5">
-          <GreetingComponent username={username} />
-          <div>
-            <ButtonShowUsers
-              onShowUsers={setShowConnectedUsersModal}
-              connectedUsers={connectedUsers}
-            />
-          </div>
-        </div>
-      )}
+{/* GreetingComponent Removed */}
       <form
         onSubmit={handleSubmit}
-        className={`rounded-md bg-white p-2 mb-1 flex flex-col gap-2 shadow-sm ${
+        className={`rounded-md bg-white p-2 mb-1 mx-2 flex flex-col gap-2 shadow-sm ${
           errorVisible ? "border-2 border-red-500" : ""
         }`}
       >
+
+        {showAttachmentOptions && !previewImage && (
+             <div className="w-full flex justify-start p-2 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative gap-4">
+               <button
+                 type="button"
+                 onClick={() => setShowCameraModal(true)}
+                 className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 rounded-md transition-colors"
+               >
+                 <div className="bg-purple-100 p-2 rounded-full text-purple-600">
+                    <CameraIcon className="w-6 h-6" />
+                 </div>
+                 <span className="text-xs text-gray-600 font-medium">Camera</span>
+               </button>
+               <button
+                 type="button"
+                 onClick={() => fileInputRef.current.click()}
+                 className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 rounded-md transition-colors"
+               >
+                 <div className="bg-blue-100 p-2 rounded-full text-blue-600">
+                    <PhotoIcon className="w-6 h-6" />
+                 </div>
+                 <span className="text-xs text-gray-600 font-medium">Gallery</span>
+               </button>
+             </div>
+        )}
         {previewImage && (
           <div className="w-full flex justify-start p-1 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative">
               <div className="relative group">
@@ -176,11 +191,18 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
             ref={fileInputRef}
             onChange={handleFileChange}
           />
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
           <button
             type="button"
-            className="text-gray-500 hover:text-purple-600 transition-colors p-2"
-            onClick={() => fileInputRef.current.click()}
-            title="Send Image"
+            className={`text-gray-500 hover:text-purple-600 transition-colors p-2 ${showAttachmentOptions ? 'text-purple-600 bg-purple-50 rounded-full' : ''}`}
+            onClick={() => setShowAttachmentOptions(!showAttachmentOptions)}
+            title="Attach Image"
           >
             <PaperClipIcon className="w-6 h-6" />
           </button>
@@ -215,11 +237,12 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socke
       {errorMessage && (
         <div className="text-red-600 text-sm ml-2 -mt-1">{errorMessage}</div>
       )}
-      {showConnectedUsersModal && (
-        <div className="modal absolute top-40 left-0 z-50 w-full h-full flex items-center justify-center">
-          <ConnectedUsersList users={connectedUsers} />
-        </div>
-      )}
+
+      <CameraModal 
+          isOpen={showCameraModal} 
+          onClose={() => setShowCameraModal(false)} 
+          onCapture={handleCameraCapture} 
+      />
     </div>
   );
 };
@@ -228,8 +251,7 @@ FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onImageSubmit: PropTypes.func.isRequired,
   onAudioSubmit: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  socket: PropTypes.object.isRequired,
+
 };
 
 export default FormComponent;

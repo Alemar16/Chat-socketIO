@@ -1,13 +1,14 @@
 import io from "socket.io-client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import FormComponent from "./components/FormComponent/FormComponent";
 import ListMessageComponent from "./components/ListMessageComponent/ListMessageComponent";
 import LoginComponent from "./components/LoginComponent/LoginComponent";
 import Header from "./components/Header/Header";
-import { ButtonLogout } from "./components/Buttons/ButtonLogout";
-import { ButtonShare } from "./components/Buttons/ButtonShare";
+import { Bars3Icon } from "@heroicons/react/24/solid";
+import SideMenu from "./components/SideMenu/SideMenu";
 import Footer from "./components/Footer/Footer";
 import TermsAndConditions from "./components/TermsAndConditions/TermsAndConditions";
+import GreetingComponent from "./components/GreetingComponent/GreetingComponent";
 
 import notificationSound from "./assets/sounds/soft-notice-146623.mp3";
 import backgroundNotificationSound from "./assets/sounds/new-notification-on-your-device-138695.mp3";
@@ -18,6 +19,14 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState(null);
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [connectedUsers, setConnectedUsers] = useState([]);
+  const soundEnabledRef = useRef(soundEnabled);
+
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
 
   const requestNotificationPermission = async () => {
     if ("Notification" in window) {
@@ -28,6 +37,7 @@ function App() {
   };
 
   const playNotification = (isBackground) => {
+    if (!soundEnabledRef.current) return;
     const soundToPlay = isBackground ? backgroundNotificationSound : notificationSound;
     const audio = new Audio(soundToPlay);
     audio.play().catch(error => console.error("Audio play failed:", error));
@@ -56,7 +66,7 @@ function App() {
         id: message.id,
       };
 
-      setMessages((state) => [newMessage, ...state].slice(0, 100));
+      setMessages((state) => [...state, newMessage].slice(-100));
       
       if(message.from !== "Me") {
           const isBackground = document.hidden;
@@ -75,12 +85,18 @@ function App() {
       setMessages((state) => state.filter((msg) => msg.id !== id));
     };
 
+    const updateConnectedUsers = (users) => {
+      setConnectedUsers(users);
+    };
+
     socket.on("message", reciveMessage);
     socket.on("delete", handleDeleteEvent);
+    socket.on("users", updateConnectedUsers);
 
     return () => {
       socket.off("message", reciveMessage);
       socket.off("delete", handleDeleteEvent);
+      socket.off("users", updateConnectedUsers);
     };
   }, []);
 
@@ -118,7 +134,7 @@ function App() {
       timestamp: new Date().toISOString(),
       id: id,
     };
-    setMessages([newMessage, ...messages].slice(0, 100)); // Auto-Cleanup
+    setMessages((state) => [...state, newMessage].slice(-100)); // Auto-Cleanup
     socket.emit("message", { body: message, id });
   };
 
@@ -132,7 +148,7 @@ function App() {
       timestamp: new Date().toISOString(),
       id: id,
     };
-    setMessages((prev) => [newMessage, ...prev].slice(0, 100)); // Auto-Cleanup
+    setMessages((prev) => [...prev, newMessage].slice(-100)); // Auto-Cleanup
     socket.emit("image", { body: imageData, caption, id });
   };
 
@@ -145,41 +161,68 @@ function App() {
       timestamp: new Date().toISOString(),
       id: id,
     };
-    setMessages((prev) => [newMessage, ...prev].slice(0, 100)); // Auto-Cleanup
+    setMessages((prev) => [...prev, newMessage].slice(-100)); // Auto-Cleanup
     socket.emit("audio", { body: audioData, id });
   };
 
   return (
     <>
       {username ? (
-        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 p-4 w-full max-w-2xl h-[90vh] flex flex-col mt-10">
-          <div>
-            <div className="relative">
-              <Header />
-              <div className="absolute top-0 left-0 m-1">
-                <ButtonShare />
-              </div>
-              <div className="absolute top-0 right-0 m-1">
-                <ButtonLogout onLogout={handleLogout} />
-              </div>
-            </div>
-            <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
+        <div className="backdrop-saturate-125 bg-white/20 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:mt-10 md:rounded-2xl overflow-hidden">
+          {/* Header Section */}
+          <div className="flex-none bg-transparent">
+             <div className="flex items-center justify-between p-4 bg-transparent w-full">
+               <Header compact={true} />
+               <button 
+                 onClick={() => setIsSideMenuOpen(true)}
+                 className="p-2 text-white hover:text-gray-200 transition-colors drop-shadow-md"
+               >
+                  <Bars3Icon className="w-8 h-8" />
+               </button>
+             </div>
+             <SideMenu 
+               isOpen={isSideMenuOpen} 
+               onClose={() => setIsSideMenuOpen(false)}
+               roomId={roomId}
+               username={username}
+               soundEnabled={soundEnabled}
+               setSoundEnabled={setSoundEnabled}
+               onLogout={handleLogout}
+               connectedUsers={connectedUsers}
+             />
           </div>
-          <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
-          <div className="mt-auto">
-             <Footer />
+          
+          {/* Messages Section - Grows to fill space */}
+          <div className="flex-1 min-h-0 relative w-full overflow-hidden">
+             <div className="absolute inset-0 flex flex-col">
+               {username && (
+                  <div className="flex-none px-4 pt-4 z-10">
+                     <GreetingComponent username={username} />
+                  </div>
+               )}
+               <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
+             </div>
           </div>
+
+          {/* Input Section - Fixed at bottom */}
+          <div className="flex-none w-full bg-transparent pb-2 pt-2">
+             <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
+          </div>
+
+
         </div>
       ) : (
-        <div className="backdrop-saturate-125 bg-white/20 rounded-2xl shadow-lg shadow-slate-900/60 mt-20">
-          <LoginComponent
-            onLogin={handleLogin}
-            onLoginAsAnonymous={handleLoginAsAnonymous}
-          />
-          <div className="text-center mt-5 leading-tight">
-            <TermsAndConditions />
-            <Footer />
-          </div>
+        <div className="w-full min-h-[100dvh] flex flex-col justify-center items-center">
+            <div className="backdrop-saturate-125 bg-white/20 rounded-2xl w-[90%] max-w-md">
+              <LoginComponent
+                onLogin={handleLogin}
+                onLoginAsAnonymous={handleLoginAsAnonymous}
+              />
+              <div className="text-center mt-5 leading-tight mb-4">
+                <TermsAndConditions />
+                <Footer />
+              </div>
+            </div>
         </div>
       )}
     </>
