@@ -170,7 +170,8 @@ function App() {
   return (
     <>
       {username ? (
-        <div className="backdrop-saturate-125 bg-white/20 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:mt-10 md:rounded-2xl overflow-hidden">
+        <div className="w-full h-[100dvh] flex items-center justify-center">
+          <div className="backdrop-saturate-125 bg-white/20 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:rounded-2xl overflow-hidden">
           {/* Header Section */}
           <div className="flex-none bg-transparent">
              <div className="flex items-center justify-between p-4 bg-transparent w-full">
@@ -212,6 +213,7 @@ function App() {
           </div>
 
 
+          </div>
         </div>
       ) : (
         <div className="w-full min-h-[100dvh] flex flex-col items-center">
