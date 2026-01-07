@@ -8,6 +8,7 @@ import { Bars3Icon } from "@heroicons/react/24/solid";
 import SideMenu from "./components/SideMenu/SideMenu";
 import Footer from "./components/Footer/Footer";
 import TermsAndConditions from "./components/TermsAndConditions/TermsAndConditions";
+import GreetingComponent from "./components/GreetingComponent/GreetingComponent";
 
 import notificationSound from "./assets/sounds/soft-notice-146623.mp3";
 import backgroundNotificationSound from "./assets/sounds/new-notification-on-your-device-138695.mp3";
@@ -194,6 +195,11 @@ function App() {
           {/* Messages Section - Grows to fill space */}
           <div className="flex-1 min-h-0 relative w-full overflow-hidden">
              <div className="absolute inset-0 flex flex-col">
+               {username && (
+                  <div className="flex-none px-4 pt-4 z-10">
+                     <GreetingComponent username={username} />
+                  </div>
+               )}
                <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
              </div>
           </div>

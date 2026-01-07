@@ -14,9 +14,9 @@ import ButtonSend from "../Buttons/ButtonSend";
 
 import CameraModal from "../Modal/CameraModal";
 
-import GreetingComponent from "../GreetingComponent/GreetingComponent";
 
-const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username }) => {
+
+const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null); // Ref for file input
   const [errorMessage, setErrorMessage] = useState("");
@@ -102,11 +102,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username }) => 
 
   return (
     <div className="w-full relative">
-      {username && (
-        <div className="flex justify-between items-center mb-2 mt-2 px-5 gap-5">
-          <GreetingComponent username={username} />
-        </div>
-      )}
+{/* GreetingComponent Removed */}
       <form
         onSubmit={handleSubmit}
         className={`rounded-md bg-white p-2 mb-1 mx-2 flex flex-col gap-2 shadow-sm ${
@@ -255,7 +251,7 @@ FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onImageSubmit: PropTypes.func.isRequired,
   onAudioSubmit: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
+
 };
 
 export default FormComponent;
