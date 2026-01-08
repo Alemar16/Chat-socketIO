@@ -38,6 +38,13 @@ function App() {
   const [roomId, setRoomId] = useState(null);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [theme, setTheme] = useState(() => {
+    // Initialize theme from localStorage or system preference
+    if (localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
   const [connectedUsers, setConnectedUsers] = useState([]);
   const [replyingTo, setReplyingTo] = useState(null); // State for message being replied to
   
@@ -49,6 +56,16 @@ function App() {
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
   }, [soundEnabled]);
+
+  useEffect(() => {
+    // Apply theme class to document element
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const requestNotificationPermission = async () => {
     if ("Notification" in window) {
@@ -355,7 +372,7 @@ function App() {
     <>
       {username ? (
         <div className="w-full h-[100dvh] flex items-center justify-center">
-          <div className="backdrop-saturate-125 bg-white/20 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:rounded-2xl overflow-hidden">
+          <div className="backdrop-saturate-125 bg-white/20 dark:bg-black/50 shadow-lg shadow-slate-900/60 flex flex-col w-full h-[100dvh] p-0 mt-0 rounded-none md:max-w-5xl md:h-[90vh] md:p-4 md:rounded-2xl overflow-hidden transition-colors duration-300">
           {/* Header Section */}
           <div className="flex-none bg-transparent">
              <div className="flex items-center justify-between p-4 bg-transparent w-full">
@@ -374,6 +391,8 @@ function App() {
                username={username}
                soundEnabled={soundEnabled}
                setSoundEnabled={setSoundEnabled}
+               theme={theme}
+               setTheme={setTheme}
                onLogout={handleLogout}
                connectedUsers={connectedUsers}
              />
@@ -417,7 +436,7 @@ function App() {
         <div className="w-full min-h-[100dvh] flex flex-col items-center">
             
             <div className="flex-grow flex items-center justify-center w-full">
-                <div className="backdrop-saturate-125 bg-white/20 rounded-2xl w-[90%] max-w-md">
+                <div className="backdrop-saturate-125 bg-white/20 dark:bg-black/50 rounded-2xl w-[90%] max-w-md transition-colors duration-300">
                   <LoginComponent
                     onLogin={handleLogin}
                     onLoginAsAnonymous={handleLoginAsAnonymous}

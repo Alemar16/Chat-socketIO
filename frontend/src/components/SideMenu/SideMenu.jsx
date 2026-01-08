@@ -20,12 +20,12 @@ import { useState } from 'react';
 import { RecommendationsModal } from "../RecommendationsModal/RecommendationsModal";
 import { useTranslation } from 'react-i18next';
 
-const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEnabled, onLogout, connectedUsers }) => {
+const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEnabled, theme, setTheme, onLogout, connectedUsers }) => {
     
     const { t, i18n } = useTranslation();
     const [isUsersListOpen, setIsUsersListOpen] = useState(true);
     // const [language, setLanguage] = useState('en'); // Removed local state
-    const [theme, setTheme] = useState('light'); // 'light' or 'dark'
+    // const [theme, setTheme] = useState('light'); // Removed local state, now using props
     const [isRoomDetailsOpen, setIsRoomDetailsOpen] = useState(true);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [showRecommendations, setShowRecommendations] = useState(false);
@@ -64,23 +64,23 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
             )}
 
             {/* Side Sheet */}
-            <div className={`fixed top-0 right-0 h-full w-80 bg-white/95 backdrop-blur-md shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className={`fixed top-0 right-0 h-full w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                 
                 {/* Close Button */}
                 <button 
                     onClick={onClose}
-                    className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-800 transition-colors rounded-full hover:bg-gray-100"
+                    className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                     <XMarkIcon className="w-6 h-6" />
                 </button>
 
                 {/* Header Section */}
-                <div className="pt-10 pb-4 px-6 border-b border-gray-100 bg-gray-50/50">
+                <div className="pt-10 pb-4 px-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
                     <div className="transform scale-75 origin-center -mb-2">
                         <Header />
                     </div>
                     <div className="text-center mt-0">
-                        <span className="text-gray-500 font-medium text-sm">{t('welcome')} </span>
+                        <span className="text-gray-500 dark:text-gray-400 font-medium text-sm">{t('welcome')} </span>
                         <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500 text-lg">{username}!</span>
                     </div>
                 </div>
@@ -94,7 +94,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                     <div className="space-y-3">
                         <button 
                             onClick={() => setIsUsersListOpen(!isUsersListOpen)}
-                            className="w-full flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors ml-1"
+                            className="w-full flex items-center justify-between text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider hover:text-gray-600 dark:hover:text-gray-300 transition-colors ml-1"
                         >
                             <span>{t('connectedUsers')} ({connectedUsers.length})</span>
                             {isUsersListOpen ? (
@@ -107,20 +107,20 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                         {isUsersListOpen && (
                             <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
                                 {connectedUsers.map((user, index) => (
-                                    <div key={index} className="flex items-center gap-3 p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
+                                    <div key={index} className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
                                         <div className="relative">
-                                            <div className="bg-purple-100 p-2 rounded-full text-purple-600">
+                                            <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full text-purple-600 dark:text-purple-400">
                                                 <UserIcon className="w-4 h-4" />
                                             </div>
-                                            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+                                            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
                                         </div>
-                                        <span className={`font-medium text-sm truncate ${user.username === username ? 'text-purple-600' : 'text-gray-700'}`}>
+                                        <span className={`font-medium text-sm truncate ${user.username === username ? 'text-purple-600 dark:text-purple-400' : 'text-gray-700 dark:text-gray-200'}`}>
                                             {user.username === username ? `${user.username} ${t('you')}` : user.username}
                                         </span>
                                     </div>
                                 ))}
                                 {connectedUsers.length === 0 && (
-                                    <p className="text-sm text-gray-400 italic text-center py-2">{t('noUsersConnected')}</p>
+                                    <p className="text-sm text-gray-400 dark:text-gray-500 italic text-center py-2">{t('noUsersConnected')}</p>
                                 )}
                             </div>
                         )}
@@ -130,7 +130,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                     <div className="space-y-3">
                         <button 
                             onClick={() => setIsRoomDetailsOpen(!isRoomDetailsOpen)}
-                            className="w-full flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors ml-1"
+                            className="w-full flex items-center justify-between text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider hover:text-gray-600 dark:hover:text-gray-300 transition-colors ml-1"
                         >
                             <span>{t('roomDetails')}</span>
                             {isRoomDetailsOpen ? (
@@ -143,14 +143,14 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                         {isRoomDetailsOpen && (
                             <div className="space-y-3">
                                 {/* Room ID Card */}
-                                <div className="bg-white p-3 rounded-xl flex items-center justify-between border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="bg-white dark:bg-gray-800 p-3 rounded-xl flex items-center justify-between border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-gray-400 font-semibold uppercase">{t('roomId')}</span>
-                                        <span className="font-mono font-bold text-gray-800 text-lg tracking-wider">{roomId}</span>
+                                        <span className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold uppercase">{t('roomId')}</span>
+                                        <span className="font-mono font-bold text-gray-800 dark:text-gray-100 text-lg tracking-wider">{roomId}</span>
                                     </div>
                                     <button 
                                         onClick={() => copyToClipboard(roomId, t('roomId'))}
-                                        className="p-2 text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
+                                        className="p-2 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded-lg transition-colors"
                                         title="Copy ID"
                                     >
                                         <ClipboardDocumentIcon className="w-5 h-5" />
@@ -158,9 +158,9 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                 </div>
                                 
                                 {/* QR Code Card */}
-                                <div className="bg-white p-4 rounded-xl flex flex-col items-center justify-center border border-gray-200 shadow-sm">
-                                    <span className="text-[10px] text-gray-400 font-semibold uppercase mb-2">{t('scanToJoin')}</span>
-                                    <div className="bg-white p-2 rounded-lg border border-gray-100">
+                                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl flex flex-col items-center justify-center border border-gray-200 dark:border-gray-700 shadow-sm">
+                                    <span className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold uppercase mb-2">{t('scanToJoin')}</span>
+                                    <div className="bg-white p-2 rounded-lg border border-gray-100 dark:border-gray-700">
                                         <QRCode 
                                             value={window.location.href} 
                                             size={128}
@@ -173,13 +173,13 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                 {/* Copy URL Card/Button */}
                                 <button
                                     onClick={copyRoomUrl}
-                                    className="w-full bg-white p-3 rounded-xl flex items-center justify-between border border-gray-200 shadow-sm hover:shadow-md transition-all group text-left"
+                                    className="w-full bg-white dark:bg-gray-800 p-3 rounded-xl flex items-center justify-between border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all group text-left"
                                 >
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-gray-400 font-semibold uppercase">{t('invitationLink')}</span>
-                                        <span className="font-medium text-gray-600 group-hover:text-purple-600 transition-colors text-sm">{t('copyLinkInvitation')}</span>
+                                        <span className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold uppercase">{t('invitationLink')}</span>
+                                        <span className="font-medium text-gray-600 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors text-sm">{t('copyLinkInvitation')}</span>
                                     </div>
-                                    <div className="p-2 text-purple-600 bg-purple-50 group-hover:bg-purple-100 rounded-lg transition-colors">
+                                    <div className="p-2 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/50 rounded-lg transition-colors">
                                         <LinkIcon className="w-5 h-5" />
                                     </div>
                                 </button>
@@ -191,7 +191,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                     <div className="space-y-3">
                         <button 
                             onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                            className="w-full flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors ml-1"
+                            className="w-full flex items-center justify-between text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider hover:text-gray-600 dark:hover:text-gray-300 transition-colors ml-1"
                         >
                             <span>{t('settings')}</span>
                             {isSettingsOpen ? (
@@ -204,16 +204,16 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                         {isSettingsOpen && (
                             <div className="space-y-3">
                                 {/* Notifications Toggle */}
-                                <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
                                     <div className="flex items-center gap-3">
-                                        <div className={`p-2 rounded-full ${soundEnabled ? 'bg-purple-100 text-purple-600' : 'bg-gray-100 text-gray-400'} transition-colors`}>
+                                        <div className={`p-2 rounded-full ${soundEnabled ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'} transition-colors`}>
                                             {soundEnabled ? (
                                                 <SpeakerWaveIcon className="w-5 h-5" />
                                             ) : (
                                                 <SpeakerXMarkIcon className="w-5 h-5" />
                                             )}
                                         </div>
-                                        <span className="font-medium text-gray-700 text-sm">{t('notificationsLabel')}</span>
+                                        <span className="font-medium text-gray-700 dark:text-gray-200 text-sm">{t('notificationsLabel')}</span>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input 
@@ -222,28 +222,28 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                             checked={soundEnabled}
                                             onChange={(e) => setSoundEnabled(e.target.checked)}
                                         />
-                                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
+                                        <div className="w-9 h-5 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
                                     </label>
                                 </div>
 
                                 {/* Language Toggle */}
-                                <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 rounded-full bg-blue-100 text-blue-600">
+                                        <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
                                             <GlobeAltIcon className="w-5 h-5" />
                                         </div>
-                                        <span className="font-medium text-gray-700 text-sm">{t('language')}</span>
+                                        <span className="font-medium text-gray-700 dark:text-gray-200 text-sm">{t('language')}</span>
                                     </div>
-                                    <div className="flex bg-gray-100 rounded-lg p-1">
+                                    <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                                         <button 
                                             onClick={() => i18n.changeLanguage('en')}
-                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${i18n.resolvedLanguage === 'en' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${i18n.resolvedLanguage === 'en' ? 'bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                         >
                                             EN
                                         </button>
                                         <button 
                                             onClick={() => i18n.changeLanguage('es')}
-                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${i18n.resolvedLanguage === 'es' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                            className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${i18n.resolvedLanguage === 'es' ? 'bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                         >
                                             ES
                                         </button>
@@ -251,27 +251,27 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                                 </div>
 
                                 {/* Theme Toggle */}
-                                <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
                                     <div className="flex items-center gap-3">
-                                        <div className={`p-2 rounded-full ${theme === 'dark' ? 'bg-indigo-100 text-indigo-600' : 'bg-amber-100 text-amber-600'} transition-colors`}>
+                                        <div className={`p-2 rounded-full ${theme === 'dark' ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'bg-amber-100 text-amber-600'} transition-colors`}>
                                             {theme === 'dark' ? (
                                                 <MoonIcon className="w-5 h-5" />
                                             ) : (
                                                 <SunIcon className="w-5 h-5" />
                                             )}
                                         </div>
-                                        <span className="font-medium text-gray-700 text-sm">{t('theme')}</span>
+                                        <span className="font-medium text-gray-700 dark:text-gray-200 text-sm">{t('theme')}</span>
                                     </div>
-                                    <div className="flex bg-gray-100 rounded-lg p-1">
+                                    <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                                         <button 
                                             onClick={() => setTheme('light')}
-                                            className={`p-1 rounded-md transition-all ${theme === 'light' ? 'bg-white text-amber-500 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                            className={`p-1 rounded-md transition-all ${theme === 'light' ? 'bg-white text-amber-500 shadow-sm' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                         >
                                             <SunIcon className="w-4 h-4" />
                                         </button>
                                         <button 
                                             onClick={() => setTheme('dark')}
-                                            className={`p-1 rounded-md transition-all ${theme === 'dark' ? 'bg-white text-indigo-500 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                            className={`p-1 rounded-md transition-all ${theme === 'dark' ? 'bg-white dark:bg-gray-600 text-indigo-500 dark:text-indigo-400 shadow-sm' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                         >
                                             <MoonIcon className="w-4 h-4" />
                                         </button>
@@ -284,7 +284,7 @@ const SideMenu = ({ isOpen, onClose, roomId, username, soundEnabled, setSoundEna
                 </div>
 
                 {/* Footer Section */}
-                <div className="p-6 border-t border-gray-100 bg-gray-50">
+                <div className="p-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
                     <div className="flex justify-between items-center w-full">
                        <button 
                            onClick={() => setShowRecommendations(true)}
@@ -319,6 +319,8 @@ SideMenu.propTypes = {
     setSoundEnabled: PropTypes.func.isRequired,
     onLogout: PropTypes.func.isRequired,
     connectedUsers: PropTypes.array,
+    theme: PropTypes.string,
+    setTheme: PropTypes.func,
 };
 
 export default SideMenu;
