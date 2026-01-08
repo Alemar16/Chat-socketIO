@@ -83,6 +83,16 @@ To begin using Flash Chat, ensure you have [Bun](https://bun.sh) installed on yo
 
 If you prefer to run the frontend separately, you can navigate to the `frontend` folder and run `bun run dev`.
 
+## Testing
+
+To run the backend test suite (Unit & Integration tests):
+```bash
+bun test
+```
+The tests cover:
+- **Unit Tests**: Rate Limiter logic.
+- **Integration Tests**: Socket.IO connection, login, messaging, broadcasting, and rate limiting enforcement.
+
 ## Try It Out
 
 Experience Flash Chat firsthand by visiting our live application at [https://flashchat.website](https://flashchat.website). We value your feedback and invite you to explore the application. Don't forget to star our GitHub repository to show your support!
