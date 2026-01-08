@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
 import AudioMessage from "../AudioMessage/AudioMessage";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon, PaperClipIcon, PhotoIcon, MicrophoneIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
 import ReactionComponent from "../ReactionComponent/ReactionComponent";
 import MessageMenuComponent from "../MessageMenuComponent/MessageMenuComponent";
@@ -163,7 +163,13 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
                                {message.replyTo.from === currentUser ? t('messages.you') : message.replyTo.from}
                            </div>
                            <div className={`text-[10px] truncate leading-tight ${isOwnMessage ? 'text-gray-100' : 'text-slate-800'}`}>
-                               {message.replyTo.body}
+                               {message.replyTo.type === 'image' ? (
+                                   <span className="flex items-center gap-1 italic"><PhotoIcon className="w-3 h-3"/> Image</span>
+                               ) : message.replyTo.type === 'audio' ? (
+                                   <span className="flex items-center gap-1 italic"><MicrophoneIcon className="w-3 h-3"/> Audio</span>
+                               ) : (
+                                   message.replyTo.body
+                               )}
                            </div>
                        </div>
                     )}
@@ -192,6 +198,13 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
                             className="max-w-[200px] max-h-[200px] object-cover rounded cursor-pointer hover:opacity-90 mt-1 transition-opacity mb-1"
                             onClick={() => setSelectedImage(message.body)}
                           />
+                          {message.fileName && (
+                              <span className="text-[10px] text-zinc-200 mt-0.5 truncate max-w-[200px] flex items-center gap-1 opacity-80">
+                                  <PaperClipIcon className="w-3 h-3 inline" />
+                                  <span className="truncate">{message.fileName}</span>
+                                  {message.fileSize && <span className="opacity-70 flex-shrink-0">({message.fileSize})</span>}
+                              </span>
+                          )}
                           {message.caption && (
                               <span className="text-sm font-poppins text-justify text-zinc-50 mt-1 break-words" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.5)" }}>
                                   {message.caption}
@@ -201,6 +214,13 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
                     ) : message.type === 'audio' ? (
                       <div className="flex flex-col mt-1 mb-1">
                           <AudioMessage src={message.body} />
+                          {message.fileName && (
+                              <span className="text-[10px] text-zinc-200 mt-1 truncate max-w-[200px] flex items-center gap-1 opacity-80 ml-1">
+                                  <PaperClipIcon className="w-3 h-3 inline" />
+                                  <span className="truncate">{message.fileName}</span>
+                                  {message.fileSize && <span className="opacity-70 flex-shrink-0">({message.fileSize})</span>}
+                              </span>
+                          )}
                       </div>
                     ) : (
                       <span

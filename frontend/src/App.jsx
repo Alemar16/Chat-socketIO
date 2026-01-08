@@ -262,7 +262,8 @@ function App() {
       replyTo: replyingTo ? {
         id: replyingTo.id,
         body: replyingTo.body,
-        from: replyingTo.from
+        from: replyingTo.from,
+        type: replyingTo.type
       } : null
     };
     setMessages((state) => [...state, newMessage].slice(-100)); // Auto-Cleanup
@@ -281,13 +282,18 @@ function App() {
     });
   };
 
-  const handleImageSubmit = (imageData, caption) => {
+  const handleImageSubmit = (imageData, caption, metadata) => {
     const id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
+    const { name: fileName, size: fileSize, type: fileType } = metadata || {};
+
     const newMessage = {
       body: imageData,
       from: "Me",
       type: 'image',
       caption: caption,
+      fileName, 
+      fileSize,
+      fileType,
       timestamp: new Date().toISOString(),
       id: id,
     };
@@ -297,15 +303,27 @@ function App() {
     const encryptedBody = encryptMessage(imageData, roomId);
     const encryptedCaption = caption ? encryptMessage(caption, roomId) : "";
     
-    socket.emit("image", { body: encryptedBody, caption: encryptedCaption, id });
+    socket.emit("image", { 
+        body: encryptedBody, 
+        caption: encryptedCaption, 
+        id,
+        fileName,
+        fileSize,
+        fileType
+    });
   };
 
-  const handleAudioSubmit = (audioData) => {
+  const handleAudioSubmit = (audioData, metadata) => {
     const id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
+    const { name: fileName, size: fileSize, type: fileType } = metadata || {};
+
     const newMessage = {
       body: audioData,
       from: "Me",
       type: 'audio',
+      fileName,
+      fileSize,
+      fileType,
       timestamp: new Date().toISOString(),
       id: id,
     };
@@ -313,7 +331,13 @@ function App() {
     
     // Encrypt content
     const encryptedBody = encryptMessage(audioData, roomId);
-    socket.emit("audio", { body: encryptedBody, id });
+    socket.emit("audio", { 
+        body: encryptedBody, 
+        id,
+        fileName, 
+        fileSize,
+        fileType
+    });
   };
 
   const handleReaction = (messageId, emoji) => {
