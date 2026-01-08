@@ -164,9 +164,19 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
                            </div>
                            <div className={`text-[10px] truncate leading-tight ${isOwnMessage ? 'text-gray-100' : 'text-slate-800'}`}>
                                {message.replyTo.type === 'image' ? (
-                                   <span className="flex items-center gap-1 italic"><PhotoIcon className="w-3 h-3"/> Image</span>
+                                   <div className="flex flex-col">
+                                       <span className="flex items-center gap-1 italic font-semibold">
+                                           <PhotoIcon className="w-3 h-3"/> {message.replyTo.fileName || "Image"}
+                                       </span>
+                                       {message.replyTo.fileSize && <span className="text-[9px] opacity-75 pl-4">{message.replyTo.fileSize}</span>}
+                                   </div>
                                ) : message.replyTo.type === 'audio' ? (
-                                   <span className="flex items-center gap-1 italic"><MicrophoneIcon className="w-3 h-3"/> Audio</span>
+                                   <div className="flex flex-col">
+                                       <span className="flex items-center gap-1 italic font-semibold">
+                                           <MicrophoneIcon className="w-3 h-3"/> {message.replyTo.fileName || "Audio"}
+                                       </span>
+                                       {message.replyTo.fileSize && <span className="text-[9px] opacity-75 pl-4">{message.replyTo.fileSize}</span>}
+                                   </div>
                                ) : (
                                    message.replyTo.body
                                )}

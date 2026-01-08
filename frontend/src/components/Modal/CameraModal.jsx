@@ -72,7 +72,18 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
 
     const handleConfirm = () => {
         if (capturedImage) {
-            onCapture(capturedImage);
+            // Calculate approximate size from Base64
+            const stringLength = capturedImage.length - 'data:image/png;base64,'.length;
+            const sizeInBytes = 4 * Math.ceil(stringLength / 3) * 0.5624896334383812;
+            const fileSizeKB = (sizeInBytes / 1024).toFixed(2) + " KB";
+            
+            const metadata = {
+                name: `cam_${new Date().toISOString().replace(/[:.]/g, '-')}.png`,
+                size: fileSizeKB,
+                type: 'image/png'
+            };
+
+            onCapture(capturedImage, metadata);
             onClose();
         }
     };

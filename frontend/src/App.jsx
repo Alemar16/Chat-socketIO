@@ -263,7 +263,10 @@ function App() {
         id: replyingTo.id,
         body: replyingTo.body,
         from: replyingTo.from,
-        type: replyingTo.type
+        type: replyingTo.type,
+        fileName: replyingTo.fileName,
+        fileSize: replyingTo.fileSize,
+        fileType: replyingTo.fileType
       } : null
     };
     setMessages((state) => [...state, newMessage].slice(-100)); // Auto-Cleanup

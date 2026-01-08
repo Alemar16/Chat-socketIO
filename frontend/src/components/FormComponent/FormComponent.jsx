@@ -138,8 +138,9 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
     setErrorMessage("");
   };
 
-  const handleCameraCapture = (imageDataUrl) => {
+  const handleCameraCapture = (imageDataUrl, metadata) => {
     setPreviewImage(imageDataUrl);
+    setFileMetadata(metadata);
     setShowAttachmentOptions(false);
   };
 
@@ -162,9 +163,15 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
                      <span className="text-purple-600 font-bold text-xs">{replyingTo.from === 'Me' ? t('messages.you') : replyingTo.from}</span>
                      <span className="text-gray-500 text-sm truncate max-w-[200px] md:max-w-md">
                         {replyingTo.type === 'image' ? (
-                            <span className="flex items-center gap-1 italic text-xs"><PhotoIcon className="w-3 h-3"/> Image</span>
+                            <span className="flex items-center gap-1 italic text-xs">
+                                <PhotoIcon className="w-3 h-3"/> 
+                                {replyingTo.fileName || "Image"}
+                            </span>
                         ) : replyingTo.type === 'audio' ? (
-                            <span className="flex items-center gap-1 italic text-xs"><MicrophoneIcon className="w-3 h-3"/> Audio</span>
+                            <span className="flex items-center gap-1 italic text-xs">
+                                <MicrophoneIcon className="w-3 h-3"/> 
+                                {replyingTo.fileName || "Audio"}
+                            </span>
                         ) : (
                             replyingTo.body
                         )}
@@ -390,7 +397,8 @@ FormComponent.propTypes = {
       id: PropTypes.string,
       from: PropTypes.string,
       body: PropTypes.string,
-      type: PropTypes.string
+      type: PropTypes.string,
+      fileName: PropTypes.string
   }),
   onCancelReply: PropTypes.func
 };

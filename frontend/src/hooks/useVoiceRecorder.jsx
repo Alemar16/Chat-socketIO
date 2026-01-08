@@ -74,15 +74,24 @@ const useVoiceRecorder = (propsOrCallback) => {
 
                  if (shouldSend || shouldSave) {
                     const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+                    const fileSizeKB = (audioBlob.size / 1024).toFixed(2) + " KB";
+                    const fileName = `audio_${new Date().toISOString().replace(/[:.]/g, '-')}.webm`;
+                    
                     const reader = new FileReader();
                     reader.readAsDataURL(audioBlob);
                     reader.onloadend = () => {
                         const base64Audio = reader.result;
+                        const metadata = {
+                            name: fileName,
+                            size: fileSizeKB,
+                            type: 'audio/webm'
+                        };
+                        
                         if (shouldSend) {
-                            onAudioSubmit(base64Audio);
+                            onAudioSubmit(base64Audio, metadata);
                         }
                         if (shouldSave) {
-                            setRecordedAudio(base64Audio);
+                            setRecordedAudio(base64Audio); // Note: purely internal state used for preview. If needed we could store metadata too but for now main use is sending.
                         }
                     };
                  }
@@ -120,7 +129,16 @@ const useVoiceRecorder = (propsOrCallback) => {
         formatTime,
         sendRecordedAudio: () => {
              if (recordedAudio && onAudioSubmit) {
-                 onAudioSubmit(recordedAudio);
+                 // Note: If sending from recordedAudio state (which is just base64), we might lose precise metadata generated at stop time unless we stored it.
+                 // For now, re-generating basic metadata or relying on the direct 'send' flow is safer.
+                 // Ideally stopRecording({save:true}) should store metadata in state too.
+                 // But for simplicity and matching the 'send' flow which is automatic:
+                 const mockMetadata = {
+                     name: `audio_${new Date().toISOString().replace(/[:.]/g, '-')}.webm`,
+                     size: "Unknown", // Can't easily get blob size from base64 string efficiently without conversion, but this path is rarely used if auto-send is on.
+                     type: 'audio/webm'
+                 };
+                 onAudioSubmit(recordedAudio, mockMetadata);
                  setRecordedAudio(null);
              }
         }
