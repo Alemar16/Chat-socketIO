@@ -42,6 +42,11 @@ const useVoiceRecorder = (propsOrCallback) => {
             timerRef.current = setInterval(() => {
                 setRecordingTime(prev => {
                     if (prev >= 120) { // 2 Minutes Limit
+                         // Prevent multiple calls
+                         if (timerRef.current) {
+                             clearInterval(timerRef.current);
+                             timerRef.current = null;
+                         }
                          stopRecording({ send: false, save: true }); // Stop and Save
                          if (onLimitReached) onLimitReached();
                          return 120;
