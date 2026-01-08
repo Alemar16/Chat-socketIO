@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
 import AudioMessage from "../AudioMessage/AudioMessage";
-import { TrashIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
 import ReactionComponent from "../ReactionComponent/ReactionComponent";
+import MessageMenuComponent from "../MessageMenuComponent/MessageMenuComponent";
 
 const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
   const { t } = useTranslation();
@@ -15,6 +16,18 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom
+  const [activeReactionId, setActiveReactionId] = useState(null); // Track which message has open reaction picker
+
+  
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    // Optional: Add toast notification
+  };
+
+  const handleReply = (message) => {
+    console.log("Replying to:", message);
+    // TODO: Implement reply logic
+  };
 
   // Robust helper to detect if message is ONLY emojis (and limit to reasonable count)
   const isBigEmoji = (text) => {
@@ -93,6 +106,8 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
           >
             {messages.map((message, index) => {
               const isBig = isBigEmoji(message.body);
+              const hasReactions = message.reactions && Object.keys(message.reactions).length > 0;
+              
               const bubbleClasses = isBig 
                   ? 'bg-transparent shadow-none' 
                   : (message.from === "Me" ? "bg-purple-700 ml-auto" : "bg-blue-400");
@@ -100,7 +115,9 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
               return (
               <li
                 key={index}
-                className={`my-2 p-2 table rounded-md shadow-lg shadow-indigo-900/80 relative group first:mt-auto ${
+                className={`mt-2 p-2 table rounded-md shadow-lg shadow-indigo-900/80 relative group first:mt-auto ${
+                  hasReactions ? "mb-10" : "mb-2"
+                } ${
                   message.from === "Me" && !isBig ? "ml-auto" : "" 
                 } ${bubbleClasses}`}
                 style={{
@@ -193,19 +210,19 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                   </span>
                 )}
                 
-                {/* Delete Button for Own Messages */}
-                {message.from === "Me" && onDelete && (
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation(); // Prevent bubbling (e.g. if we add click to message later)
-                            onDelete(message.id);
+                
+                {/* Message Menu (Replaces Delete Button) */}
+                <div className="absolute top-1 right-2 z-10">
+                    <MessageMenuComponent 
+                        isOwnMessage={message.from === "Me"}
+                        onReply={() => handleReply(message)}
+                        onCopy={() => handleCopy(message.body)}
+                        onReact={() => setActiveReactionId(activeReactionId === message.id ? null : message.id)}
+                        onDelete={() => {
+                            if (onDelete) onDelete(message.id);
                         }}
-                        className="absolute top-1 right-2 text-white/70 hover:text-white transition-colors z-10 p-1"
-                        title={t('messages.deleteMessage')}
-                    >
-                        <TrashIcon className="w-4 h-4" />
-                    </button>
-                )}
+                    />
+                </div>
 
                 {/* Reactions */}
                 <div className="mt-1">
@@ -214,6 +231,8 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                         reactions={message.reactions} 
                         currentUser={currentUser} 
                         onReact={onReact} 
+                        isPickerOpen={activeReactionId === message.id}
+                        onTogglePicker={(isOpen) => setActiveReactionId(isOpen ? message.id : null)}
                     />
                 </div>
               </li>

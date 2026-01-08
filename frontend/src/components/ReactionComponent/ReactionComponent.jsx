@@ -1,14 +1,22 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { FaceSmileIcon, PlusIcon } from "@heroicons/react/24/outline";
 import EmojiPicker from 'emoji-picker-react';
 
 const REACTION_OPTIONS = ["👍", "❤️", "😂", "😮", "😢", "😡"];
 
-const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact }) => {
-  const [showPicker, setShowPicker] = useState(false);
+const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact, isPickerOpen, onTogglePicker }) => {
+  const [internalShowPicker, setInternalShowPicker] = useState(false);
   const [showFullPicker, setShowFullPicker] = useState(false);
   const pickerRef = useRef(null);
+
+  // Use external control if provided, otherwise local state
+  const showPicker = isPickerOpen !== undefined ? isPickerOpen : internalShowPicker;
+  
+  // Wrap in useCallback to stabilize the dependency for useEffect
+  const togglePicker = useCallback(onTogglePicker || ((val) => {
+      setInternalShowPicker(prev => typeof val === 'boolean' ? val : !prev);
+  }), [onTogglePicker]);
 
   // Group reactions by emoji: { '👍': 3, '❤️': 1 }
   const groupedReactions = Object.values(reactions).reduce((acc, emoji) => {
@@ -23,19 +31,19 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact }) 
   useEffect(() => {
     const handleClickOutside = (event) => {
         if (pickerRef.current && !pickerRef.current.contains(event.target)) {
-            setShowPicker(false);
-            setShowFullPicker(false); // Reset full picker state
+             if (showPicker) togglePicker(false);
+             setShowFullPicker(false); // Reset full picker state
         }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [showPicker, togglePicker]);
 
   return (
-    <div className={`absolute -bottom-3 right-0 flex items-center gap-1 z-20`}>
+    <div className={`absolute -bottom-5 right-0 flex items-center gap-1 z-20`}>
       {/* Display Existing Reactions (Pill) */}
       {Object.keys(groupedReactions).length > 0 && (
-          <div className="bg-white rounded-full shadow-md border border-gray-200 px-1.5 py-0.5 flex items-center gap-1 cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => setShowPicker(!showPicker)}>
+          <div className="bg-white rounded-full shadow-md border border-gray-200 px-1.5 py-0.5 flex items-center gap-1 cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => togglePicker(!showPicker)}>
               {Object.entries(groupedReactions).map(([emoji, count]) => (
                 <div key={emoji} className="flex items-center text-xs">
                     <span>{emoji}</span>
@@ -51,7 +59,7 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact }) 
            <button
             onClick={(e) => {
                 e.stopPropagation();
-                setShowPicker(!showPicker);
+                togglePicker(!showPicker);
             }}
             className={`p-1 rounded-full bg-white shadow-sm border border-gray-200 transition-all transform hover:scale-110 ${
                 showPicker 
@@ -77,7 +85,7 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact }) 
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onReact(messageId, emoji);
-                                    setShowPicker(false);
+                                    togglePicker(false); // Close after reacting
                                 }}
                                 className={`w-9 h-9 flex items-center justify-center rounded-full text-xl hover:bg-white hover:shadow-md transition-all hover:scale-125 ${
                                     myReaction === emoji ? "bg-purple-100 ring-2 ring-purple-200" : ""
@@ -102,7 +110,7 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact }) 
                         <EmojiPicker 
                             onEmojiClick={(emojiData) => {
                                 onReact(messageId, emojiData.emoji);
-                                setShowPicker(false);
+                                togglePicker(false); // Close after reacting
                                 setShowFullPicker(false);
                             }}
                             autoFocusSearch={false}
@@ -127,6 +135,8 @@ ReactionComponent.propTypes = {
   reactions: PropTypes.object,
   currentUser: PropTypes.string.isRequired,
   onReact: PropTypes.func.isRequired,
+  isPickerOpen: PropTypes.bool,
+  onTogglePicker: PropTypes.func
 };
 
 export default ReactionComponent;
