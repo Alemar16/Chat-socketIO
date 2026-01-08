@@ -33,7 +33,7 @@ const Toast = Swal.mixin({
 
 
 
-const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
+const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socket, replyingTo, onCancelReply }) => {
   const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null); // Ref for file input
@@ -147,6 +147,23 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
           errorVisible ? "border-2 border-red-500" : ""
         }`}
       >
+        
+        {/* Reply Preview */}
+        {replyingTo && (
+            <div className="w-full flex justify-between items-center p-2 mb-1 bg-gray-50 border-l-4 border-purple-500 rounded-r-md animate-fade-in shadow-sm">
+                <div className="flex flex-col overflow-hidden pr-2">
+                     <span className="text-purple-600 font-bold text-xs">{replyingTo.from === 'Me' ? t('messages.you') : replyingTo.from}</span>
+                     <span className="text-gray-500 text-sm truncate max-w-[200px] md:max-w-md">{replyingTo.body}</span>
+                </div>
+                <button 
+                    type="button"
+                    onClick={onCancelReply} 
+                    className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                >
+                    <XMarkIcon className="w-4 h-4 text-gray-500" />
+                </button>
+            </div>
+        )}
 
         {showAttachmentOptions && !previewImage && (
              <div className="w-full flex justify-start p-2 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative gap-4">
@@ -351,7 +368,14 @@ FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onImageSubmit: PropTypes.func.isRequired,
   onAudioSubmit: PropTypes.func.isRequired,
-
+  username: PropTypes.string,
+  socket: PropTypes.object,
+  replyingTo: PropTypes.shape({
+      id: PropTypes.string,
+      from: PropTypes.string,
+      body: PropTypes.string
+  }),
+  onCancelReply: PropTypes.func
 };
 
 export default FormComponent;

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import ReactionComponent from "../ReactionComponent/ReactionComponent";
 import MessageMenuComponent from "../MessageMenuComponent/MessageMenuComponent";
 
-const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
+const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUser }) => {
   const { t } = useTranslation();
   const [selectedImage, setSelectedImage] = useState(null);
   const messagesEndRef = useRef(null);
@@ -25,8 +25,7 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
   };
 
   const handleReply = (message) => {
-    console.log("Replying to:", message);
-    // TODO: Implement reply logic
+    if (onReply) onReply(message);
   };
 
   // Robust helper to detect if message is ONLY emojis (and limit to reasonable count)
@@ -107,10 +106,11 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
             {messages.map((message, index) => {
               const isBig = isBigEmoji(message.body);
               const hasReactions = message.reactions && Object.keys(message.reactions).length > 0;
+              const isOwnMessage = message.from === "Me";
               
               const bubbleClasses = isBig 
                   ? 'bg-transparent shadow-none' 
-                  : (message.from === "Me" ? "bg-purple-700 ml-auto" : "bg-blue-400");
+                  : (isOwnMessage ? "bg-purple-700 ml-auto" : "bg-blue-400");
               
               return (
               <li
@@ -118,19 +118,34 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                 className={`mt-2 p-2 table rounded-md shadow-lg shadow-indigo-900/80 relative group first:mt-auto ${
                   hasReactions ? "mb-10" : "mb-2"
                 } ${
-                  message.from === "Me" && !isBig ? "ml-auto" : "" 
+                  isOwnMessage && !isBig ? "ml-auto" : "" 
                 } ${bubbleClasses}`}
                 style={{
                   paddingBottom: "1.2rem",
                   minWidth: "100px",
                   borderRadius:
-                    message.from === "Me"
+                    isOwnMessage
                       ? "18px 18px 0 18px"
                       : "18px 18px 18px 0px",
                   backgroundColor: isBig ? 'transparent' : undefined,
                   boxShadow: isBig ? 'none' : undefined,
                 }}
               >
+                {/* Quoted Message (Reply) */}
+                {message.replyTo && !isBig && (
+                     <div className={`rounded-md p-1 mb-1 border-l-4 cursor-pointer text-left opacity-90 hover:opacity-100 transition-opacity ${
+                         isOwnMessage ? 'bg-black/20 border-white/50' : 'bg-white/20 border-purple-600'
+                     }`}>
+                        <div className={`font-bold text-[10px] leading-tight ${isOwnMessage ? 'text-purple-200' : 'text-purple-700'}`}>
+                            {message.replyTo.from === currentUser ? t('messages.you') : message.replyTo.from}
+                        </div>
+                        <div className={`text-[10px] truncate leading-tight ${isOwnMessage ? 'text-gray-100' : 'text-slate-800'}`}>
+                            {message.replyTo.body}
+                        </div>
+                    </div>
+                )}
+
+
                 {/* Contenido del mensaje */}
                 {!isBig && (
                 <span className="text-xs text-slate-900 block font-sans font-semibold">
@@ -195,7 +210,7 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                 {message.timestamp && (
                   <span
                     className={` ${
-                      message.from === "Me"
+                      isOwnMessage
                         ? "text-zinc-300"
                         : "text-zinc-800 px-2"
                     } absolute bottom-1 right-1`}
@@ -214,7 +229,7 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                 {/* Message Menu (Replaces Delete Button) */}
                 <div className="absolute top-1 right-2 z-10">
                     <MessageMenuComponent 
-                        isOwnMessage={message.from === "Me"}
+                        isOwnMessage={isOwnMessage}
                         onReply={() => handleReply(message)}
                         onCopy={() => handleCopy(message.body)}
                         onReact={() => setActiveReactionId(activeReactionId === message.id ? null : message.id)}
@@ -296,13 +311,19 @@ ListMessageComponent.propTypes = {
       from: PropTypes.string.isRequired,
       type: PropTypes.string,
       timestamp: PropTypes.string.isRequired,
-      id: PropTypes.string, // ID is optional for old messages but should be present
-      caption: PropTypes.string, // Optional caption for images
+      id: PropTypes.string, 
+      caption: PropTypes.string,
+      replyTo: PropTypes.shape({
+          id: PropTypes.string,
+          from: PropTypes.string,
+          body: PropTypes.string
+      })
     })
   ).isRequired,
-  onDelete: PropTypes.func, // Optional callback
-  onReact: PropTypes.func, // Required for reactions
-  currentUser: PropTypes.string, // Required for reactions
+  onDelete: PropTypes.func, 
+  onReact: PropTypes.func, 
+  onReply: PropTypes.func,
+  currentUser: PropTypes.string, 
 };
 
 export default ListMessageComponent;
