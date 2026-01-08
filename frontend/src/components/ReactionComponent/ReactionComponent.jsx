@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import { FaceSmileIcon } from "@heroicons/react/24/outline";
+import { FaceSmileIcon, PlusIcon } from "@heroicons/react/24/outline";
+import EmojiPicker from 'emoji-picker-react';
 
 const REACTION_OPTIONS = ["👍", "❤️", "😂", "😮", "😢", "😡"];
 
 const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact }) => {
   const [showPicker, setShowPicker] = useState(false);
+  const [showFullPicker, setShowFullPicker] = useState(false);
   const pickerRef = useRef(null);
 
   // Group reactions by emoji: { '👍': 3, '❤️': 1 }
@@ -22,6 +24,7 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact }) 
     const handleClickOutside = (event) => {
         if (pickerRef.current && !pickerRef.current.contains(event.target)) {
             setShowPicker(false);
+            setShowFullPicker(false); // Reset full picker state
         }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -64,23 +67,54 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact }) 
           {/* Emoji Picker Popover */}
           {showPicker && (
               <div 
-                className={`absolute bottom-full right-0 mb-2 bg-white/90 backdrop-blur-sm rounded-full shadow-xl border border-white/50 p-1.5 flex gap-1 animate-scale-in z-50 whitespace-nowrap`}
+                className={`absolute bottom-full right-0 mb-2 bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-white/50 p-2 flex gap-1 animate-scale-in z-50 whitespace-nowrap`}
               >
-                  {REACTION_OPTIONS.map(emoji => (
-                      <button
-                          key={emoji}
-                          onClick={(e) => {
-                              e.stopPropagation();
-                              onReact(messageId, emoji);
-                              setShowPicker(false);
-                          }}
-                          className={`w-9 h-9 flex items-center justify-center rounded-full text-xl hover:bg-white hover:shadow-md transition-all hover:scale-125 ${
-                              myReaction === emoji ? "bg-purple-100 ring-2 ring-purple-200" : ""
-                          }`}
-                      >
-                          {emoji}
-                      </button>
-                  ))}
+                  {!showFullPicker ? (
+                    <>
+                        {REACTION_OPTIONS.map(emoji => (
+                            <button
+                                key={emoji}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onReact(messageId, emoji);
+                                    setShowPicker(false);
+                                }}
+                                className={`w-9 h-9 flex items-center justify-center rounded-full text-xl hover:bg-white hover:shadow-md transition-all hover:scale-125 ${
+                                    myReaction === emoji ? "bg-purple-100 ring-2 ring-purple-200" : ""
+                                }`}
+                            >
+                                {emoji}
+                            </button>
+                        ))}
+                        <div className="w-[1px] h-8 bg-gray-300 mx-1"></div>
+                         <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowFullPicker(true);
+                            }}
+                            className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:bg-white hover:shadow-md transition-all hover:scale-110 hover:text-purple-600"
+                        >
+                            <PlusIcon className="w-5 h-5" />
+                        </button>
+                    </>
+                  ) : (
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <EmojiPicker 
+                            onEmojiClick={(emojiData) => {
+                                onReact(messageId, emojiData.emoji);
+                                setShowPicker(false);
+                                setShowFullPicker(false);
+                            }}
+                            autoFocusSearch={false}
+                            theme="light"
+                            searchDisabled={false}
+                            skinTonesDisabled
+                            width={300}
+                            height={400}
+                            previewConfig={{ showPreview: false }}
+                        />
+                      </div>
+                  )}
               </div>
           )}
       </div>
