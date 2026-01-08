@@ -16,12 +16,34 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom
 
-  // Helper to detect if message is ONLY emojis (up to 3 for big, or just 1 as requested)
+  // Robust helper to detect if message is ONLY emojis (and limit to reasonable count)
   const isBigEmoji = (text) => {
     if (!text) return false;
-    // Regex for Emoji-only string (simplified)
-    const emojiRegex = /^(\p{Emoji_Presentation}|\p{Extended_Pictographic}|\s)+$/u;
-    return emojiRegex.test(text) && text.trim().length > 0 && Array.from(text.trim()).length <= 6; // Limit length roughly
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return false;
+
+    // Check if it has at least one pictorial/emoji character
+    // Using \p{Extended_Pictographic} (ES2018+) covers almost all icons/emojis
+    const hasEmoji = /(\p{Extended_Pictographic}|\p{Emoji_Presentation})/u.test(trimmed);
+    if (!hasEmoji) return false;
+
+    // Strip everything that IS a valid part of an emoji sequence or whitespace
+    // 1. Remove Keycap sequences (Digits/Hashes + Keycap mark)
+    // 2. Remove Extended Pictographics & Emoji Presentation
+    // 3. Remove ZWJ & Variation Selectors
+    // 4. Remove Whitespace
+    const stripped = trimmed
+      .replace(/[\d*#]\ufe0f?\u20e3/g, '') // Keycaps (e.g. 1️⃣)
+      .replace(/(\p{Extended_Pictographic}|\p{Emoji_Presentation})/gu, '') // Emojis
+      .replace(/(\u200d|\ufe0f)/g, '') // ZWJ, Variation Selectors
+      .replace(/\s/g, ''); // Whitespace (spaces, tabs)
+
+    // If anything remains (letters, punctuation, plain numbers, symbols), it's NOT a pure emoji message
+    const isPure = stripped.length === 0;
+
+    // Count visual "graphemes" roughly (codepoints) to prevent spamming giant wall of emojis
+    // Allow up to ~10 visual emojis
+    return isPure && Array.from(trimmed).length <= 20;
   };
 
   const scrollToBottom = (smooth = true) => {
@@ -69,14 +91,18 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
             onScroll={handleScroll}
             className="flex-1 overflow-y-auto p-3 mb-2 custom-scrollbar flex flex-col relative"
           >
-            {messages.map((message, index) => (
+            {messages.map((message, index) => {
+              const isBig = isBigEmoji(message.body);
+              const bubbleClasses = isBig 
+                  ? 'bg-transparent shadow-none' 
+                  : (message.from === "Me" ? "bg-purple-700 ml-auto" : "bg-blue-400");
+              
+              return (
               <li
                 key={index}
-                className={`my-2 p-2 table text-sm rounded-md shadow-lg shadow-indigo-900/80 relative group first:mt-auto ${
-                  message.from === "Me"
-                    ? "bg-purple-700 ml-auto"
-                    : "bg-blue-400"
-                }`}
+                className={`my-2 p-2 table rounded-md shadow-lg shadow-indigo-900/80 relative group first:mt-auto ${
+                  message.from === "Me" && !isBig ? "ml-auto" : "" 
+                } ${bubbleClasses}`}
                 style={{
                   paddingBottom: "1.2rem",
                   minWidth: "100px",
@@ -84,14 +110,16 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                     message.from === "Me"
                       ? "18px 18px 0 18px"
                       : "18px 18px 18px 0px",
-                  backgroundColor: isBigEmoji(message.body) ? 'transparent' : undefined,
-                  boxShadow: isBigEmoji(message.body) ? 'none' : undefined,
+                  backgroundColor: isBig ? 'transparent' : undefined,
+                  boxShadow: isBig ? 'none' : undefined,
                 }}
               >
                 {/* Contenido del mensaje */}
+                {!isBig && (
                 <span className="text-xs text-slate-900 block font-sans font-semibold">
                   {message.from}
-                </span>{" "}
+                </span>
+                )}{" "}
                 
                 {message.type === 'image' ? (
                   <div className="flex flex-col">
@@ -113,12 +141,11 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                   </div>
                 ) : (
                   <span
-                    className="text-sm font-poppins text-justify text-zinc-50"
-                    style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                    className={`font-poppins text-justify ${isBig ? 'text-6xl leading-tight block text-center' : 'text-sm text-zinc-50'}`}
+                    style={{ textShadow: isBig ? "none" : "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
                   >
                     {message.body}
                   </span>
-
                 )}
 
                 {/* Placeholders for Expired Content (History) */}
@@ -187,11 +214,11 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                         reactions={message.reactions} 
                         currentUser={currentUser} 
                         onReact={onReact} 
-                        isOwnMessage={message.from === "Me"}
                     />
                 </div>
               </li>
-            ))}
+              );
+            })}
             <div ref={messagesEndRef} />
           </ul>
         ) : (
