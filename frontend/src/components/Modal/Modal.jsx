@@ -20,30 +20,28 @@ const Modal = () => {
       imageUrl: "/icons8-chat-100.png",
       html: `
         <div style="position: absolute; top: 10px; right: 10px;">
-           <button id="lang-toggle" style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: bold; cursor: pointer; padding: 6px 10px; border-radius: 20px; border: 1px solid #ddd; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s;">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 14px; height: 14px; color: #852CA5;">
+           <button id="lang-toggle" class="bg-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200" style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: bold; cursor: pointer; padding: 6px 10px; transition: all 0.2s;">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
               </svg>
-              ${i18n.language === 'en' ? 'ES' : 'EN'}
+              ${i18n.language === 'en' ? 'Español' : 'English'}
            </button>
         </div>
-        <p style="color: black;"><strong>${t('modal.howToUse')}</strong></p><br>
+        <p class="text-black dark:text-gray-200"><strong>${t('modal.howToUse')}</strong></p><br>
         <ol>
-          <li style="color: black;">${t('modal.step1', { login: t('login.login'), anonymous: t('login.anonymous') })}</li>
+          <li class="text-black dark:text-gray-300">${t('modal.step1', { login: t('login.login'), anonymous: t('login.anonymous') })}</li>
           <br>
-          <li style="color: black;">${t('modal.step2')}</li>
+          <li class="text-black dark:text-gray-300">${t('modal.step2')}</li>
           <br>
-          <button id="enlace" style="background-color: #ffffff; border: 1px solid #3182ce; color: #3182ce; padding: 8px 16px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 4px; transition: background-color 0.3s, color 0.3s;" class="text-blue-800 cursor-pointer font-bold">${t('modal.linkBtn')}</button>
+          <button id="enlace" class="bg-white dark:bg-gray-700 border border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 px-4 py-2 text-base font-bold rounded cursor-pointer transition-colors duration-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600">${t('modal.linkBtn')}</button>
           <br>
           <br>
-
           <br>
-          <li class="text-red-900 font-bold text-3xl"><span style="color: #4CCFF1; text-shadow: 2px 2px 4px #000; font-family: Boogaloo, cursive;">${t('modal.start')}</span></li> 
-         
+          <li class="text-red-900 dark:text-red-400 font-bold text-3xl"><span style="color: #4CCFF1; text-shadow: 2px 2px 4px #000; font-family: Boogaloo, cursive;">${t('modal.start')}</span></li> 
         </ol>
       `,
       customClass: {
-        popup: "rounded-lg shadow-xxl bg-white/95 backdrop-blur-md",
+        popup: "rounded-lg shadow-xxl bg-white/95 dark:bg-gray-800/95 backdrop-blur-md",
         title: "text-center text-5xl mt-[-4rem] whitespace-nowrap",
         imageUrl: "mx-auto mt-3",
         htmlContainer: "p-4",

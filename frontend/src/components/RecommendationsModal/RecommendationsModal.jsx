@@ -5,10 +5,10 @@ import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next'; // Added Trans just in case, but using separated keys
 
 const ModalSection = ({ title, icon: Icon, children, colorClass, isOpen, onToggle }) => (
-    <div className="border border-gray-100 rounded-lg overflow-hidden transition-all duration-300">
+    <div className="border border-gray-100 dark:border-gray-700 rounded-lg overflow-hidden transition-all duration-300">
         <button 
             onClick={onToggle}
-            className={`w-full flex items-center justify-between p-3 ${colorClass.bg} hover:brightness-95 transition-all text-left group`}
+            className={`w-full flex items-center justify-between p-3 ${colorClass.bg} hover:brightness-95 dark:hover:brightness-110 transition-all text-left group`}
         >
             <div className={`flex items-center gap-2 font-semibold ${colorClass.text}`}>
                 <Icon className="w-5 h-5" />
@@ -23,7 +23,7 @@ const ModalSection = ({ title, icon: Icon, children, colorClass, isOpen, onToggl
         <div 
             className={`transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
         >
-            <div className="p-4 bg-white text-sm text-gray-600 space-y-2 border-t border-gray-100">
+            <div className="p-4 bg-white dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-300 space-y-2 border-t border-gray-100 dark:border-gray-700">
                 {children}
             </div>
         </div>
@@ -69,10 +69,10 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
             ></div>
 
             {/* Modal Content */}
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100 flex flex-col max-h-[85vh]">
+            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100 flex flex-col max-h-[85vh]">
                 
                 {/* Header */}
-                <div className="bg-purple-600 px-6 py-4 flex items-center justify-between flex-shrink-0">
+                <div className="bg-purple-600 dark:bg-purple-800 px-6 py-4 flex items-center justify-between flex-shrink-0">
                     <h3 className="text-white font-bold text-lg tracking-wide">{t('recommendations.title')}</h3>
                     <button 
                         onClick={onClose}
@@ -86,27 +86,27 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                 <div className="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                     
                     {/* Intro */}
-                    <p className="text-gray-600 text-sm leading-relaxed pb-2">
-                        <Trans i18nKey="recommendations.intro" components={{ span: <span className="text-purple-600 font-bold" /> }} />
+                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed pb-2">
+                        <Trans i18nKey="recommendations.intro" components={{ span: <span className="text-purple-600 dark:text-purple-400 font-bold" /> }} />
                     </p>
 
                     {/* Section 1: Advantages */}
                     <ModalSection 
                         title={t('recommendations.advantages.title')} 
                         icon={RocketLaunchIcon}
-                        colorClass={{ bg: 'bg-purple-50', text: 'text-purple-700' }}
+                        colorClass={{ bg: 'bg-purple-50 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-300' }}
                         isOpen={openSections.advantages}
                         onToggle={() => toggleSection('advantages')}
                     >
                         <ul className="space-y-3 list-disc list-inside">
-                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.speedTitle')}</span> {t('recommendations.advantages.speedContent')}</li>
-                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.privacyTitle')}</span> {t('recommendations.advantages.privacyContent')}</li>
-                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.noLogsTitle')}</span> {t('recommendations.advantages.noLogsContent')}</li>
-                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.simplicityTitle')}</span> {t('recommendations.advantages.simplicityContent')}</li>
-                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.flexibilityTitle')}</span> {t('recommendations.advantages.flexibilityContent')}</li>
-                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.encryptionTitle')}</span> {t('recommendations.advantages.encryptionContent')}</li>
-                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.qrTitle')}</span> {t('recommendations.advantages.qrContent')}</li>
-                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.ipTitle')}</span> {t('recommendations.advantages.ipContent')}</li>
+                            <li><span className="font-medium text-purple-900 dark:text-purple-300">{t('recommendations.advantages.speedTitle')}</span> {t('recommendations.advantages.speedContent')}</li>
+                            <li><span className="font-medium text-purple-900 dark:text-purple-300">{t('recommendations.advantages.privacyTitle')}</span> {t('recommendations.advantages.privacyContent')}</li>
+                            <li><span className="font-medium text-purple-900 dark:text-purple-300">{t('recommendations.advantages.noLogsTitle')}</span> {t('recommendations.advantages.noLogsContent')}</li>
+                            <li><span className="font-medium text-purple-900 dark:text-purple-300">{t('recommendations.advantages.simplicityTitle')}</span> {t('recommendations.advantages.simplicityContent')}</li>
+                            <li><span className="font-medium text-purple-900 dark:text-purple-300">{t('recommendations.advantages.flexibilityTitle')}</span> {t('recommendations.advantages.flexibilityContent')}</li>
+                            <li><span className="font-medium text-purple-900 dark:text-purple-300">{t('recommendations.advantages.encryptionTitle')}</span> {t('recommendations.advantages.encryptionContent')}</li>
+                            <li><span className="font-medium text-purple-900 dark:text-purple-300">{t('recommendations.advantages.qrTitle')}</span> {t('recommendations.advantages.qrContent')}</li>
+                            <li><span className="font-medium text-purple-900 dark:text-purple-300">{t('recommendations.advantages.ipTitle')}</span> {t('recommendations.advantages.ipContent')}</li>
                         </ul>
                     </ModalSection>
 
@@ -114,15 +114,15 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                     <ModalSection 
                         title={t('recommendations.usage.title')} 
                         icon={ChatBubbleLeftRightIcon}
-                        colorClass={{ bg: 'bg-blue-50', text: 'text-blue-600' }}
+                        colorClass={{ bg: 'bg-blue-50 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-300' }}
                         isOpen={openSections.usage}
                         onToggle={() => toggleSection('usage')}
                     >
                         <ul className="space-y-2 list-disc list-inside">
-                            <li><span className="font-medium text-blue-900">{t('recommendations.usage.ephemeralTitle')}</span> {t('recommendations.usage.ephemeralContent')}</li>
-                            <li><span className="font-medium text-blue-900">{t('recommendations.usage.coordinationTitle')}</span> {t('recommendations.usage.coordinationContent')}</li>
-                            <li><span className="font-medium text-blue-900">{t('recommendations.usage.sharingTitle')}</span> {t('recommendations.usage.sharingContent')}</li>
-                            <li><span className="font-medium text-blue-900">{t('recommendations.usage.privateDataTitle')}</span> {t('recommendations.usage.privateDataContent')}</li>
+                            <li><span className="font-medium text-blue-900 dark:text-blue-300">{t('recommendations.usage.ephemeralTitle')}</span> {t('recommendations.usage.ephemeralContent')}</li>
+                            <li><span className="font-medium text-blue-900 dark:text-blue-300">{t('recommendations.usage.coordinationTitle')}</span> {t('recommendations.usage.coordinationContent')}</li>
+                            <li><span className="font-medium text-blue-900 dark:text-blue-300">{t('recommendations.usage.sharingTitle')}</span> {t('recommendations.usage.sharingContent')}</li>
+                            <li><span className="font-medium text-blue-900 dark:text-blue-300">{t('recommendations.usage.privateDataTitle')}</span> {t('recommendations.usage.privateDataContent')}</li>
                         </ul>
                     </ModalSection>
 
@@ -130,7 +130,7 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                     <ModalSection 
                         title={t('recommendations.security.title')} 
                         icon={ShieldCheckIcon}
-                        colorClass={{ bg: 'bg-green-50', text: 'text-green-600' }}
+                        colorClass={{ bg: 'bg-green-50 dark:bg-green-900/30', text: 'text-green-600 dark:text-green-300' }}
                         isOpen={openSections.security}
                         onToggle={() => toggleSection('security')}
                     >
@@ -153,10 +153,10 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-end flex-shrink-0">
+                <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex justify-end flex-shrink-0">
                     <button 
                         onClick={onClose}
-                        className="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors"
+                        className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                     >
                         {t('recommendations.understood')}
                     </button>
