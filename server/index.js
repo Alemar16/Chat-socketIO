@@ -332,5 +332,12 @@ io.on("connection", (socket) => {
 });
 
 // Arrancar el servidor según el puerto
-server.listen(PORT);
-console.log("Server on", PORT);
+// Export app and server for testing
+export { app, server, io };
+
+// Only listen if this file is run directly
+import { fileURLToPath } from 'url';
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  server.listen(PORT);
+  console.log("Server on", PORT);
+}

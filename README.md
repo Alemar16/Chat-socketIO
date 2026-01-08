@@ -81,6 +81,16 @@ Flash Chat is a secure and anonymous chat application offering a revolutionary p
 
 To begin using Flash Chat, ensure you have Node.js version 20.11.1 installed on your system. Navigate to the project's frontend and server directories and run `npm install` to install dependencies. Then, start the project in development mode by running `npm run dev`.
 
+## Testing
+
+To run the backend test suite (Unit & Integration tests):
+```bash
+bun test
+```
+The tests cover:
+- **Unit Tests**: Rate Limiter logic.
+- **Integration Tests**: Socket.IO connection, login, messaging, broadcasting, and rate limiting enforcement.
+
 ## Try It Out
 
 Experience Flash Chat firsthand by visiting our live application at [https://flashchat.website](https://flashchat.website). We value your feedback and invite you to explore the application. Don't forget to star our GitHub repository to show your support!

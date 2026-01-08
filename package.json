@@ -8,7 +8,7 @@
     "dev": "nodemon server/index.js --ignore frontend",
     "build": "npm install --prefix frontend && npm run build --prefix frontend && rm -rf frontend/node_modules",
     "start": "node server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "bun test"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "socket.io": "^4.7.2"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "socket.io-client": "^4.8.3"
   }
 }
