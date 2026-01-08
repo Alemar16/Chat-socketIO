@@ -14,9 +14,13 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact, is
   const showPicker = isPickerOpen !== undefined ? isPickerOpen : internalShowPicker;
   
   // Wrap in useCallback to stabilize the dependency for useEffect
-  const togglePicker = useCallback(onTogglePicker || ((val) => {
-      setInternalShowPicker(prev => typeof val === 'boolean' ? val : !prev);
-  }), [onTogglePicker]);
+  const togglePicker = useCallback((val) => {
+      if (onTogglePicker) {
+          onTogglePicker(val);
+      } else {
+          setInternalShowPicker(prev => typeof val === 'boolean' ? val : !prev);
+      }
+  }, [onTogglePicker]);
 
   // Group reactions by emoji: { '👍': 3, '❤️': 1 }
   const groupedReactions = Object.values(reactions).reduce((acc, emoji) => {
