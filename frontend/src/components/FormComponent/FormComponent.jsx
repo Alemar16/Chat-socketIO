@@ -43,6 +43,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false); // State to toggle attachment options
   const [showCameraModal, setShowCameraModal] = useState(false); // State to toggle camera modal
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [fileMetadata, setFileMetadata] = useState(null); // Metadata for selected file
 
   const {
       isRecording,
@@ -101,6 +102,11 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result); // Set preview instead of sending
+        setFileMetadata({
+            name: file.name,
+            size: (file.size / 1024).toFixed(2) + " KB",
+            type: file.type
+        });
       };
       reader.readAsDataURL(file);
       e.target.value = null; // Reset input
@@ -119,8 +125,9 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
 
     // Send Image if exists (with optional caption)
     if (previewImage) {
-      onImageSubmit(previewImage, message); // Pass message as caption
+      onImageSubmit(previewImage, message, fileMetadata); // Pass message as caption and metadata
       setPreviewImage(null);
+      setFileMetadata(null);
       setMessage(""); // Clear message after sending with image
     } else if (message.trim() !== "") {
       // Send Text Message only if no image
@@ -131,8 +138,9 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
     setErrorMessage("");
   };
 
-  const handleCameraCapture = (imageDataUrl) => {
+  const handleCameraCapture = (imageDataUrl, metadata) => {
     setPreviewImage(imageDataUrl);
+    setFileMetadata(metadata);
     setShowAttachmentOptions(false);
   };
 
@@ -153,7 +161,21 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
             <div className="w-full flex justify-between items-center p-2 mb-1 bg-gray-50 border-l-4 border-purple-500 rounded-r-md animate-fade-in shadow-sm">
                 <div className="flex flex-col overflow-hidden pr-2">
                      <span className="text-purple-600 font-bold text-xs">{replyingTo.from === 'Me' ? t('messages.you') : replyingTo.from}</span>
-                     <span className="text-gray-500 text-sm truncate max-w-[200px] md:max-w-md">{replyingTo.body}</span>
+                     <span className="text-gray-500 text-sm truncate max-w-[200px] md:max-w-md">
+                        {replyingTo.type === 'image' ? (
+                            <span className="flex items-center gap-1 italic text-xs">
+                                <PhotoIcon className="w-3 h-3"/> 
+                                {replyingTo.fileName || "Image"}
+                            </span>
+                        ) : replyingTo.type === 'audio' ? (
+                            <span className="flex items-center gap-1 italic text-xs">
+                                <MicrophoneIcon className="w-3 h-3"/> 
+                                {replyingTo.fileName || "Audio"}
+                            </span>
+                        ) : (
+                            replyingTo.body
+                        )}
+                     </span>
                 </div>
                 <button 
                     type="button"
@@ -315,6 +337,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
                               height={400}
                               searchDisabled={false}
                               skinTonesDisabled
+                              emojiStyle="native"
                               previewConfig={{ showPreview: false }}
                            />
                       </div>
@@ -373,7 +396,9 @@ FormComponent.propTypes = {
   replyingTo: PropTypes.shape({
       id: PropTypes.string,
       from: PropTypes.string,
-      body: PropTypes.string
+      body: PropTypes.string,
+      type: PropTypes.string,
+      fileName: PropTypes.string
   }),
   onCancelReply: PropTypes.func
 };

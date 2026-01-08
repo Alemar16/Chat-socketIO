@@ -168,6 +168,9 @@ io.on("connection", (socket) => {
         const imageData = typeof payload === 'object' ? payload.body : payload;
         const id = typeof payload === 'object' ? payload.id : null;
         const caption = typeof payload === 'object' ? payload.caption : ""; // Extract caption
+        const fileName = typeof payload === 'object' ? payload.fileName : "";
+        const fileSize = typeof payload === 'object' ? payload.fileSize : "";
+        const fileType = typeof payload === 'object' ? payload.fileType : "";
 
         // 1. Rate Limiting (re-use same limiter to prevent flood)
         if (!rateLimiter.check(socket.id)) return;
@@ -194,7 +197,9 @@ io.on("connection", (socket) => {
                 from: userSender.username || "Anonymous",
                 type: 'image', // Explicit type
                 caption: caption, // Broadcast caption
-                time: currentTime,
+                fileName: fileName,
+                fileSize: fileSize,
+                fileType: fileType,
                 time: currentTime,
                 id: id, // Propagate ID
                 reactions: {}, 
@@ -223,6 +228,9 @@ io.on("connection", (socket) => {
     try {
         const audioData = typeof payload === 'object' ? payload.body : payload;
         const id = typeof payload === 'object' ? payload.id : null;
+        const fileName = typeof payload === 'object' ? payload.fileName : "";
+        const fileSize = typeof payload === 'object' ? payload.fileSize : "";
+        const fileType = typeof payload === 'object' ? payload.fileType : "";
 
         if (!rateLimiter.check(socket.id)) return;
 
@@ -243,7 +251,9 @@ io.on("connection", (socket) => {
                 body: audioData,
                 from: userSender.username || "Anonymous",
                 type: 'audio',
-                time: currentTime,
+                fileName: fileName,
+                fileSize: fileSize,
+                fileType: fileType,
                 time: currentTime,
                 id: id,
                 reactions: {},
