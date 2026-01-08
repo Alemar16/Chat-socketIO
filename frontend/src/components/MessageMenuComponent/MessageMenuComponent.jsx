@@ -10,6 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 const MessageMenuComponent = ({ isOwnMessage, onReply, onCopy, onReact, onDelete }) => {
+    console.log("MessageMenu: isOwnMessage?", isOwnMessage); // DEBUG
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);

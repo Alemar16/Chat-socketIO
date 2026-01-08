@@ -112,6 +112,7 @@ io.on("connection", (socket) => {
         // Support object payload with ID or simple string
         const body = typeof payload === 'object' ? payload.body : payload;
         const id = typeof payload === 'object' ? payload.id : null;
+        const replyTo = typeof payload === 'object' ? payload.replyTo : null; // Extract replyTo
 
         // 1. Rate Limiting Check
         if (!rateLimiter.check(socket.id)) {
@@ -136,9 +137,8 @@ io.on("connection", (socket) => {
                 from: userSender.username || "Anonymous",
                 type: 'text',
                 time: currentTime,
-                type: 'text',
-                time: currentTime,
                 id: id, // Propagate ID
+                replyTo: replyTo, // Propagate replyTo
                 reactions: {}, // Initialize reactions
             });
 
@@ -152,6 +152,7 @@ io.on("connection", (socket) => {
                 type: 'text',
                 time: currentTime,
                 id: id,
+                replyTo: replyTo, // Save replyTo in history
                 reactions: {}, // Initialize reactions
             });
         }
