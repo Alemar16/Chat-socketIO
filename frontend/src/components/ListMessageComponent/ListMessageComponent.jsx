@@ -2,27 +2,64 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
 import AudioMessage from "../AudioMessage/AudioMessage";
-import { TrashIcon } from "@heroicons/react/24/solid";
+import { TrashIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
+import ReactionComponent from "../ReactionComponent/ReactionComponent";
 
-const ListMessageComponent = ({ messages, onDelete }) => {
+const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
   const { t } = useTranslation();
   const [selectedImage, setSelectedImage] = useState(null);
   const messagesEndRef = useRef(null);
+  const containerRef = useRef(null); // Ref for scroll container
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (smooth = true) => {
+    messagesEndRef.current?.scrollIntoView({ behavior: smooth ? "smooth" : "auto" });
+    setUnreadCount(0); // Clear unread on manual scroll
+    setShowScrollButton(false);
+  };
+
+  // Handle Scroll Event
+  const handleScroll = () => {
+      if (!containerRef.current) return;
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      
+      // Check if user is near bottom (within 100px)
+      const isBottom = scrollHeight - scrollTop - clientHeight < 100;
+      setIsAtBottom(isBottom);
+
+      if (isBottom) {
+          setShowScrollButton(false);
+          setUnreadCount(0);
+      } else {
+          setShowScrollButton(true);
+      }
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // Only auto-scroll if user WAS at bottom before new message
+    if (isAtBottom) {
+        scrollToBottom();
+    } else {
+        // Increment unread count if not at bottom and new message added
+        // (Assuming simple append, count increases by 1)
+        if (messages.length > 0) {
+             setUnreadCount(prev => prev + 1);
+        }
+    }
+  }, [messages, isAtBottom]); // Note: Depend on 'messages' but use 'isAtBottom' ref logic conceptually
 
   return (
     <div className="w-full relative flex-grow flex flex-col min-h-0">
       <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow-lg shadow-slate-900/60 flex flex-col h-full mx-2">
         {messages.length > 0 ? (
-          <ul className="flex-1 overflow-y-auto p-3 mb-2 custom-scrollbar flex flex-col">
+          <ul 
+            ref={containerRef}
+            onScroll={handleScroll}
+            className="flex-1 overflow-y-auto p-3 mb-2 custom-scrollbar flex flex-col relative"
+          >
             {messages.map((message, index) => (
               <li
                 key={index}
@@ -131,6 +168,17 @@ const ListMessageComponent = ({ messages, onDelete }) => {
                         <TrashIcon className="w-4 h-4" />
                     </button>
                 )}
+
+                {/* Reactions */}
+                <div className="mt-1">
+                    <ReactionComponent 
+                        messageId={message.id} 
+                        reactions={message.reactions} 
+                        currentUser={currentUser} 
+                        onReact={onReact} 
+                        isOwnMessage={message.from === "Me"}
+                    />
+                </div>
               </li>
             ))}
             <div ref={messagesEndRef} />
@@ -139,6 +187,22 @@ const ListMessageComponent = ({ messages, onDelete }) => {
           <p className="p-2 text-sm text-gray-800 flex items-center justify-center">
             {t('messages.noMessages')}
           </p>
+        )}
+        
+        {/* Scroll to Bottom Button (Overlay) */}
+        {showScrollButton && unreadCount > 0 && (
+            <button
+                onClick={() => scrollToBottom(true)}
+                className="absolute bottom-4 right-4 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition-all animate-bounce z-20 flex items-center justify-center"
+                style={{ width: '45px', height: '45px' }}
+            >
+                <ChevronDownIcon className="w-6 h-6" />
+                {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-white text-purple-600 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-purple-600 shadow-sm">
+                        {unreadCount}
+                    </span>
+                )}
+            </button>
         )}
       </div>
 
@@ -180,6 +244,8 @@ ListMessageComponent.propTypes = {
     })
   ).isRequired,
   onDelete: PropTypes.func, // Optional callback
+  onReact: PropTypes.func, // Required for reactions
+  currentUser: PropTypes.string, // Required for reactions
 };
 
 export default ListMessageComponent;
