@@ -124,8 +124,8 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
                   minWidth: "160px", 
                   borderRadius:
                     isOwnMessage
-                      ? "18px 18px 0 18px"
-                      : "18px 18px 18px 0px",
+                      ? "6px 6px 0 6px"
+                      : "6px 6px 6px 0px",
                   backgroundColor: isBig ? 'transparent' : undefined,
                   boxShadow: isBig ? 'none' : undefined,
                 }}
@@ -133,8 +133,8 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
                  {/* Header for Standard Messages (User + Menu) */}
                  {!isBig && (
                     <div className="flex justify-between items-center px-3 py-1 bg-black/10 w-full" style={{
-                         borderTopLeftRadius: "18px",
-                         borderTopRightRadius: "18px"
+                         borderTopLeftRadius: "6px",
+                         borderTopRightRadius: "6px"
                     }}>
                         <span className="text-xs text-white/90 font-bold block truncate mr-2">
                            {message.from}
