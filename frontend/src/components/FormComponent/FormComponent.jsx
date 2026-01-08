@@ -151,17 +151,17 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
 {/* GreetingComponent Removed */}
       <form
         onSubmit={handleSubmit}
-        className={`rounded-md bg-white p-2 mb-1 mx-2 flex flex-col gap-2 shadow-sm ${
+        className={`rounded-md bg-white dark:bg-gray-800 p-2 mb-1 mx-2 flex flex-col gap-2 shadow-sm ${
           errorVisible ? "border-2 border-red-500" : ""
         }`}
       >
         
         {/* Reply Preview */}
         {replyingTo && (
-            <div className="w-full flex justify-between items-center p-2 mb-1 bg-gray-50 border-l-4 border-purple-500 rounded-r-md animate-fade-in shadow-sm">
+            <div className="w-full flex justify-between items-center p-2 mb-1 bg-gray-50 dark:bg-gray-700 border-l-4 border-purple-500 rounded-r-md animate-fade-in shadow-sm">
                 <div className="flex flex-col overflow-hidden pr-2">
-                     <span className="text-purple-600 font-bold text-xs">{replyingTo.from === 'Me' ? t('messages.you') : replyingTo.from}</span>
-                     <span className="text-gray-500 text-sm truncate max-w-[200px] md:max-w-md">
+                     <span className="text-purple-600 dark:text-purple-400 font-bold text-xs">{replyingTo.from === 'Me' ? t('messages.you') : replyingTo.from}</span>
+                     <span className="text-gray-500 dark:text-gray-300 text-sm truncate max-w-[200px] md:max-w-md">
                         {replyingTo.type === 'image' ? (
                             <span className="flex items-center gap-1 italic text-xs">
                                 <PhotoIcon className="w-3 h-3"/> 
@@ -188,31 +188,31 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
         )}
 
         {showAttachmentOptions && !previewImage && (
-             <div className="w-full flex justify-start p-2 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative gap-4">
+             <div className="w-full flex justify-start p-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600 animate-fade-in relative gap-4">
                <button
                  type="button"
                  onClick={() => setShowCameraModal(true)}
-                 className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 rounded-md transition-colors"
+                 className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
                >
-                 <div className="bg-purple-100 p-2 rounded-full text-purple-600">
+                 <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full text-purple-600 dark:text-purple-400">
                     <CameraIcon className="w-6 h-6" />
                  </div>
-                 <span className="text-xs text-gray-600 font-medium">{t('form.camera')}</span>
+                 <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{t('form.camera')}</span>
                </button>
                <button
                  type="button"
                  onClick={() => fileInputRef.current.click()}
-                 className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 rounded-md transition-colors"
+                 className="flex flex-col items-center gap-1 p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
                >
-                 <div className="bg-blue-100 p-2 rounded-full text-blue-600">
+                 <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full text-blue-600 dark:text-blue-400">
                     <PhotoIcon className="w-6 h-6" />
                  </div>
-                 <span className="text-xs text-gray-600 font-medium">{t('form.gallery')}</span>
+                 <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{t('form.gallery')}</span>
                </button>
              </div>
         )}
         {previewImage && (
-          <div className="w-full flex justify-start p-1 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative">
+          <div className="w-full flex justify-start p-1 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600 animate-fade-in relative">
               <div className="relative group">
                 <img 
                   src={previewImage} 
@@ -304,7 +304,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
           />
           <button
             type="button"
-            className={`text-gray-500 hover:text-purple-600 transition-colors p-2 ${showAttachmentOptions ? 'text-purple-600 bg-purple-50 rounded-full' : ''}`}
+            className={`text-gray-500 dark:text-gray-400 hover:text-purple-600 transition-colors p-2 ${showAttachmentOptions ? 'text-purple-600 bg-purple-50 dark:bg-purple-900/20 rounded-full' : ''}`}
             onClick={() => setShowAttachmentOptions(!showAttachmentOptions)}
             title={t('form.attachImage')}
           >
@@ -318,7 +318,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
                <button
                   type="button"
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                  className={`text-gray-500 hover:text-purple-600 transition-colors p-2 ${showEmojiPicker ? 'text-purple-600 bg-purple-50 rounded-full' : ''}`}
+                  className={`text-gray-500 dark:text-gray-400 hover:text-purple-600 transition-colors p-2 ${showEmojiPicker ? 'text-purple-600 bg-purple-50 dark:bg-purple-900/20 rounded-full' : ''}`}
               >
                   <FaceSmileIcon className="w-6 h-6" />
               </button>
@@ -332,7 +332,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
                                   setMessage((prev) => prev + emojiData.emoji);
                               }}
                               autoFocusSearch={false}
-                              theme="light"
+                              theme="auto"
                               width={300}
                               height={400}
                               searchDisabled={false}
@@ -351,7 +351,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCa
               <textarea
                 rows={1}
                 placeholder={t('form.placeholder')}
-                className="p-2 w-full rounded text-black bg-white bg-opacity-50 border-none focus:bg-white focus:outline-none focus:bg-opacity-100 "
+                className="p-2 w-full rounded text-black dark:text-white bg-white bg-opacity-50 dark:bg-gray-700 border-none focus:bg-white dark:focus:bg-gray-600 focus:outline-none focus:bg-opacity-100 "
                 style={{ resize: "none" }}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}

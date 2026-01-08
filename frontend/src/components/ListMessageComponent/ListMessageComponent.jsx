@@ -96,7 +96,7 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
 
   return (
     <div className="w-full relative flex-grow flex flex-col min-h-0">
-      <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow-lg shadow-slate-900/60 flex flex-col h-full mx-2">
+      <div className="backdrop-blur-xl bg-white/40 dark:bg-gray-900/40 rounded-lg shadow-lg shadow-slate-900/60 dark:shadow-black/60 flex flex-col h-full mx-2">
         {messages.length > 0 ? (
           <ul 
             ref={containerRef}
@@ -110,7 +110,7 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
               
               const bubbleClasses = isBig 
                   ? 'bg-transparent shadow-none' 
-                  : (isOwnMessage ? "bg-purple-700 ml-auto" : "bg-blue-400");
+                  : (isOwnMessage ? "bg-purple-700 dark:bg-purple-900 ml-auto" : "bg-blue-400 dark:bg-blue-600");
               
               return (
               <li
@@ -272,8 +272,8 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
                       <span
                         className={` ${
                           isOwnMessage
-                            ? "text-zinc-300"
-                            : "text-zinc-800"
+                            ? "text-zinc-300 dark:text-zinc-400"
+                            : "text-zinc-800 dark:text-zinc-200"
                         } block text-right mt-1 opacity-80`}
                         style={{
                           textShadow: "1px 1px 2px rgba(0, 0, 0, 0.5)",
@@ -305,7 +305,7 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
             <div ref={messagesEndRef} />
           </ul>
         ) : (
-          <p className="p-2 text-sm text-gray-800 flex items-center justify-center">
+          <p className="p-2 text-sm text-gray-800 dark:text-gray-200 flex items-center justify-center">
             {t('messages.noMessages')}
           </p>
         )}

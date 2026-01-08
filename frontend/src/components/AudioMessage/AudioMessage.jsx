@@ -61,12 +61,12 @@ const AudioMessage = ({ src }) => {
   }
 
   return (
-    <div className="flex items-center gap-3 w-64 p-2 rounded-lg bg-black/10 backdrop-blur-sm border border-white/10">
+    <div className="flex items-center gap-3 w-64 p-2 rounded-lg bg-black/10 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
       <audio ref={audioRef} src={src} />
       
       <button
         onClick={togglePlay}
-        className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white text-purple-600 hover:scale-110 transition-transform shadow-md"
+        className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-gray-200 text-purple-600 dark:text-purple-800 hover:scale-110 transition-transform shadow-md"
       >
         {isPlaying ? (
            <PauseIcon className="w-5 h-5" />

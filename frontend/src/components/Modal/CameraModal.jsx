@@ -147,7 +147,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
                 </div>
 
                 {/* Footer / Controls */}
-                <div className="p-4 flex justify-center items-center gap-4 bg-gray-50 border-t">
+                <div className="p-4 flex justify-center items-center gap-4 bg-gray-50 dark:bg-gray-900 border-t dark:border-gray-700">
                     {!capturedImage ? (
                         <button 
                             onClick={handleCapture}
@@ -160,7 +160,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
                         <>
                             <button 
                                 onClick={handleRetake}
-                                className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             >
                                 <ArrowPathIcon className="w-5 h-5" />
                                 Retake

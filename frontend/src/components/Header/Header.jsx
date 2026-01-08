@@ -12,9 +12,9 @@ function Header({ compact = false }) {
       {/* Aplica la fuente Boogaloo al elemento <h1> */}
       <h1 
         className={`${compact ? 'text-2xl mb-0' : 'text-3xl font-bold mb-5'}`} 
-        style={{ fontFamily: 'Boogaloo, cursive', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}
+        style={{ fontFamily: 'Boogaloo, cursive', textShadow: '2px 2px 4px #000' }}
       >
-        <span style={{ color: '#852CA5', textStroke: '2px #000' }}>Flash</span><span style={{ color: '#4CCFF1'  }}>Chat</span>
+        <span style={{ color: '#852CA5' }}>Flash</span><span style={{ color: '#4CCFF1'  }}>Chat</span>
       </h1>
     </div>
   );
