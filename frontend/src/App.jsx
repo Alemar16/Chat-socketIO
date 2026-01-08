@@ -32,7 +32,7 @@ const Toast = Swal.mixin({
 const socket = io("/");
 
 function App() {
-  useTranslation();
+  const { t } = useTranslation();
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState(null);
@@ -120,7 +120,7 @@ function App() {
                 if (!prevIds.includes(user.id)) {
                      Toast.fire({
                         icon: 'success',
-                        title: `${user.username} joined`
+                        title: t('toasts.joined', { username: user.username })
                      });
                 }
             });
@@ -130,7 +130,7 @@ function App() {
                 if (!currentIds.includes(user.id)) {
                      Toast.fire({
                         icon: 'info',
-                        title: `${user.username} left`
+                        title: t('toasts.left', { username: user.username })
                      });
                 }
             });
@@ -182,7 +182,7 @@ function App() {
       socket.off("delete");
       socket.off("history");
     };
-  }, []);
+  }, [t]);
 
   const handleLogin = (username, roomCode) => {
     let finalRoomId = roomId;

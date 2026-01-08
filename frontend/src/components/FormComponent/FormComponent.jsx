@@ -213,7 +213,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
 
           <textarea
             rows={1}
-            placeholder="Write your message..."
+            placeholder={t('form.placeholder')}
             className="p-2 w-full rounded text-black bg-white bg-opacity-50 border-none focus:bg-white focus:outline-none focus:bg-opacity-100 "
             style={{ resize: "none" }}
             value={message}

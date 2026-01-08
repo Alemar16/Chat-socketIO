@@ -12,6 +12,10 @@
   "language": "Language",
   "theme": "Theme",
   "about": "About Flash Chat",
+  "toasts": {
+    "joined": "{{username}} joined",
+    "left": "{{username}} left"
+  },
   "roomUrlCopied": "Room URL copied to clipboard",
   "roomIdCopied": "Room ID copied to clipboard",
   "copied": "copied to clipboard",

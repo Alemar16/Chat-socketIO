@@ -12,6 +12,10 @@
   "language": "Idioma",
   "theme": "Tema",
   "about": "Acerca de Flash Chat",
+  "toasts": {
+    "joined": "{{username}} se unió",
+    "left": "{{username}} salió"
+  },
   "roomUrlCopied": "URL de la sala copiada al portapapeles",
   "roomIdCopied": "ID de la sala copiado al portapapeles",
   "copied": "copiado al portapapeles",
