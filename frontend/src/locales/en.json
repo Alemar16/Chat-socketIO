@@ -39,7 +39,7 @@
   },
   "recommendations": {
     "title": "About Flash Chat",
-    "intro": "Welcome to <span class='text-purple-600 font-bold'>FlashChat</span>. This tool is designed to facilitate quick and secure communication. Here are some guidelines to get the most out of it.",
+    "intro": "Welcome to <span>FlashChat</span>. This tool is designed to facilitate quick and secure communication. Here are some guidelines to get the most out of it.",
     "advantages": {
       "title": "Main Advantages",
       "speedTitle": "Real-time speed:",
