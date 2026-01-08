@@ -155,9 +155,6 @@ function App() {
 
     socket.on("message", (message) => {
       // Decrypt incoming message
-      console.log("App.jsx: Received message from socket:", message); // DEBUG
-      console.log("App.jsx: Has replyTo?", message.replyTo); // DEBUG
-      
       const currentRoomId = roomIdRef.current;
       const decryptedBody = decryptMessage(message.body, currentRoomId);
       const decryptedCaption = message.caption ? decryptMessage(message.caption, currentRoomId) : undefined;

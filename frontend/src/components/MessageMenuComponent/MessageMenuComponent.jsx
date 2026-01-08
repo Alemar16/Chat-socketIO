@@ -10,7 +10,6 @@ import {
 import { useTranslation } from 'react-i18next';
 
 const MessageMenuComponent = ({ isOwnMessage, onReply, onCopy, onReact, onDelete }) => {
-    console.log("MessageMenu: isOwnMessage?", isOwnMessage); // DEBUG
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
@@ -37,17 +36,17 @@ const MessageMenuComponent = ({ isOwnMessage, onReply, onCopy, onReact, onDelete
     };
 
     return (
-        <div className="relative" ref={menuRef}>
+        <div className="relative inline-block text-left" ref={menuRef}>
             {/* Trigger Button */}
             <button
                 onClick={(e) => {
                     e.stopPropagation();
                     setIsOpen(!isOpen);
                 }}
-                className={`p-1 rounded-full hover:bg-black/10 transition-colors ${isOpen ? 'bg-black/10 opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                className={`p-1 rounded-full hover:bg-white/20 transition-colors`}
                 title={t('menu.options', 'Message Options')}
             >
-                <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                <ChevronDownIcon className="w-5 h-5 text-white drop-shadow-sm opacity-80 hover:opacity-100" />
             </button>
 
             {/* Dropdown Menu */}

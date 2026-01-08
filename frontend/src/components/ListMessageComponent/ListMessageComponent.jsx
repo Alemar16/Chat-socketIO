@@ -106,7 +106,7 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
             {messages.map((message, index) => {
               const isBig = isBigEmoji(message.body);
               const hasReactions = message.reactions && Object.keys(message.reactions).length > 0;
-              const isOwnMessage = message.from === "Me";
+              const isOwnMessage = message.from === "Me" || message.from === currentUser;
               
               const bubbleClasses = isBig 
                   ? 'bg-transparent shadow-none' 
@@ -115,14 +115,14 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
               return (
               <li
                 key={index}
-                className={`mt-2 p-2 table rounded-md shadow-lg shadow-indigo-900/80 relative group first:mt-auto ${
+                className={`mt-2 p-2 table rounded-md shadow-lg shadow-indigo-900/80 relative group first:mt-auto max-w-[85%] md:max-w-[70%] break-words ${
                   hasReactions ? "mb-10" : "mb-2"
                 } ${
                   isOwnMessage && !isBig ? "ml-auto" : "" 
                 } ${bubbleClasses}`}
                 style={{
                   paddingBottom: "1.2rem",
-                  minWidth: "100px",
+                  minWidth: "120px", // Increased min-width for better layout
                   borderRadius:
                     isOwnMessage
                       ? "18px 18px 0 18px"
@@ -133,10 +133,10 @@ const ListMessageComponent = ({ messages, onDelete, onReact, onReply, currentUse
               >
                 {/* Quoted Message (Reply) */}
                 {message.replyTo && !isBig && (
-                     <div className={`rounded-md p-1 mb-1 border-l-4 cursor-pointer text-left opacity-90 hover:opacity-100 transition-opacity ${
+                     <div className={`rounded-md p-1 mb-1 border-l-4 cursor-pointer text-left opacity-90 hover:opacity-100 transition-opacity w-full overflow-hidden ${
                          isOwnMessage ? 'bg-black/20 border-white/50' : 'bg-white/20 border-purple-600'
                      }`}>
-                        <div className={`font-bold text-[10px] leading-tight ${isOwnMessage ? 'text-purple-200' : 'text-purple-700'}`}>
+                        <div className={`font-bold text-[10px] leading-tight truncate ${isOwnMessage ? 'text-purple-200' : 'text-purple-700'}`}>
                             {message.replyTo.from === currentUser ? t('messages.you') : message.replyTo.from}
                         </div>
                         <div className={`text-[10px] truncate leading-tight ${isOwnMessage ? 'text-gray-100' : 'text-slate-800'}`}>
