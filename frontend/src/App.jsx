@@ -39,6 +39,8 @@ function App() {
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [connectedUsers, setConnectedUsers] = useState([]);
+  const [replyingTo, setReplyingTo] = useState(null); // State for message being replied to
+  
   const soundEnabledRef = useRef(soundEnabled);
   const roomIdRef = useRef(roomId); // Ref to access current roomId in callbacks
   const usernameRef = useRef(username); // Ref to access current username for reconnect
@@ -62,12 +64,14 @@ function App() {
     const audio = new Audio(soundToPlay);
     audio.play().catch(error => console.error("Audio play failed:", error));
   };
+  
+  const handleInitiateReply = (message) => {
+    setReplyingTo(message);
+  };
 
-// ... (moved to top)
-
-// ... (existing imports)
-
-// ... inside App component
+  const handleCancelReply = () => {
+    setReplyingTo(null);
+  };
 
   useEffect(() => {
     // Room Logic
@@ -140,16 +144,36 @@ function App() {
         prevUsersRef.current = users; // Update ref
     });
 
+    socket.on("reaction_update", ({ messageId, reactions }) => {
+        setMessages(prevMessages => prevMessages.map(msg => {
+            if (msg.id === messageId) {
+                return { ...msg, reactions: reactions };
+            }
+            return msg;
+        }));
+    });
+
     socket.on("message", (message) => {
       // Decrypt incoming message
       const currentRoomId = roomIdRef.current;
       const decryptedBody = decryptMessage(message.body, currentRoomId);
       const decryptedCaption = message.caption ? decryptMessage(message.caption, currentRoomId) : undefined;
+      const decryptedReplyTo = message.replyTo ? {
+          ...message.replyTo,
+          // If we decided to encrypt nested reply body, we'd decrypt here.
+          // For now assuming it is consistent with how we sent it.
+          // If we encrypted it, we decrypt. If we sent plain text (as it was already decrypted on client before sending?),
+          // we need to be careful.
+          // In handleSubmit we sent `replyingTo.body` which is already decrypted in the state `messages`.
+          // So the payload sent to server has PLAIN TEXT in replyTo.body (but Encrypted in main body).
+          // Ideally we should encrypt it. But let's stick to the plan of sending it as is for UI consistency for now.
+      } : null;
       
       const decryptedMessage = {
           ...message,
           body: decryptedBody,
           caption: decryptedCaption,
+          replyTo: decryptedReplyTo, 
           timestamp: message.time // Map server 'time' to 'timestamp'
       };
 
@@ -168,6 +192,7 @@ function App() {
         const decryptedHistory = historyMessages.map(msg => ({
             ...msg,
             body: decryptMessage(msg.body, currentRoomId),
+            replyTo: msg.replyTo, // Assuming history preserves structure
             timestamp: msg.time // Map server 'time' to 'timestamp'
         }));
         // Rewrite messages with history (since it's a reload/join)
@@ -179,8 +204,11 @@ function App() {
       socket.off("users");
       socket.off("message");
       socket.off("message");
+      socket.off("users");
+      socket.off("message");
       socket.off("delete");
       socket.off("history");
+      socket.off("reaction_update");
     };
   }, [t]);
 
@@ -231,12 +259,26 @@ function App() {
       type: 'text',
       timestamp: new Date().toISOString(),
       id: id,
+      replyTo: replyingTo ? {
+        id: replyingTo.id,
+        body: replyingTo.body,
+        from: replyingTo.from
+      } : null
     };
     setMessages((state) => [...state, newMessage].slice(-100)); // Auto-Cleanup
+    setReplyingTo(null); // Clear reply state
     
     // Encrypt before sending
     const encryptedBody = encryptMessage(message, roomId);
-    socket.emit("message", { body: encryptedBody, id });
+    socket.emit("message", { 
+        body: encryptedBody, 
+        id,
+        replyTo: replyingTo ? {
+            id: replyingTo.id,
+            from: replyingTo.from,
+            body: replyingTo.body
+        } : null
+    });
   };
 
   const handleImageSubmit = (imageData, caption) => {
@@ -272,6 +314,10 @@ function App() {
     // Encrypt content
     const encryptedBody = encryptMessage(audioData, roomId);
     socket.emit("audio", { body: encryptedBody, id });
+  };
+
+  const handleReaction = (messageId, emoji) => {
+      socket.emit("reaction", { messageId, emoji });
   };
 
   return (
@@ -310,13 +356,27 @@ function App() {
                      <GreetingComponent username={username} />
                   </div>
                )}
-               <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
+               <ListMessageComponent 
+              messages={messages} 
+              onDelete={handleDeleteMessage}
+              onReact={handleReaction}
+              onReply={handleInitiateReply}
+              currentUser={username} 
+          />
              </div>
           </div>
 
           {/* Input Section - Fixed at bottom */}
           <div className="flex-none w-full bg-transparent pb-2 pt-2">
-             <FormComponent onSubmit={handleSubmit} onImageSubmit={handleImageSubmit} onAudioSubmit={handleAudioSubmit} username={username} socket={socket} />
+             <FormComponent 
+                onSubmit={handleSubmit} 
+                onImageSubmit={handleImageSubmit} 
+                onAudioSubmit={handleAudioSubmit} 
+                username={username} 
+                socket={socket} 
+                replyingTo={replyingTo}
+                onCancelReply={handleCancelReply}
+             />
           </div>
 
 

@@ -7,10 +7,12 @@ import {
     PaperAirplaneIcon,
     XMarkIcon,
     CameraIcon,
-    PhotoIcon 
+    PhotoIcon
 } from "@heroicons/react/24/solid";
+import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import useVoiceRecorder from "../../hooks/useVoiceRecorder";
 import ButtonSend from "../Buttons/ButtonSend";
+import EmojiPicker from 'emoji-picker-react';
 
 import CameraModal from "../Modal/CameraModal";
 import { useTranslation } from "react-i18next";
@@ -31,7 +33,7 @@ const Toast = Swal.mixin({
 
 
 
-const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
+const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCancelReply }) => {
   const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null); // Ref for file input
@@ -40,6 +42,7 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
   const [previewImage, setPreviewImage] = useState(null); // State for image preview
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false); // State to toggle attachment options
   const [showCameraModal, setShowCameraModal] = useState(false); // State to toggle camera modal
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const {
       isRecording,
@@ -144,6 +147,23 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
           errorVisible ? "border-2 border-red-500" : ""
         }`}
       >
+        
+        {/* Reply Preview */}
+        {replyingTo && (
+            <div className="w-full flex justify-between items-center p-2 mb-1 bg-gray-50 border-l-4 border-purple-500 rounded-r-md animate-fade-in shadow-sm">
+                <div className="flex flex-col overflow-hidden pr-2">
+                     <span className="text-purple-600 font-bold text-xs">{replyingTo.from === 'Me' ? t('messages.you') : replyingTo.from}</span>
+                     <span className="text-gray-500 text-sm truncate max-w-[200px] md:max-w-md">{replyingTo.body}</span>
+                </div>
+                <button 
+                    type="button"
+                    onClick={onCancelReply} 
+                    className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                >
+                    <XMarkIcon className="w-4 h-4 text-gray-500" />
+                </button>
+            </div>
+        )}
 
         {showAttachmentOptions && !previewImage && (
              <div className="w-full flex justify-start p-2 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in relative gap-4">
@@ -271,14 +291,49 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
 
 
 
-          <textarea
-            rows={1}
-            placeholder={t('form.placeholder')}
-            className="p-2 w-full rounded text-black bg-white bg-opacity-50 border-none focus:bg-white focus:outline-none focus:bg-opacity-100 "
-            style={{ resize: "none" }}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
+          <div className="flex-1 relative flex items-center gap-2">
+               {/* Emoji Toggle */}
+               <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className={`text-gray-500 hover:text-purple-600 transition-colors p-2 ${showEmojiPicker ? 'text-purple-600 bg-purple-50 rounded-full' : ''}`}
+              >
+                  <FaceSmileIcon className="w-6 h-6" />
+              </button>
+
+              {/* Emoji Picker Popover */}
+              {showEmojiPicker && (
+                  <div className="absolute bottom-full left-0 mb-2 z-50 animate-scale-in">
+                      <div onClick={(e) => e.stopPropagation()}>
+                           <EmojiPicker 
+                              onEmojiClick={(emojiData) => {
+                                  setMessage((prev) => prev + emojiData.emoji);
+                              }}
+                              autoFocusSearch={false}
+                              theme="light"
+                              width={300}
+                              height={400}
+                              searchDisabled={false}
+                              skinTonesDisabled
+                              previewConfig={{ showPreview: false }}
+                           />
+                      </div>
+                       <div 
+                          className="fixed inset-0 z-[-1]" 
+                          onClick={() => setShowEmojiPicker(false)}
+                      ></div>
+                  </div>
+              )}
+
+              <textarea
+                rows={1}
+                placeholder={t('form.placeholder')}
+                className="p-2 w-full rounded text-black bg-white bg-opacity-50 border-none focus:bg-white focus:outline-none focus:bg-opacity-100 "
+                style={{ resize: "none" }}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+          </div>
 
           {/* Dynamic Buttons */}
           {message.trim() || previewImage ? (
@@ -313,7 +368,14 @@ FormComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onImageSubmit: PropTypes.func.isRequired,
   onAudioSubmit: PropTypes.func.isRequired,
-
+  username: PropTypes.string,
+  socket: PropTypes.object,
+  replyingTo: PropTypes.shape({
+      id: PropTypes.string,
+      from: PropTypes.string,
+      body: PropTypes.string
+  }),
+  onCancelReply: PropTypes.func
 };
 
 export default FormComponent;
