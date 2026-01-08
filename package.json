@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon server/index.js --ignore frontend",
-    "build": "npm install --prefix frontend && npm run build --prefix frontend && rm -rf frontend/node_modules",
-    "start": "node server/index.js",
+    "dev": "bun --watch server/index.js",
+    "build": "cd frontend && bun install && bun run build",
+    "start": "bun server/index.js",
     "test": "bun test"
   },
   "keywords": [],

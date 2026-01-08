@@ -79,7 +79,9 @@ Flash Chat is a secure and anonymous chat application offering a revolutionary p
 
 ## Getting Started
 
-To begin using Flash Chat, ensure you have Node.js version 20.11.1 installed on your system. Navigate to the project's frontend and server directories and run `npm install` to install dependencies. Then, start the project in development mode by running `npm run dev`.
+To begin using Flash Chat, ensure you have [Bun](https://bun.sh) installed on your system. Navigate to the project's root directory and run `bun install` to install dependencies for both backend and frontend. Then, start the project in development mode by running `bun run dev`.
+
+If you prefer to run the frontend separately, you can navigate to the `frontend` folder and run `bun run dev`.
 
 ## Testing
 
