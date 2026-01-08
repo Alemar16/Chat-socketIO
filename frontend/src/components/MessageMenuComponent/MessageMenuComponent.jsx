@@ -51,12 +51,12 @@ const MessageMenuComponent = ({ isOwnMessage, onReply, onCopy, onReact, onDelete
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute right-0 top-6 w-48 bg-white/95 backdrop-blur-md rounded-lg shadow-xl border border-white/50 py-1 z-50 animate-scale-in origin-top-right">
+                <div className="absolute right-0 top-6 w-48 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-xl border border-white/50 dark:border-gray-600 py-1 z-50 animate-scale-in origin-top-right">
                     
                     {/* Reply */}
                     <button
                         onClick={(e) => { e.stopPropagation(); handleAction(onReply); }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
                     >
                         <ArrowUturnLeftIcon className="w-4 h-4" />
                         {t('menu.reply', 'Responder')}
@@ -65,7 +65,7 @@ const MessageMenuComponent = ({ isOwnMessage, onReply, onCopy, onReact, onDelete
                     {/* Copy */}
                     <button
                         onClick={(e) => { e.stopPropagation(); handleAction(onCopy); }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
                     >
                         <DocumentDuplicateIcon className="w-4 h-4" />
                         {t('menu.copy', 'Copiar')}
@@ -74,7 +74,7 @@ const MessageMenuComponent = ({ isOwnMessage, onReply, onCopy, onReact, onDelete
                     {/* React */}
                      <button
                         onClick={(e) => { e.stopPropagation(); handleAction(onReact); }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
                     >
                         <FaceSmileIcon className="w-4 h-4" />
                         {t('menu.react', 'Reaccionar')}
@@ -84,7 +84,7 @@ const MessageMenuComponent = ({ isOwnMessage, onReply, onCopy, onReact, onDelete
                     {isOwnMessage && (
                         <button
                             onClick={(e) => { e.stopPropagation(); handleAction(onDelete); }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 border-t border-gray-100 mt-1 pt-2"
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 border-t border-gray-100 dark:border-gray-700 mt-1 pt-2"
                         >
                             <TrashIcon className="w-4 h-4" />
                             {t('menu.delete', 'Eliminar')}

@@ -71,7 +71,7 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
           <div className="flex gap-1 h-10 w-full">
             <input
               placeholder={t('login.enterUsername')}
-              className="border-none focus:outline-none bg-white text-gray-700 rounded-l-lg p-2 h-full flex-1 min-w-0"
+              className="border-none focus:outline-none bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-l-lg p-2 h-full flex-1 min-w-0"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -99,7 +99,7 @@ const LoginComponent = ({ onLogin, onLoginAsAnonymous }) => {
             <div className="flex gap-1 h-10 w-full">
                <input
                 placeholder={t('login.enterRoomCode')}
-                className="border-none focus:outline-none bg-white/80 text-gray-700 rounded-lg p-2 h-full flex-1 min-w-0 text-sm placeholder-gray-500"
+                className="border-none focus:outline-none bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 rounded-lg p-2 h-full flex-1 min-w-0 text-sm placeholder-gray-500 dark:placeholder-gray-400"
                 value={roomCode}
                 onChange={(e) => setRoomCode(e.target.value)}
               />

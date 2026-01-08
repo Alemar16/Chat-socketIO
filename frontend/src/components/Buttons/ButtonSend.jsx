@@ -6,7 +6,7 @@ const ButtonSend = ({ onClick }) => {
     <img
       src={SendIcon}
       alt="Send icon"
-      className="cursor-pointer"
+      className="cursor-pointer dark:invert"
       onClick={onClick}
     />
   );

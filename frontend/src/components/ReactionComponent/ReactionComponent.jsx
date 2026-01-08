@@ -47,11 +47,11 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact, is
     <div className={`absolute -bottom-5 right-0 flex items-center gap-1 z-20`}>
       {/* Display Existing Reactions (Pill) */}
       {Object.keys(groupedReactions).length > 0 && (
-          <div className="bg-white rounded-full shadow-md border border-gray-200 px-1.5 py-0.5 flex items-center gap-1 cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => togglePicker(!showPicker)}>
+          <div className="bg-white dark:bg-gray-800 rounded-full shadow-md border border-gray-200 dark:border-gray-700 px-1.5 py-0.5 flex items-center gap-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" onClick={() => togglePicker(!showPicker)}>
               {Object.entries(groupedReactions).map(([emoji, count]) => (
                 <div key={emoji} className="flex items-center text-xs">
                     <span>{emoji}</span>
-                    <span className={`ml-0.5 font-bold ${reactions[currentUser] === emoji ? 'text-purple-600' : 'text-gray-500'}`}>{count > 1 ? count : ''}</span>
+                    <span className={`ml-0.5 font-bold ${reactions[currentUser] === emoji ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400'}`}>{count > 1 ? count : ''}</span>
                 </div>
               ))}
           </div>
@@ -65,7 +65,7 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact, is
                 e.stopPropagation();
                 togglePicker(!showPicker);
             }}
-            className={`p-1 rounded-full bg-white shadow-sm border border-gray-200 transition-all transform hover:scale-110 ${
+            className={`p-1 rounded-full bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 transition-all transform hover:scale-110 ${
                 showPicker 
                 ? "opacity-100 scale-100" 
                 : "opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100"
@@ -73,13 +73,13 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact, is
              style={{ marginLeft: '4px' }}
             title="Add Reaction"
           >
-              <FaceSmileIcon className="w-4 h-4 text-gray-500" />
+              <FaceSmileIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </button>
 
           {/* Emoji Picker Popover */}
           {showPicker && (
               <div 
-                className={`absolute bottom-full right-0 mb-2 bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-white/50 p-2 flex gap-1 animate-scale-in z-50 whitespace-nowrap`}
+                className={`absolute bottom-full right-0 mb-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl border border-white/50 dark:border-gray-600 p-2 flex gap-1 animate-scale-in z-50 whitespace-nowrap`}
               >
                   {!showFullPicker ? (
                     <>
@@ -91,20 +91,20 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact, is
                                     onReact(messageId, emoji);
                                     togglePicker(false); // Close after reacting
                                 }}
-                                className={`w-9 h-9 flex items-center justify-center rounded-full text-xl hover:bg-white hover:shadow-md transition-all hover:scale-125 ${
-                                    myReaction === emoji ? "bg-purple-100 ring-2 ring-purple-200" : ""
+                                className={`w-9 h-9 flex items-center justify-center rounded-full text-xl hover:bg-white dark:hover:bg-gray-700 hover:shadow-md transition-all hover:scale-125 ${
+                                    myReaction === emoji ? "bg-purple-100 dark:bg-purple-900/50 ring-2 ring-purple-200 dark:ring-purple-800" : ""
                                 }`}
                             >
                                 {emoji}
                             </button>
                         ))}
-                        <div className="w-[1px] h-8 bg-gray-300 mx-1"></div>
+                        <div className="w-[1px] h-8 bg-gray-300 dark:bg-gray-600 mx-1"></div>
                          <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setShowFullPicker(true);
                             }}
-                            className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:bg-white hover:shadow-md transition-all hover:scale-110 hover:text-purple-600"
+                            className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-700 hover:shadow-md transition-all hover:scale-110 hover:text-purple-600"
                         >
                             <PlusIcon className="w-5 h-5" />
                         </button>
@@ -118,7 +118,7 @@ const ReactionComponent = ({ messageId, reactions = {}, currentUser, onReact, is
                                 setShowFullPicker(false);
                             }}
                             autoFocusSearch={false}
-                            theme="light"
+                            theme="auto"
                             searchDisabled={false}
                             skinTonesDisabled
                             width={300}
