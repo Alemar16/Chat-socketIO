@@ -1,8 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 
-const useVoiceRecorder = (onAudioSubmit) => {
+const useVoiceRecorder = (propsOrCallback) => {
+    // Support legacy callback or new options object
+    const options = typeof propsOrCallback === 'function' ? { onAudioSubmit: propsOrCallback } : propsOrCallback;
+    const { onAudioSubmit, onLimitReached } = options;
+
     const [isRecording, setIsRecording] = useState(false);
     const [recordingTime, setRecordingTime] = useState(0);
+    const [recordedAudio, setRecordedAudio] = useState(null); // New state for saved audio
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
     const timerRef = useRef(null);
@@ -36,9 +41,10 @@ const useVoiceRecorder = (onAudioSubmit) => {
             setRecordingTime(0);
             timerRef.current = setInterval(() => {
                 setRecordingTime(prev => {
-                    if (prev >= 60) { 
-                         stopRecording(true); // Auto-send at 60s
-                         return 60;
+                    if (prev >= 120) { // 2 Minutes Limit
+                         stopRecording({ send: false, save: true }); // Stop and Save
+                         if (onLimitReached) onLimitReached();
+                         return 120;
                     }
                     return prev + 1;
                 });
@@ -50,27 +56,29 @@ const useVoiceRecorder = (onAudioSubmit) => {
         }
     };
 
-    const stopRecording = (shouldSend = true) => {
+    const stopRecording = (options = { send: true, save: false }) => {
+        // Handle legacy boolean argument (shouldSend)
+        const shouldSend = typeof options === 'boolean' ? options : (options.send ?? true);
+        const shouldSave = typeof options === 'object' ? (options.save ?? false) : false;
+
         if (mediaRecorderRef.current && isRecording) {
-            
-            // We need to define the onstop handler HERE to capture the 'shouldSend' closure logic
-            // or we just handle the data processing manually here if the recorder is 'inactive'
-            // But MediaRecorder is async.
-            
-            // Better approach: Assign a custom property or just handle the blob directly?
-            // Standard approach: Assign different onstop handlers?
             
             mediaRecorderRef.current.onstop = () => {
                  const stream = mediaRecorderRef.current.stream;
                  if(stream) stream.getTracks().forEach(track => track.stop());
 
-                 if (shouldSend) {
+                 if (shouldSend || shouldSave) {
                     const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
                     const reader = new FileReader();
                     reader.readAsDataURL(audioBlob);
                     reader.onloadend = () => {
                         const base64Audio = reader.result;
-                        onAudioSubmit(base64Audio);
+                        if (shouldSend) {
+                            onAudioSubmit(base64Audio);
+                        }
+                        if (shouldSave) {
+                            setRecordedAudio(base64Audio);
+                        }
                     };
                  }
             };
@@ -82,7 +90,12 @@ const useVoiceRecorder = (onAudioSubmit) => {
     };
 
     const cancelRecording = () => {
-        stopRecording(false);
+        stopRecording({ send: false, save: false });
+        setRecordedAudio(null);
+    };
+
+    const clearRecordedAudio = () => {
+        setRecordedAudio(null);
     };
 
     const formatTime = (seconds) => {
@@ -94,10 +107,18 @@ const useVoiceRecorder = (onAudioSubmit) => {
     return {
         isRecording,
         recordingTime,
+        recordedAudio,
         startRecording,
-        stopRecording: () => stopRecording(true),
+        stopRecording: () => stopRecording({ send: true }), // Default btn behavior
         cancelRecording,
-        formatTime
+        clearRecordedAudio,
+        formatTime,
+        sendRecordedAudio: () => {
+             if (recordedAudio && onAudioSubmit) {
+                 onAudioSubmit(recordedAudio);
+                 setRecordedAudio(null);
+             }
+        }
     };
 };
 

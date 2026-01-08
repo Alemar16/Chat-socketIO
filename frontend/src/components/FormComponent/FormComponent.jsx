@@ -14,6 +14,20 @@ import ButtonSend from "../Buttons/ButtonSend";
 
 import CameraModal from "../Modal/CameraModal";
 import { useTranslation } from "react-i18next";
+import Swal from 'sweetalert2';
+import audioLimitSound from "../../assets/sounds/ding-126626.mp3";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+});
 
 
 
@@ -30,11 +44,24 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
   const {
       isRecording,
       recordingTime,
+      recordedAudio,
       startRecording,
       stopRecording,
       cancelRecording,
+      clearRecordedAudio,
+      sendRecordedAudio,
       formatTime
-  } = useVoiceRecorder(onAudioSubmit);
+  } = useVoiceRecorder({
+      onAudioSubmit,
+      onLimitReached: () => {
+          const audio = new Audio(audioLimitSound);
+          audio.play().catch(e => console.error("Audio play failed", e));
+          Toast.fire({
+              icon: 'warning',
+              title: t('toasts.audioLimit')
+          });
+      }
+  });
 
 
 
@@ -54,11 +81,17 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
     const file = e.target.files[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        setErrorMessage(t('form.errorImageOnly'));
+        Toast.fire({
+            icon: 'error',
+            title: t('errors.imageFormat')
+        });
         return;
       }
       if (file.size > 3000000) { // ~3MB
-        setErrorMessage(t('form.errorImageSize'));
+        Toast.fire({
+            icon: 'error',
+            title: t('errors.imageSize')
+        });
         return;
       }
 
@@ -179,6 +212,33 @@ const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit }) => {
                     type="button"
                     onClick={stopRecording}
                     className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 hover:scale-110 transition-transform shadow-md"
+                    title={t('form.sendVoice')}
+                >
+                    <PaperAirplaneIcon className="w-5 h-5" />
+                </button>
+             </div>
+        ) : recordedAudio ? (
+             <div className="flex items-center justify-between w-full h-12 bg-white rounded px-2 gap-4 animate-fade-in relative border border-purple-200">
+                {/* Cancel Button (Trash) */}
+                <button
+                    type="button"
+                    onClick={clearRecordedAudio}
+                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    title={t('form.cancelRecording')}
+                >
+                    <TrashIcon className="w-6 h-6" />
+                </button>
+
+                {/* Duration Indicator (Static at Limit) */}
+                <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-gray-700 text-lg">{formatTime(120)}</span>
+                </div>
+
+                {/* Send Button */}
+                <button
+                    type="button"
+                    onClick={sendRecordedAudio}
+                    className="p-2 bg-green-600 text-white rounded-full hover:bg-green-700 hover:scale-110 transition-transform shadow-md animate-pulse"
                     title={t('form.sendVoice')}
                 >
                     <PaperAirplaneIcon className="w-5 h-5" />

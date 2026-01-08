@@ -14,7 +14,13 @@
   "about": "About Flash Chat",
   "toasts": {
     "joined": "{{username}} joined",
-    "left": "{{username}} left"
+    "left": "{{username}} left",
+    "audioLimit": "Audio limit reached (2 min)"
+  },
+  "errors": {
+    "imageSize": "Image too large (Max 3MB)",
+    "imageFormat": "Invalid image format. Only JPEG, PNG, GIF allowed.",
+    "audioLimit": "Maximum audio duration is 2 minutes."
   },
   "roomUrlCopied": "Room URL copied to clipboard",
   "roomIdCopied": "Room ID copied to clipboard",
