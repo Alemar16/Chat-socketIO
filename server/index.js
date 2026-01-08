@@ -21,6 +21,7 @@ const io = new SocketServer(server, {
 const rateLimiter = new RateLimiter(5, 1000);
 
 const users = {};
+const roomHistory = {}; // Volatile RAM History: { roomId: [messages] }
 
 // Basic security headers with Custom CSP for Media
 app.use(helmet({
@@ -44,7 +45,7 @@ app.use(express.static(resolve("frontend/dist"))); //desde server se levanta el 
 
 //conexion socket io con hash de usuarios
 io.on("connection", (socket) => {
-  console.log(`${socket.id} connected`);
+
 
   // Emitir la lista de usuarios al cliente cuando hay un cambio
   // updateConnectedUsers(); // Don't broadcast to everyone on connect, wait for room join
@@ -61,7 +62,12 @@ io.on("connection", (socket) => {
     // Store user info including room
     users[socket.id] = { username, roomId: normalizedRoomId };
     
-    console.log(`${socket.id} ${username} joined ${normalizedRoomId}`);
+
+    
+    // Verify if room has history and emit it to THIS user
+    if (roomHistory[normalizedRoomId]) {
+        socket.emit("history", roomHistory[normalizedRoomId]);
+    }
     
     // Update users ONLY in that room
     updateConnectedUsers(normalizedRoomId);
@@ -82,13 +88,19 @@ io.on("connection", (socket) => {
     const user = users[socket.id];
     if (user) {
       const { username, roomId } = user;
-      console.log(`${socket.id} ${username} disconnected from ${roomId}`);
+
       
       delete users[socket.id];
       rateLimiter.cleanup(socket.id); // Clean up rate limiter memory
 
       // Emitir la lista actualizada solo a esa sala
       updateConnectedUsers(roomId);
+
+      // Check if room is empty to clean up history (Save RAM)
+      const remainingUsers = Object.values(users).filter(u => u.roomId === roomId).length;
+      if (remainingUsers === 0) {
+          delete roomHistory[roomId]; // Free memory
+      }
     }
   }
 
@@ -111,9 +123,7 @@ io.on("connection", (socket) => {
     
         const user = users[socket.id];
         if (user) {
-            console.log(
-            `${user.username} sent a message in ${user.roomId} at ${new Date().toLocaleTimeString()}`
-            );
+            // Log removed for privacy
         }
 
         // Obtener la hora actual
@@ -127,6 +137,18 @@ io.on("connection", (socket) => {
                 type: 'text',
                 time: currentTime,
                 id: id, // Propagate ID
+            });
+
+            // Save to History (Text Only)
+            if (!roomHistory[userSender.roomId]) {
+                roomHistory[userSender.roomId] = [];
+            }
+            roomHistory[userSender.roomId].push({
+                body: body.slice(0, 5000),
+                from: userSender.username || "Anonymous",
+                type: 'text',
+                time: currentTime,
+                id: id,
             });
         }
     } catch (error) {
@@ -154,12 +176,12 @@ io.on("connection", (socket) => {
         }
 
         // Check if it's actually an image
-        if (!imageData.startsWith('data:image/')) return;
+        // REMOVED: Since content is ENCRYPTED, we cannot check headers here.
+        // if (!imageData.startsWith('data:image/')) return;
 
         const userSender = users[socket.id];
         if (userSender && userSender.roomId) {
             const currentTime = new Date().toISOString(); // ISO string for frontend date-fns
-            console.log(`${userSender.username} sent an IMAGE in ${userSender.roomId}`);
 
             // Broadcast to room
             socket.to(userSender.roomId).emit("message", {
@@ -170,6 +192,18 @@ io.on("connection", (socket) => {
                 time: currentTime,
                 id: id, // Propagate ID
             });
+            
+             // Save Placeholder to History (Save RAM, Keep Context)
+             if (!roomHistory[userSender.roomId]) {
+                 roomHistory[userSender.roomId] = [];
+             }
+             roomHistory[userSender.roomId].push({
+                 body: null, // No heavy data
+                 from: userSender.username || "Anonymous",
+                 type: 'placeholder_image', // Special type for frontend rendering
+                 time: currentTime,
+                 id: id,
+             });
         }
     } catch (error) {
         console.error("Image Error:", error.message);
@@ -190,17 +224,29 @@ io.on("connection", (socket) => {
         if (audioData.length > 10000000) return;
 
         // Verify it is audio
-        if (!audioData.startsWith('data:audio/')) return;
+        // REMOVED: Content is ENCRYPTED, cannot verify header.
+        // if (!audioData.startsWith('data:audio/')) return;
 
         const userSender = users[socket.id];
         if (userSender && userSender.roomId) {
             const currentTime = new Date().toISOString();
-            console.log(`${userSender.username} sent an AUDIO in ${userSender.roomId}`);
 
             socket.to(userSender.roomId).emit("message", {
                 body: audioData,
                 from: userSender.username || "Anonymous",
                 type: 'audio',
+                time: currentTime,
+                id: id,
+            });
+
+            // Save Placeholder to History
+            if (!roomHistory[userSender.roomId]) {
+                roomHistory[userSender.roomId] = [];
+            }
+            roomHistory[userSender.roomId].push({
+                body: null,
+                from: userSender.username || "Anonymous",
+                type: 'placeholder_audio',
                 time: currentTime,
                 id: id,
             });

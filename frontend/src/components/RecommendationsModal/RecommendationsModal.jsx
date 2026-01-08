@@ -104,6 +104,9 @@ export const RecommendationsModal = ({ isOpen, onClose }) => {
                             <li><span className="font-medium text-purple-900">{t('recommendations.advantages.noLogsTitle')}</span> {t('recommendations.advantages.noLogsContent')}</li>
                             <li><span className="font-medium text-purple-900">{t('recommendations.advantages.simplicityTitle')}</span> {t('recommendations.advantages.simplicityContent')}</li>
                             <li><span className="font-medium text-purple-900">{t('recommendations.advantages.flexibilityTitle')}</span> {t('recommendations.advantages.flexibilityContent')}</li>
+                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.encryptionTitle')}</span> {t('recommendations.advantages.encryptionContent')}</li>
+                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.qrTitle')}</span> {t('recommendations.advantages.qrContent')}</li>
+                            <li><span className="font-medium text-purple-900">{t('recommendations.advantages.ipTitle')}</span> {t('recommendations.advantages.ipContent')}</li>
                         </ul>
                     </ModalSection>
 

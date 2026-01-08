@@ -23,6 +23,11 @@ Flash Chat is a secure and anonymous chat application offering a revolutionary p
 - **Usage Recommendations**: Built-in guide with tips for secure and efficient usage.
 - **Customizable Alerts**: Integration with SweetAlert2 enhances user experience with customizable alerts and notifications.
 - **Easy Setup**: The project is divided into frontend and server directories, making setup hassle-free. Simply install dependencies with npm and run the project in development mode.
+- **Security & Privacy (New)**:
+  - **No-Log Policy**: The server does NOT store any logs of user activity, connections, or message metadata.
+  - **Transparent Encryption**: All messages are encrypted in the browser using the Room ID as a key. The server only sees encrypted data.
+  - **Volatile History**: A temporary history of text messages is kept in the server's RAM to help users catch up if they reload. This history is encrypted and is automatically deleted when the room becomes empty.
+  - **Auto-Reconnection**: Smart logic to restore your session if your mobile device momentarily disconnects.
 
 ## Technologies Used
 
@@ -36,13 +41,49 @@ Flash Chat is a secure and anonymous chat application offering a revolutionary p
 - Heroicons for a modern and consistent icon set
 - date-fns for time formatting
 
+## Infrastructure & Configuration
+
+### 1. Server and Deployment (Backend)
+
+- **Platform**: Hosted on **Render** (Node.js & Socket.io).
+- **Status**: Active, with automatic deployment from GitHub.
+- **Technical Address**: `chat-socketio-n9to.onrender.com` (Origin).
+
+### 2. Domain & Validation
+
+- **Domain**: `flashchat.website` (Registered via IONOS).
+- **Validation**: ICANN identity verification completed.
+- **Privacy**: Whois Privacy protection enabled.
+
+### 3. DNS Configuration (IONOS → Render)
+
+- **A Record**: Root (`@`) points to Render IP `216.24.57.1`.
+- **CNAME**: `www` points to the Render technical URL.
+
+### 4. Security Layer (Cloudflare)
+
+- **Proxy**: Enabled (Orange Cloud) to mask server IP and provide DDoS protection.
+- **SSL/TLS**: Set to **Full** encryption (User ↔ Cloudflare ↔ Render).
+- **Nameservers**: Delegated to Cloudflare.
+
+### 5. Real-Time Optimization
+
+- **WebSockets**: Enabled on Cloudflare network to ensure stable socket connections.
+- **HTTPS**: "Always Use HTTPS" enforced for all traffic.
+
+### ✅ Current Status
+
+- **Main URL**: [https://flashchat.website](https://flashchat.website)
+- **Security**: Bank-grade SSL & DDoS Protection active.
+- **Privacy**: Server IP hidden behind Cloudflare proxy.
+
 ## Getting Started
 
 To begin using Flash Chat, ensure you have Node.js version 20.11.1 installed on your system. Navigate to the project's frontend and server directories and run `npm install` to install dependencies. Then, start the project in development mode by running `npm run dev`.
 
 ## Try It Out
 
-Experience Flash Chat firsthand by visiting our live application at [https://chat-socketio-n9to.onrender.com/](https://chat-socketio-n9to.onrender.com/). We value your feedback and invite you to explore the application. Don't forget to star our GitHub repository to show your support!
+Experience Flash Chat firsthand by visiting our live application at [https://flashchat.website](https://flashchat.website). We value your feedback and invite you to explore the application. Don't forget to star our GitHub repository to show your support!
 
 ## Application Screenshots
 

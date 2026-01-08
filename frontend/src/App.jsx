@@ -14,11 +14,25 @@ import notificationSound from "./assets/sounds/soft-notice-146623.mp3";
 import backgroundNotificationSound from "./assets/sounds/new-notification-on-your-device-138695.mp3";
 import { useTranslation } from "react-i18next";
 import { generateRoomId } from "./utils/roomGenerator";
+import { encryptMessage, decryptMessage } from "./utils/crypto";
+import Swal from 'sweetalert2';
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+});
 
 const socket = io("/");
 
 function App() {
-  useTranslation();
+  const { t } = useTranslation();
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState(null);
@@ -26,6 +40,9 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [connectedUsers, setConnectedUsers] = useState([]);
   const soundEnabledRef = useRef(soundEnabled);
+  const roomIdRef = useRef(roomId); // Ref to access current roomId in callbacks
+  const usernameRef = useRef(username); // Ref to access current username for reconnect
+  const prevUsersRef = useRef([]); // Ref to store previous users for Toast logic
 
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
@@ -71,21 +88,72 @@ function App() {
         window.history.replaceState({ path: newUrl }, '', newUrl);
       }
     }
+
     setRoomId(room);
+    roomIdRef.current = room; // Sync ref
 
   }, []);
 
   useEffect(() => {
     socket.on("connect", () => {
         console.log("Connected to server");
+        // Auto-Re-Login: If we have a user and room, re-join.
+        // This fixes mobile "ghost" connections after backgrounding.
+        if (usernameRef.current && roomIdRef.current) {
+            socket.emit("login", { 
+                username: usernameRef.current, 
+                roomId: roomIdRef.current 
+            });
+        }
     });
 
     socket.on("users", (users) => {
+        const prevUsers = prevUsersRef.current;
+        const currentIds = users.map(u => u.id);
+        const prevIds = prevUsers.map(u => u.id);
+
+        // Don't show toasts on initial load (if prev was empty)
+        // OR if this is the first time populating
+        if (prevUsers.length > 0) {
+            // Find Joined
+            users.forEach(user => {
+                if (!prevIds.includes(user.id)) {
+                     Toast.fire({
+                        icon: 'success',
+                        title: t('toasts.joined', { username: user.username })
+                     });
+                }
+            });
+
+            // Find Left
+            prevUsers.forEach(user => {
+                if (!currentIds.includes(user.id)) {
+                     Toast.fire({
+                        icon: 'info',
+                        title: t('toasts.left', { username: user.username })
+                     });
+                }
+            });
+        }
+
         setConnectedUsers(users);
+        prevUsersRef.current = users; // Update ref
     });
 
     socket.on("message", (message) => {
-      setMessages((state) => [...state, message].slice(-100));
+      // Decrypt incoming message
+      const currentRoomId = roomIdRef.current;
+      const decryptedBody = decryptMessage(message.body, currentRoomId);
+      const decryptedCaption = message.caption ? decryptMessage(message.caption, currentRoomId) : undefined;
+      
+      const decryptedMessage = {
+          ...message,
+          body: decryptedBody,
+          caption: decryptedCaption,
+          timestamp: message.time // Map server 'time' to 'timestamp'
+      };
+
+      setMessages((state) => [...state, decryptedMessage].slice(-100));
       
       const isBackground = document.hidden;
       playNotification(isBackground);
@@ -95,13 +163,26 @@ function App() {
         setMessages((state) => state.filter((msg) => msg.id !== id));
     });
 
+    socket.on("history", (historyMessages) => {
+        const currentRoomId = roomIdRef.current;
+        const decryptedHistory = historyMessages.map(msg => ({
+            ...msg,
+            body: decryptMessage(msg.body, currentRoomId),
+            timestamp: msg.time // Map server 'time' to 'timestamp'
+        }));
+        // Rewrite messages with history (since it's a reload/join)
+        setMessages(decryptedHistory); 
+    });
+
     return () => {
       socket.off("connect");
       socket.off("users");
       socket.off("message");
+      socket.off("message");
       socket.off("delete");
+      socket.off("history");
     };
-  }, []);
+  }, [t]);
 
   const handleLogin = (username, roomCode) => {
     let finalRoomId = roomId;
@@ -112,9 +193,11 @@ function App() {
         const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?room=' + finalRoomId;
         window.history.pushState({ path: newUrl }, '', newUrl);
         setRoomId(finalRoomId);
+        roomIdRef.current = finalRoomId; // Update ref
     }
     
     setUsername(username);
+    usernameRef.current = username; // Update ref
     socket.emit("login", { username, roomId: finalRoomId });
     requestNotificationPermission();
   };
@@ -122,12 +205,14 @@ function App() {
   const handleLogout = () => {
     socket.emit("logout");
     setUsername("");
+    usernameRef.current = ""; // Reset ref
     window.location.href = window.location.pathname;
   };
 
   const handleLoginAsAnonymous = () => {
     const anonymousUsername = `Anonymous_${Math.floor(Math.random() * 1000)}`;
     setUsername(anonymousUsername);
+    usernameRef.current = anonymousUsername; // Update ref
     socket.emit("login", { username: anonymousUsername, roomId });
   };
 
@@ -148,7 +233,10 @@ function App() {
       id: id,
     };
     setMessages((state) => [...state, newMessage].slice(-100)); // Auto-Cleanup
-    socket.emit("message", { body: message, id });
+    
+    // Encrypt before sending
+    const encryptedBody = encryptMessage(message, roomId);
+    socket.emit("message", { body: encryptedBody, id });
   };
 
   const handleImageSubmit = (imageData, caption) => {
@@ -162,7 +250,12 @@ function App() {
       id: id,
     };
     setMessages((prev) => [...prev, newMessage].slice(-100)); // Auto-Cleanup
-    socket.emit("image", { body: imageData, caption, id });
+    
+    // Encrypt content
+    const encryptedBody = encryptMessage(imageData, roomId);
+    const encryptedCaption = caption ? encryptMessage(caption, roomId) : "";
+    
+    socket.emit("image", { body: encryptedBody, caption: encryptedCaption, id });
   };
 
   const handleAudioSubmit = (audioData) => {
@@ -175,7 +268,10 @@ function App() {
       id: id,
     };
     setMessages((prev) => [...prev, newMessage].slice(-100)); // Auto-Cleanup
-    socket.emit("audio", { body: audioData, id });
+    
+    // Encrypt content
+    const encryptedBody = encryptMessage(audioData, roomId);
+    socket.emit("audio", { body: encryptedBody, id });
   };
 
   return (

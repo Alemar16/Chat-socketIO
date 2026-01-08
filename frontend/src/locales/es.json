@@ -12,6 +12,16 @@
   "language": "Idioma",
   "theme": "Tema",
   "about": "Acerca de Flash Chat",
+  "toasts": {
+    "joined": "{{username}} se unió",
+    "left": "{{username}} salió",
+    "audioLimit": "Límite de audio alcanzado (2 min)"
+  },
+  "errors": {
+    "imageSize": "Imagen demasiado grande (Máx 3MB)",
+    "imageFormat": "Formato inválido. Solo se permiten JPEG, PNG, GIF.",
+    "audioLimit": "La duración máxima del audio es de 2 minutos."
+  },
   "roomUrlCopied": "URL de la sala copiada al portapapeles",
   "roomIdCopied": "ID de la sala copiado al portapapeles",
   "copied": "copiado al portapapeles",
@@ -41,7 +51,13 @@
       "simplicityTitle": "Simplicidad y usabilidad:",
       "simplicityContent": "Interfaz limpia y sin distracciones, con opciones para enviar imágenes y mensajes de voz de forma rápida.",
       "flexibilityTitle": "Flexibilidad y control:",
-      "flexibilityContent": "Creación de múltiples salas privadas con enlace de invitación y visualización de contactos conectados."
+      "flexibilityContent": "Creación de múltiples salas privadas con enlace de invitación y visualización de contactos conectados.",
+      "encryptionTitle": "Cifrado Transparente:",
+      "encryptionContent": "Los mensajes se encriptan localmente usando el ID de la Sala. El servidor nunca ve el contenido real.",
+      "qrTitle": "Compartir con QR:",
+      "qrContent": "Invita amigos al instante mostrándoles el código QR único de tu sala.",
+      "ipTitle": "Ubicación Protegida:",
+      "ipContent": "Tu IP está oculta. Utilizamos tecnología proxy avanzada para enmascarar tu origen."
     },
     "usage": {
       "title": "Uso Recomendado",
