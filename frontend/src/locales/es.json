@@ -41,7 +41,13 @@
       "simplicityTitle": "Simplicidad y usabilidad:",
       "simplicityContent": "Interfaz limpia y sin distracciones, con opciones para enviar imágenes y mensajes de voz de forma rápida.",
       "flexibilityTitle": "Flexibilidad y control:",
-      "flexibilityContent": "Creación de múltiples salas privadas con enlace de invitación y visualización de contactos conectados."
+      "flexibilityContent": "Creación de múltiples salas privadas con enlace de invitación y visualización de contactos conectados.",
+      "encryptionTitle": "Cifrado Transparente:",
+      "encryptionContent": "Los mensajes se encriptan localmente usando el ID de la Sala. El servidor nunca ve el contenido real.",
+      "qrTitle": "Compartir con QR:",
+      "qrContent": "Invita amigos al instante mostrándoles el código QR único de tu sala.",
+      "ipTitle": "Ubicación Protegida:",
+      "ipContent": "Tu IP está oculta. Utilizamos tecnología proxy avanzada para enmascarar tu origen."
     },
     "usage": {
       "title": "Uso Recomendado",

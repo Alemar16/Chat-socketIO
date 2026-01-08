@@ -41,7 +41,13 @@
       "simplicityTitle": "Simplicity and usability:",
       "simplicityContent": "Clean interface without distractions.",
       "flexibilityTitle": "Flexibility and control:",
-      "flexibilityContent": "Create multiple private rooms."
+      "flexibilityContent": "Create multiple private rooms.",
+      "encryptionTitle": "Transparent Encryption:",
+      "encryptionContent": "Messages are encrypted locally using the Room ID. The server never sees the content.",
+      "qrTitle": "QR Room Sharing:",
+      "qrContent": "Invite friends instantly by showing them the unique QR code for your room.",
+      "ipTitle": "Protected Locations:",
+      "ipContent": "Your IP is masked. We use advanced proxy technology to hide your origin."
     },
     "usage": {
       "title": "Recommended Use",
