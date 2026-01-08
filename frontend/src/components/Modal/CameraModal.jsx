@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { XMarkIcon, CameraIcon, ArrowPathIcon, CheckIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon, CameraIcon, ArrowPathIcon, CheckIcon, ArrowsRightLeftIcon } from "@heroicons/react/24/solid";
 
 const CameraModal = ({ isOpen, onClose, onCapture }) => {
     const videoRef = useRef(null);
@@ -8,12 +8,21 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
     const streamRef = useRef(null);
     const [capturedImage, setCapturedImage] = useState(null);
     const [error, setError] = useState('');
+    const [facingMode, setFacingMode] = useState('user'); // 'user' or 'environment'
+
+    const stopCamera = useCallback(() => {
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+        }
+        setCapturedImage(null);
+    }, []);
 
     const startCamera = useCallback(async () => {
         try {
-            setError('');
+            stopCamera(); // Stop previous stream so we can start new one
             const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: "user" } 
+                video: { facingMode: facingMode } 
             });
             streamRef.current = mediaStream;
             if (videoRef.current) {
@@ -23,15 +32,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
             console.error("Error accessing camera:", err);
             setError("Could not access camera. Please ensure permissions are granted.");
         }
-    }, []);
-
-    const stopCamera = useCallback(() => {
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-            streamRef.current = null;
-        }
-        setCapturedImage(null);
-    }, []);
+    }, [facingMode, stopCamera]); // Re-run when mode changes
 
     useEffect(() => {
         if (isOpen) {
@@ -42,7 +43,11 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
         return () => {
             stopCamera();
         };
-    }, [isOpen, startCamera, stopCamera]);
+    }, [isOpen, startCamera, stopCamera, facingMode]); // Depend on facingMode indirectly via startCamera
+
+    const toggleCamera = () => {
+        setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
+    };
 
     const handleCapture = () => {
         if (videoRef.current && canvasRef.current) {
@@ -117,6 +122,17 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
                     )}
                     {/* Hidden Canvas for Capture */}
                     <canvas ref={canvasRef} className="hidden" />
+
+                    {/* Switch Camera Button (Overlay) */}
+                    {!capturedImage && !error && (
+                        <button 
+                            onClick={toggleCamera}
+                            className="absolute top-4 right-4 bg-black/50 p-2 rounded-full text-white hover:bg-black/70 backdrop-blur-sm transition-all"
+                            title="Switch Camera"
+                        >
+                            <ArrowsRightLeftIcon className="w-6 h-6" />
+                        </button>
+                    )}
                 </div>
 
                 {/* Footer / Controls */}
