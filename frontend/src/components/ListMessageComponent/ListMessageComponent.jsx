@@ -10,10 +10,19 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
   const { t } = useTranslation();
   const [selectedImage, setSelectedImage] = useState(null);
   const messagesEndRef = useRef(null);
+
   const containerRef = useRef(null); // Ref for scroll container
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom
+
+  // Helper to detect if message is ONLY emojis (up to 3 for big, or just 1 as requested)
+  const isBigEmoji = (text) => {
+    if (!text) return false;
+    // Regex for Emoji-only string (simplified)
+    const emojiRegex = /^(\p{Emoji_Presentation}|\p{Extended_Pictographic}|\s)+$/u;
+    return emojiRegex.test(text) && text.trim().length > 0 && Array.from(text.trim()).length <= 6; // Limit length roughly
+  };
 
   const scrollToBottom = (smooth = true) => {
     messagesEndRef.current?.scrollIntoView({ behavior: smooth ? "smooth" : "auto" });
@@ -75,6 +84,8 @@ const ListMessageComponent = ({ messages, onDelete, onReact, currentUser }) => {
                     message.from === "Me"
                       ? "18px 18px 0 18px"
                       : "18px 18px 18px 0px",
+                  backgroundColor: isBigEmoji(message.body) ? 'transparent' : undefined,
+                  boxShadow: isBigEmoji(message.body) ? 'none' : undefined,
                 }}
               >
                 {/* Contenido del mensaje */}
