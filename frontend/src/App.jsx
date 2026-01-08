@@ -15,6 +15,19 @@ import backgroundNotificationSound from "./assets/sounds/new-notification-on-you
 import { useTranslation } from "react-i18next";
 import { generateRoomId } from "./utils/roomGenerator";
 import { encryptMessage, decryptMessage } from "./utils/crypto";
+import Swal from 'sweetalert2';
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+});
 
 const socket = io("/");
 
@@ -29,6 +42,7 @@ function App() {
   const soundEnabledRef = useRef(soundEnabled);
   const roomIdRef = useRef(roomId); // Ref to access current roomId in callbacks
   const usernameRef = useRef(username); // Ref to access current username for reconnect
+  const prevUsersRef = useRef([]); // Ref to store previous users for Toast logic
 
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
@@ -94,7 +108,36 @@ function App() {
     });
 
     socket.on("users", (users) => {
+        const prevUsers = prevUsersRef.current;
+        const currentIds = users.map(u => u.id);
+        const prevIds = prevUsers.map(u => u.id);
+
+        // Don't show toasts on initial load (if prev was empty)
+        // OR if this is the first time populating
+        if (prevUsers.length > 0) {
+            // Find Joined
+            users.forEach(user => {
+                if (!prevIds.includes(user.id)) {
+                     Toast.fire({
+                        icon: 'success',
+                        title: `${user.username} joined`
+                     });
+                }
+            });
+
+            // Find Left
+            prevUsers.forEach(user => {
+                if (!currentIds.includes(user.id)) {
+                     Toast.fire({
+                        icon: 'info',
+                        title: `${user.username} left`
+                     });
+                }
+            });
+        }
+
         setConnectedUsers(users);
+        prevUsersRef.current = users; // Update ref
     });
 
     socket.on("message", (message) => {
