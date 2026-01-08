@@ -280,7 +280,11 @@ function App() {
         replyTo: replyingTo ? {
             id: replyingTo.id,
             from: replyingTo.from,
-            body: replyingTo.body
+            body: replyingTo.body,
+            type: replyingTo.type,
+            fileName: replyingTo.fileName,
+            fileSize: replyingTo.fileSize,
+            fileType: replyingTo.fileType
         } : null
     });
   };
