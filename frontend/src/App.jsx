@@ -140,6 +140,15 @@ function App() {
         prevUsersRef.current = users; // Update ref
     });
 
+    socket.on("reaction_update", ({ messageId, reactions }) => {
+        setMessages(prevMessages => prevMessages.map(msg => {
+            if (msg.id === messageId) {
+                return { ...msg, reactions: reactions };
+            }
+            return msg;
+        }));
+    });
+
     socket.on("message", (message) => {
       // Decrypt incoming message
       const currentRoomId = roomIdRef.current;
@@ -179,8 +188,11 @@ function App() {
       socket.off("users");
       socket.off("message");
       socket.off("message");
+      socket.off("users");
+      socket.off("message");
       socket.off("delete");
       socket.off("history");
+      socket.off("reaction_update");
     };
   }, [t]);
 
@@ -274,6 +286,10 @@ function App() {
     socket.emit("audio", { body: encryptedBody, id });
   };
 
+  const handleReaction = (messageId, emoji) => {
+      socket.emit("reaction", { messageId, emoji });
+  };
+
   return (
     <>
       {username ? (
@@ -310,7 +326,12 @@ function App() {
                      <GreetingComponent username={username} />
                   </div>
                )}
-               <ListMessageComponent messages={messages} onDelete={handleDeleteMessage} />
+               <ListMessageComponent 
+              messages={messages} 
+              onDelete={handleDeleteMessage}
+              onReact={handleReaction}
+              currentUser={username} 
+          />
              </div>
           </div>
 

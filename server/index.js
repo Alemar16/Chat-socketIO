@@ -136,7 +136,10 @@ io.on("connection", (socket) => {
                 from: userSender.username || "Anonymous",
                 type: 'text',
                 time: currentTime,
+                type: 'text',
+                time: currentTime,
                 id: id, // Propagate ID
+                reactions: {}, // Initialize reactions
             });
 
             // Save to History (Text Only)
@@ -149,6 +152,7 @@ io.on("connection", (socket) => {
                 type: 'text',
                 time: currentTime,
                 id: id,
+                reactions: {}, // Initialize reactions
             });
         }
     } catch (error) {
@@ -190,7 +194,9 @@ io.on("connection", (socket) => {
                 type: 'image', // Explicit type
                 caption: caption, // Broadcast caption
                 time: currentTime,
+                time: currentTime,
                 id: id, // Propagate ID
+                reactions: {}, 
             });
             
              // Save Placeholder to History (Save RAM, Keep Context)
@@ -203,6 +209,7 @@ io.on("connection", (socket) => {
                  type: 'placeholder_image', // Special type for frontend rendering
                  time: currentTime,
                  id: id,
+                 reactions: {},
              });
         }
     } catch (error) {
@@ -236,7 +243,9 @@ io.on("connection", (socket) => {
                 from: userSender.username || "Anonymous",
                 type: 'audio',
                 time: currentTime,
+                time: currentTime,
                 id: id,
+                reactions: {},
             });
 
             // Save Placeholder to History
@@ -249,6 +258,7 @@ io.on("connection", (socket) => {
                 type: 'placeholder_audio',
                 time: currentTime,
                 id: id,
+                reactions: {},
             });
         }
     } catch (error) {
@@ -262,6 +272,37 @@ io.on("connection", (socket) => {
       if (user && user.roomId) {
           // Broadcast delete to room
           socket.to(user.roomId).emit("delete", messageId);
+      }
+  });
+
+  // Handle Reaction Events
+  socket.on("reaction", ({ messageId, emoji }) => {
+      const user = users[socket.id];
+      if (user && user.roomId && roomHistory[user.roomId]) {
+          const roomMsgs = roomHistory[user.roomId];
+          const msgIndex = roomMsgs.findIndex(m => m.id === messageId);
+          
+          if (msgIndex !== -1) {
+              const msg = roomMsgs[msgIndex];
+              if (!msg.reactions) msg.reactions = {};
+
+              const username = user.username || "Anonymous";
+              const currentEmoji = msg.reactions[username];
+
+              if (currentEmoji === emoji) {
+                  // Toggle off if clicking same emoji
+                  delete msg.reactions[username];
+              } else {
+                  // Set new emoji (replace old if exists)
+                  msg.reactions[username] = emoji;
+              }
+
+              // Broadcast update to room
+              io.to(user.roomId).emit("reaction_update", {
+                  messageId: messageId,
+                  reactions: msg.reactions
+              });
+          }
       }
   });
 
