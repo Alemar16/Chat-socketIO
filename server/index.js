@@ -176,7 +176,8 @@ io.on("connection", (socket) => {
         }
 
         // Check if it's actually an image
-        if (!imageData.startsWith('data:image/')) return;
+        // REMOVED: Since content is ENCRYPTED, we cannot check headers here.
+        // if (!imageData.startsWith('data:image/')) return;
 
         const userSender = users[socket.id];
         if (userSender && userSender.roomId) {
@@ -223,7 +224,8 @@ io.on("connection", (socket) => {
         if (audioData.length > 10000000) return;
 
         // Verify it is audio
-        if (!audioData.startsWith('data:audio/')) return;
+        // REMOVED: Content is ENCRYPTED, cannot verify header.
+        // if (!audioData.startsWith('data:audio/')) return;
 
         const userSender = users[socket.id];
         if (userSender && userSender.roomId) {
