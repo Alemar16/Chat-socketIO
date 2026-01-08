@@ -7,9 +7,9 @@ import {
     PaperAirplaneIcon,
     XMarkIcon,
     CameraIcon,
-    PhotoIcon,
-    FaceSmileIcon
+    PhotoIcon
 } from "@heroicons/react/24/solid";
+import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import useVoiceRecorder from "../../hooks/useVoiceRecorder";
 import ButtonSend from "../Buttons/ButtonSend";
 import EmojiPicker from 'emoji-picker-react';
@@ -33,7 +33,7 @@ const Toast = Swal.mixin({
 
 
 
-const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit, username, socket, replyingTo, onCancelReply }) => {
+const FormComponent = ({ onSubmit, onImageSubmit, onAudioSubmit,replyingTo, onCancelReply }) => {
   const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null); // Ref for file input
