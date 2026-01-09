@@ -1,5 +1,5 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 function GreetingComponent({username}) {
   const { t } = useTranslation();
@@ -12,5 +12,9 @@ function GreetingComponent({username}) {
     </div>
   )
 }
+
+GreetingComponent.propTypes = {
+  username: PropTypes.string.isRequired,
+};
 
 export default GreetingComponent

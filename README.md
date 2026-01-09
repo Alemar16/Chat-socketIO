@@ -99,6 +99,22 @@ Experience Flash Chat firsthand by visiting our live application at [https://fla
 
 ## Application Screenshots
 
+## Documentation & Development
+
+For developers interested in contributing or understanding the project structure:
+
+- [Architecture Overview](ARCHITECTURE.md): Detailed explanation of the frontend/backend split and data flow.
+- [Contributing Guidelines](CONTRIBUTING.md): Branching strategy, code standards, and PR process.
+- [Changelog](CHANGELOG.md): History of changes and versions.
+
+### Development Commands
+
+- `bun install`: Install dependencies.
+- `bun run dev`: Start dev server (backend + frontend).
+- `bun run lint`: Run code linting.
+- `bun test`: Run tests.
+
+
 <p align="center">
 <img src="assets/images-project/Screenshot-1.png" alt="Screenshot 1" width="800"/>
 <img src="assets/images-project/Screenshot-4.png" alt="Screenshot 3" width="400" height="630"/>
