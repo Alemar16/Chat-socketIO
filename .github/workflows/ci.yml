@@ -19,7 +19,9 @@ jobs:
         bun-version: latest
 
     - name: Install Dependencies
-      run: bun install
+      run: |
+        bun install
+        cd frontend && bun install
 
     - name: Lint Frontend
       run: bun run lint
