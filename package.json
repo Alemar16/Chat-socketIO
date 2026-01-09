@@ -8,7 +8,12 @@
     "dev": "bun --watch server/index.js",
     "build": "cd frontend && bun install && bun run build",
     "start": "bun server/index.js",
-    "test": "bun test"
+    "test": "bun test",
+    "test:ci": "bun test",
+    "lint": "cd frontend && bun run lint",
+    "release": "npm version patch -m \"chore(release): %s\"",
+    "release:minor": "npm version minor -m \"chore(release): %s\"",
+    "release:major": "npm version major -m \"chore(release): %s\""
   },
   "keywords": [],
   "author": "",
