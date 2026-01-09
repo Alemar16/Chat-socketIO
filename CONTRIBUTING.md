@@ -4,22 +4,26 @@ We welcome contributions to Flash Chat! Please follow these guidelines to ensure
 
 ## Branching Strategy
 
-We use a simplified Feature Branch workflow:
+We use a standard **Git Flow** strategy:
 
-1.  **main**: The production-ready branch. Do not push directly to main.
-2.  **Feature Branches**: Create a new branch for each feature or bugfix.
+1.  **main**: The production-ready branch. Only stable code resides here.
+2.  **develop**: The integration branch. All features are merged here first for testing.
+3.  **Feature Branches**: Create a new branch for each feature or bugfix.
+    - Create from: `develop`
+    - Merge into: `develop`
     - Naming convention: `feature/your-feature-name` or `fix/your-bug-fix`.
 
 ## Development Workflow
 
 1.  Clone the repository.
-2.  Install dependencies: `bun install`.
-3.  Create a new branch: `git checkout -b feature/my-feature`.
-4.  Make your changes.
-5.  Run tests: `bun test`.
-6.  Lint your code: `bun run lint`.
-7.  Commit your changes using Semantic Commit Messages (see below).
-8.  Push to your branch and open a Pull Request.
+2.  Switch to develop: `git checkout develop`
+3.  Pull latest changes: `git pull origin develop`
+4.  Create a new branch: `git checkout -b feature/my-feature`.
+5.  Make your changes.
+6.  Run tests: `bun test`.
+7.  Lint your code: `bun run lint`.
+8.  Commit your changes using Semantic Commit Messages.
+9.  Push to your branch and open a Pull Request targeting **develop**.
 
 ## Commit Messages
 
