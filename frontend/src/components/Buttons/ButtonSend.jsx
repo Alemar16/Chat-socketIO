@@ -1,5 +1,5 @@
-import React from "react";
 import SendIcon from "../../assets/icons/send.svg";
+import PropTypes from 'prop-types';
 
 const ButtonSend = ({ onClick }) => {
   return (
@@ -10,6 +10,10 @@ const ButtonSend = ({ onClick }) => {
       onClick={onClick}
     />
   );
+};
+
+ButtonSend.propTypes = {
+  onClick: PropTypes.func.isRequired,
 };
 
 export default ButtonSend;

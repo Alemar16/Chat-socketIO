@@ -7,41 +7,57 @@ describe("Socket.IO Integration", () => {
   let clientSocket2;
   let port;
 
-  beforeAll((done) => {
+  beforeAll(async () => {
     // Start server on random port
-    server.listen(0, () => {
-      port = server.address().port;
-      done();
+    await new Promise((resolve, reject) => {
+        server.listen(0, (err) => {
+            if (err) return reject(err);
+            port = server.address().port;
+            resolve();
+        });
     });
   });
 
-  afterAll((done) => {
+  afterAll(async () => {
+    // Force close socket.io server
     ioServer.close();
+    
+    // Close HTTP server if listening
     if (server.listening) {
-        server.close(done);
-    } else {
-        done();
+        await new Promise((resolve) => {
+            server.close((err) => {
+                // Ignore error if server is already closed
+                resolve(); 
+            });
+            // Force resolve if it takes too long
+            setTimeout(resolve, 1000); 
+        });
     }
   });
 
-  beforeEach((done) => {
+  beforeEach(async () => {
     // Setup client
     clientSocket = ioClient(`http://localhost:${port}`);
     clientSocket2 = ioClient(`http://localhost:${port}`);
     
-    let connectedCount = 0;
-    const onConnect = () => {
-        connectedCount++;
-        if (connectedCount === 2) done();
-    };
+    // Wait for both to connect
+    await new Promise((resolve) => {
+        let connectedCount = 0;
+        const onConnect = () => {
+            connectedCount++;
+            if (connectedCount === 2) resolve();
+        };
 
-    clientSocket.on("connect", onConnect);
-    clientSocket2.on("connect", onConnect);
+        clientSocket.on("connect", onConnect);
+        clientSocket2.on("connect", onConnect);
+    });
   });
 
   afterEach(() => {
-    if (clientSocket) clientSocket.close();
-    if (clientSocket2) clientSocket2.close();
+    if (clientSocket && clientSocket.connected) clientSocket.disconnect();
+    if (clientSocket2 && clientSocket2.connected) clientSocket2.disconnect();
+    clientSocket = null;
+    clientSocket2 = null;
   });
 
   it("should allow a client to login and join a room", (done) => {
